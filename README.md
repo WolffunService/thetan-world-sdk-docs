@@ -15,7 +15,8 @@ Grind process with be splitted into phases that depend on your game to decide wh
 - [Installation](#installation)
 - [Using Guide](#using-guide)
 - [API](#api)
-- [Data Model](#data-model)
+    - [ThetanSDKManager](#thetansdkmanager)
+    - [Data Model](#data-model)
 
 # Installation
 
