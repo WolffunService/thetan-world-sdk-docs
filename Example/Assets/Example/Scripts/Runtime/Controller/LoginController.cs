@@ -1,14 +1,11 @@
-using System.Collections;
-using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using ThetanSDK;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using Wolffun.RestAPI;
 using Wolffun.RestAPI.ThetanAuth;
 
-public class LoginController : MonoSingleton<LoginController>
+public class LoginController : MonoBehaviour
 {
     [SerializeField] private Button btnLogin;
     private async void Start()
