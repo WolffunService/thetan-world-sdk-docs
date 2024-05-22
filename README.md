@@ -39,22 +39,22 @@ In config, you will have to input application id and application secret we gave 
 >**Step 3.2 (Optional):** If you want to custom your testing endpoint, you can tick on "Use Custom Endpoint" in ThetanSDKNetworkConfig and change value of Custom Endpoint Setting
 
 # USING GUIDE
-**Step 1:** Instantiate prefab "ThetanSDK - Partner" in the package folder. After you instantiated that prefab, you **must** call [`ThetanSDKManager.Instance.Initialize(options, onDoneCallback)`](#ThetanSDKManager-Initialize). After the ``onDoneCallback`` is called, you can start using SDK.
+**Step 1:** Instantiate prefab "ThetanSDK - Partner" in the package folder. After you instantiated that prefab, you **must** call [`ThetanSDKManager.Instance.Initialize(options, onDoneCallback)`](#initialize). After the ``onDoneCallback`` is called, you can start using SDK.
 > Note: When Initialize SDK, you can have option for handle when user have no internet, you can pass true to ``AutoShowPopupWhenLostConnection`` for SDK auto show popup when user have no internet, or you can pass false to handle it yourself.
 
-**Step 2:** To show button Thetan World, you can call [``ThetanSDKManager.Instance.ShowButtonMainAction``](#ThetanSDKManager-ShowButtonMainAction). you can call [``ThetanSDKManager.Instance.HideButtonMainAction``](#ThetanSDKManager-HideButtonMainAction) to hide button Thetan World.
+**Step 2:** To show button Thetan World, you can call [``ThetanSDKManager.Instance.ShowButtonMainAction``](#showbuttonmainaction). you can call [``ThetanSDKManager.Instance.HideButtonMainAction``](#hidebuttonmainaction) to hide button Thetan World.
 
-**Step 3:** Before you start the match, you should check if user is selecting any nft hero for grinding by calling ``ThetanSDKManager.Instance.IsSelectedAnyHeroNftItem``. If user select any nft hero for grinding, you can call [``ThetanSDKManager.Instance.PrepareMatchForSelectedNFT``](#ThetanSDKManager-PrepareMatchForSelectedNFT) to lock nft and prepare that nft for grinding. After [``PrepareMatchForSelectedNFT``](#ThetanSDKManager-PrepareMatchForSelectedNFT) return success, main button will become non-interactable, user can only drag them around. If you desired to turn off completely the button when user play game, you can call [``ThetanSDKManager.Instance.HideButtonMainAction``](#ThetanSDKManager-HideButtonMainAction).
+**Step 3:** Before you start the match, you should check if user is selecting any nft hero for grinding by calling ``ThetanSDKManager.Instance.IsSelectedAnyHeroNftItem``. If user select any nft hero for grinding, you can call [``ThetanSDKManager.Instance.PrepareMatchForSelectedNFT``](#preparematchforselectednft) to lock nft and prepare that nft for grinding. After [``PrepareMatchForSelectedNFT``](#preparematchforselectednft) return success, main button will become non-interactable, user can only drag them around. If you desired to turn off completely the button when user play game, you can call [``ThetanSDKManager.Instance.HideButtonMainAction``](#hidebuttonmainaction).
 
-**Step 4:** After you load into the game success after [``PrepareMatchForSelectedNFT``](#ThetanSDKManager-PrepareMatchForSelectedNFT), you should call [``ThetanSDKManager.Instance.StartGrindingHeroItem``](#ThetanSDKManager-StartGrindingHeroItem) to start grinding user's selected nft
+**Step 4:** After you load into the game success after [``PrepareMatchForSelectedNFT``](#preparematchforselectednft), you should call [``ThetanSDKManager.Instance.StartGrindingHeroItem``](#startgrindingheroitem) to start grinding user's selected nft
 
 >Note: `StartGrindingHeroItem` only affect on the current game session, if user somehow open game on another machine, you should check ``ThetanSDKManager.Instance.IsGrindingAnyHeroNftItem``, by then if you wish to end the grinding session, you can skip go to Step 5, or if you wish to continue grinding with previous grinding session, you have to call ``ThetanSDKManager.Instance.StartGrindingHeroItem``
 
->**Step 4.1 (Optional):** If your game have pause match behaviour, you can call [``ThetanSDKManager.Instance.PauseGrindingHeroItem``](#ThetanSDKManager-PauseGrindingHeroItem) to pause grinding user's nft. After that, you can call [``ThetanSDKManager.Instance.StartGrindingHeroItem``](#ThetanSDKManager-StartGrindingHeroItem) to resume grinding again.
+>**Step 4.1 (Optional):** If your game have pause match behaviour, you can call [``ThetanSDKManager.Instance.PauseGrindingHeroItem``](#pausegrindingheroitem) to pause grinding user's nft. After that, you can call [``ThetanSDKManager.Instance.StartGrindingHeroItem``](#startgrindingheroitem) to resume grinding again.
 
-**Step 5:** After the match end, you should call [``ThetanSDKManager.Instance.StopGrindingHeroItem``](#ThetanSDKManager-StopGrindingHeroItem) to end grinding session and unlock selected NFT.
+**Step 5:** After the match end, you should call [``ThetanSDKManager.Instance.StopGrindingHeroItem``](#stopgrindingheroitem) to end grinding session and unlock selected NFT.
 
-**Step 6:** After [``ThetanSDKManager.Instance.StopGrindingHeroItem``](#ThetanSDKManager-StopGrindingHeroItem), you can call [``ThetanSDKManager.Instance.UnlockButtonMain``](#ThetanSDKManager-UnlockButtonMain) to unlock interaction with Thetan World UI again.
+**Step 6:** After [``ThetanSDKManager.Instance.StopGrindingHeroItem``](#stopgrindingheroitem), you can call [``ThetanSDKManager.Instance.UnlockButtonMain``](#unlockbuttonmain) to unlock interaction with Thetan World UI again.
 >Notice: this step is REQUIRED for user to start interaction with ui thetan world after grinding session.
 
 
@@ -65,7 +65,7 @@ In config, you will have to input application id and application secret we gave 
 ---
 
 
-### Initialize {#ThetanSDKManager-Initialize}
+### Initialize
 
 #### Declaration
 ``public void Initialize(SDKOption option, Action<ThetanNetworkClientState> onDoneCallback)``
@@ -73,8 +73,8 @@ In config, you will have to input application id and application secret we gave 
 #### Parameters
 | Parameters | Description |
 | ---------- | ----------- |
-| option | an [option](#SDKOption) for configure SDK behavior|
-| onDoneCallback | a callback with [ThetanNetworkClientState](#ThetanNetworkClientState) when SDK is done initialized|
+| option | an [option](#sdkoption) for configure SDK behavior|
+| onDoneCallback | a callback with [ThetanNetworkClientState](#thetannetworkclientstate) when SDK is done initialized|
 
 #### Description
 Initialize SDK before client can start using any SDK function
@@ -83,7 +83,7 @@ Initialize SDK before client can start using any SDK function
 ---
 
 
-### ShowButtonMainAction {#ThetanSDKManager-ShowButtonMainAction}
+### ShowButtonMainAction
 
 #### Declaration
 ``public void ShowButtonMainAction()``
@@ -95,7 +95,7 @@ Show button Thetan World for user interact with Thetan World UI
 ---
 
 
-### HideButtonMainAction {#ThetanSDKManager-HideButtonMainAction}
+### HideButtonMainAction
 
 #### Declaration
 ``public void HideButtonMainAction()``
@@ -107,7 +107,7 @@ Completely hide button Thetan World and close all current openned thetan world U
 ---
 
 
-### PrepareMatchForSelectedNFT {#ThetanSDKManager-PrepareMatchForSelectedNFT}
+### PrepareMatchForSelectedNFT
 
 #### Declaration
 ``public void PrepareMatchForSelectedNFT(Action onSuccessCallback, Action<WolffunResponseError> onErrorCallback)``
@@ -119,22 +119,22 @@ Completely hide button Thetan World and close all current openned thetan world U
 | onErrorCallback | callback contain error info when prepare match is not success.|
 
 #### Description
-Lock NFT and prepare NFT for grinding session. Also, this function will lock interaction for UI Thetan World, UI can only be unlocked after you call [UnlockButtonMain](#ThetanSDKManager-UnlockButtonMain) at the end of grinding session. `onErrorCallback` will be call when cannot prepare match for NFT, error callback contain 1 of these error codes, can be access via `WolffunResponseError.Code`.
+Lock NFT and prepare NFT for grinding session. Also, this function will lock interaction for UI Thetan World, UI can only be unlocked after you call [UnlockButtonMain](#unlockbuttonmain) at the end of grinding session. `onErrorCallback` will be call when cannot prepare match for NFT, error callback contain 1 of these error codes, can be access via `WolffunResponseError.Code`.
 | Error Code | Description |
 | ---------- | ----------- |
 | WSErrorCode.ServerMaintenance | Server is under maintenance|
-| [NftItemServiceErrorCode](#NftItemServiceErrorCode).NFT_IS_GRINDING_IN_ANOTHER_GAME | Selected NFT is grinding in another game|
-| [NftItemServiceErrorCode](#NftItemServiceErrorCode).ANOTHER_NFT_IS_GRINDING | Other NFT is grinding in your game|
-| [NftItemServiceErrorCode](#NftItemServiceErrorCode).HERO_MAX_GRIND_STAGE | Hero NFT is reached limit grind stage and cannot be grinded anymore|
-| [NftItemServiceErrorCode](#NftItemServiceErrorCode).NFT_DAILY_LIMIT_REACH | Selected NFT is reached daily grind time limit|
-| [NftItemServiceErrorCode](#NftItemServiceErrorCode).USER_NOT_OWN_NFT | Selected NFT is not belong to user, maybe user has already sold this NFT|
+| [NftItemServiceErrorCode](#nftitemserviceerrorcode).NFT_IS_GRINDING_IN_ANOTHER_GAME | Selected NFT is grinding in another game|
+| [NftItemServiceErrorCode](#nftitemserviceerrorcode).ANOTHER_NFT_IS_GRINDING | Other NFT is grinding in your game|
+| [NftItemServiceErrorCode](#nftitemserviceerrorcode).HERO_MAX_GRIND_STAGE | Hero NFT is reached limit grind stage and cannot be grinded anymore|
+| [NftItemServiceErrorCode](#nftitemserviceerrorcode).NFT_DAILY_LIMIT_REACH | Selected NFT is reached daily grind time limit|
+| [NftItemServiceErrorCode](#nftitemserviceerrorcode).USER_NOT_OWN_NFT | Selected NFT is not belong to user, maybe user has already sold this NFT|
 | Other | Unknown Error |
 
 
 ---
 
 
-### PrepareMatchForSelectedNFTAutoHandleError {#ThetanSDKManager-PrepareMatchForSelectedNFTAutoHandleError}
+### PrepareMatchForSelectedNFTAutoHandleError
 
 #### Declaration
 ``public void PrepareMatchForSelectedNFTAutoHandleError(Action<NftItemServiceErrorCode> onSuccessCallback, Action<WolffunResponseError> onErrorCallback)``
@@ -146,40 +146,40 @@ Lock NFT and prepare NFT for grinding session. Also, this function will lock int
 | onErrorCallback | callback when call prepare grind has error and user confirm to go back.|
 
 #### Description
-Lock NFT and prepare NFT for grinding session. This function is similar to [PrepareMatchForSelectedNFT](#ThetanSDKManager-PrepareMatchForSelectedNFT) but it auto show error message and ask user if user want to continue playing without grinding when there is an error.
-- With onSuccessCallback, you can check if it actual success by check callback value equal to NftItemServiceErrorCode.Success. Otherwise there is an error but user accept to continue, in this case, the callback value contain ErrorCode for error. Its error value is the same as [PrepareMatchForSelectedNFT](#ThetanSDKManager-PrepareMatchForSelectedNFT).
-- With onErrorCallback, that mean there is an error and user confirm to go back. The error callback value is the same as [PrepareMatchForSelectedNFT](#ThetanSDKManager-PrepareMatchForSelectedNFT).
+Lock NFT and prepare NFT for grinding session. This function is similar to [PrepareMatchForSelectedNFT](#preparematchforselectednft) but it auto show error message and ask user if user want to continue playing without grinding when there is an error.
+- With onSuccessCallback, you can check if it actual success by check callback value equal to NftItemServiceErrorCode.Success. Otherwise there is an error but user accept to continue, in this case, the callback value contain ErrorCode for error. Its error value is the same as [PrepareMatchForSelectedNFT](#preparematchforselectednft).
+- With onErrorCallback, that mean there is an error and user confirm to go back. The error callback value is the same as [PrepareMatchForSelectedNFT](#preparematchforselectednft).
 
 
 
 ---
 
 
-### StartGrindingHeroItem {#ThetanSDKManager-StartGrindingHeroItem}
+### StartGrindingHeroItem
 
 #### Declaration
 ``public void StartGrindingHeroItem()``
 
 #### Description
-Start grinding NFT after prepare match for NFT is succedd. If call this before call PrepareMatchForSelectedNFT, it won't do anything. This function also can be used to resume grinding after call [PauseGrindingHeroItem](#ThetanSDKManager-PauseGrindingHeroItem)
+Start grinding NFT after prepare match for NFT is succedd. If call this before call PrepareMatchForSelectedNFT, it won't do anything. This function also can be used to resume grinding after call [PauseGrindingHeroItem](#pausegrindingheroitem)
 
 
 ---
 
 
-### PauseGrindingHeroItem {#ThetanSDKManager-PauseGrindingHeroItem}
+### PauseGrindingHeroItem
 
 #### Declaration
 ``public void PauseGrindingHeroItem()``
 
 #### Description
-Temporary pause grinding hero NFT after called [StartGrindingHeroItem](#ThetanSDKManager-StartGrindingHeroItem). Used for case when your game is paused and you need to pause grinding too.
+Temporary pause grinding hero NFT after called [StartGrindingHeroItem](#startgrindingheroitem). Used for case when your game is paused and you need to pause grinding too.
 
 
 ---
 
 
-### StopGrindingHeroItem {#ThetanSDKManager-StopGrindingHeroItem}
+### StopGrindingHeroItem
 
 #### Declaration
 ``public void StopGrindingHeroItem()``
@@ -191,19 +191,19 @@ End grinding session and unlock selected NFT. You have to call this at the end o
 ---
 
 
-### UnlockButtonMain {#ThetanSDKManager-UnlockButtonMain}
+### UnlockButtonMain
 
 #### Declaration
 ``public void UnlockButtonMain()``
 
 #### Description
-Unlock Interaction for UI Thetan World. You may call this right after [StopGrindingHeroItem](#ThetanSDKManager-StopGrindingHeroItem) or anytime that suit your game flow but it must be called after `StopGrindingHeroItem`. Otherwise, user cannot interact with UI Thetan World.
+Unlock Interaction for UI Thetan World. You may call this right after [StopGrindingHeroItem](#stopgrindingheroitem) or anytime that suit your game flow but it must be called after `StopGrindingHeroItem`. Otherwise, user cannot interact with UI Thetan World.
 
 
 ---
 
 
-### LogOut {#ThetanSDKManager-LogOut}
+### LogOut
 
 #### Declaration
 ``public void LogOut()``
@@ -215,7 +215,7 @@ Log out current account.
 ---
 
 
-### SetMatchMaxDuration {#ThetanSDKManager-SetMatchMaxDuration}
+### SetMatchMaxDuration
 
 #### Declaration
 `public void SetMatchMaxDuration(int matchMaxDuration)`
@@ -232,7 +232,7 @@ Set max grinding session time out. Each 5 seconds game client will ping server t
 ---
 
 
-### CheckHeroIsSelected {#ThetanSDKManager-CheckHeroIsSelected}
+### CheckHeroIsSelected
 
 #### Declaration
 `public bool CheckHeroIsSelected(string heroId)`
@@ -252,7 +252,7 @@ Check if user is selecting hero NFT with id `heroId`
 ---
 
 
-### RefreshHeroNftData {#ThetanSDKManager-RefreshHeroNftData}
+### RefreshHeroNftData
 
 #### Declaration
 `public void RefreshHeroNftData(string nftId, Action<HeroNftItem> onSuccessCallback,
@@ -262,7 +262,7 @@ Check if user is selecting hero NFT with id `heroId`
 | Parameters | Description |
 | ---      | ----------------- |
 | heroId | hero NFT id need to check |
-| onSuccessCallback |  callback when success refresh data, return new [HeroNftItem](#HeroNftItem) data|
+| onSuccessCallback |  callback when success refresh data, return new [HeroNftItem](#heronftitem) data|
 | onErrorCallback |  error callback when refresh data fail|
 
 
@@ -273,7 +273,7 @@ Call server to get new data of hero NFT with `nftId`
 ---
 
 
-### RegisterOnChangeSelectedHeroNft {#ThetanSDKManager-RegisterOnChangeSelectedHeroNft}
+### RegisterOnChangeSelectedHeroNft
 
 #### Declaration
 `public void RegisterOnChangeSelectedHeroNft(Action<string> callback)`
@@ -291,7 +291,7 @@ Register callback when user select/unselect an hero NFT
 ---
 
 
-### UnRegisterOnChangeSelectedHeroNft {#ThetanSDKManager-UnRegisterOnChangeSelectedHeroNft}
+### UnRegisterOnChangeSelectedHeroNft
 
 #### Declaration
 `public void UnRegisterOnChangeSelectedHeroNft(Action<string> callback)`
@@ -299,7 +299,7 @@ Register callback when user select/unselect an hero NFT
 #### Parameters
 | Parameters | Description |
 | ---      | ----------------- |
-| callback | A callback used when [RegisterOnChangeSelectedHeroNft](#ThetanSDKManager-RegisterOnChangeSelectedHeroNft) |
+| callback | A callback used when [RegisterOnChangeSelectedHeroNft](#registeronchangeselectedheronft) |
 
 
 #### Description
@@ -325,7 +325,7 @@ UnRegister callback when user select/unselect an hero NFT
 | Properties | Description |
 | ---      | ----------------- |
 | OnUserLogOutCallback | Callback when user log out |
-| OnChangeNetworkClientState | Callback when client changed its internal [client state](#ThetanNetworkClientState) |
+| OnChangeNetworkClientState | Callback when client changed its internal [client state](#thetannetworkclientstate) |
 | OnOpenMainUI | Callback when user open main Thetan World UI |
 | OnCloseMainUI | Callback when Thetan World UI is closed|
 
@@ -339,7 +339,7 @@ UnRegister callback when user select/unselect an hero NFT
 
 
 
-### SDKOption {#SDKOption}
+### SDKOption
 #### Description
 SDK option for configure SDK behavior. This option is passed into SDK when initialized.
 
@@ -353,14 +353,14 @@ SDK option for configure SDK behavior. This option is passed into SDK when initi
 ---
 
 
-### ThetanNetworkClientState {#ThetanNetworkClientState}
+### ThetanNetworkClientState
 #### Description
 An enum descript current client state, can use this to determine whether is user logged in, or is connected to network?
 
 #### Properties
 | Properties | Description |
 | ---      | ----------------- |
-| NotInitialized | Client is not initialized yet, must call [Initialize](#ThetanSDKManager-Initialize)|
+| NotInitialized | Client is not initialized yet, must call [Initialize](#initialize)|
 | NotLoggedIn | User is not logged in|
 | NotLoggedInNoNetwork | User is not logged in and not connected to network|
 | LoggedIn | User is logged in|
@@ -371,7 +371,7 @@ An enum descript current client state, can use this to determine whether is user
 ---
 
 
-### HeroNftItem {#HeroNftItem}
+### HeroNftItem
 #### Description
 Struct use for holding hero nft item data
 
@@ -379,35 +379,35 @@ Struct use for holding hero nft item data
 | Properties | Description |
 | ---      | ----------------- |
 | id | NFT id |
-| [ingameInfo](#NftIngameInfo) | Info use by ingame for nft |
-| metaData | [Metadata](#HeroNftMetaData) of this NFT |
-| equipmentSet | A dictionary that contain info for all equipment slot inside hero NFT item. Key is [EquipmentItemType](#EquipmentItemType). Value is [NFTEquipmentInfo](#NFTEquipmentInfo)|
-| [grindInfo](#CommonGrindInfo) | Contain info about this NFT grind ability, rewards, speed, stage, ... |
-| marketInfo | A [MarketInfo](#MarketInfo) of this NFT|
-| onchainInfo | An [OnChainInfo](#OnChainInfo) of this NFT |
+| [ingameInfo](#nftingameinfo) | Info use by ingame for nft |
+| metaData | [Metadata](#heronftmetadata) of this NFT |
+| equipmentSet | A dictionary that contain info for all equipment slot inside hero NFT item. Key is [EquipmentItemType](#equipmentitemtype). Value is [NFTEquipmentInfo](#nftequipmentinfo)|
+| [grindInfo](#commongrindinfo) | Contain info about this NFT grind ability, rewards, speed, stage, ... |
+| marketInfo | A [MarketInfo](#marketinfo) of this NFT|
+| onchainInfo | An [OnChainInfo](#onchaininfo) of this NFT |
 
 
 ---
 
 
-### NftIngameInfo {#NftIngameInfo}
+### NftIngameInfo
 #### Description
 Struct use for holding hero nft item data
 
 #### Properties
 | Properties | Description |
 | ---      | ----------------- |
-| gameId | [Game World Type](#GameWorldType) of NFT |
+| gameId | [Game World Type](#gameworldtype) of NFT |
 | ingameID | Ingame item id (Only used in specific game world that NFT is belong to) |
 | rarity | Rarity of this NFT |
-| kind | [Item kind](#ItemKind) of this item |
+| kind | [Item kind](#itemkind) of this item |
 | type | typeId of this item |
 
 
 ---
 
 
-### HeroNftMetaData {#HeroNftMetaData}
+### HeroNftMetaData
 #### Description
 Meta data for descript Hero NFT
 
@@ -420,7 +420,7 @@ Meta data for descript Hero NFT
 ---
 
 
-### EquipmentItemType {#EquipmentItemType}
+### EquipmentItemType
 #### Description
 Enum defying all equipment type that can equiped on hero NFT
 
@@ -438,7 +438,7 @@ Enum defying all equipment type that can equiped on hero NFT
 ---
 
 
-### NFTEquipmentInfo {#NFTEquipmentInfo}
+### NFTEquipmentInfo
 #### Description
 Contain infomation about an equipment slot inside hero nft item
 
@@ -452,7 +452,7 @@ Contain infomation about an equipment slot inside hero nft item
 ---
 
 
-### CommonGrindInfo {#CommonGrindInfo}
+### CommonGrindInfo
 #### Description
 Contain common grind info of hero NFT item
 
@@ -472,7 +472,7 @@ Contain common grind info of hero NFT item
 ---
 
 
-### MarketInfo {#MarketInfo}
+### MarketInfo
 #### Description
 Contain market info of this NFT
 
@@ -485,7 +485,7 @@ Contain market info of this NFT
 ---
 
 
-### OnChainInfo {#OnChainInfo}
+### OnChainInfo
 #### Description
 Contain Chain info of NFT
 
@@ -498,7 +498,7 @@ Contain Chain info of NFT
 ---
 
 
-### GrindStatus {#GrindStatus}
+### GrindStatus
 #### Description
 Contain grind session info
 
@@ -513,7 +513,7 @@ Contain grind session info
 ---
 
 
-### GameWorldType {#GameWorldType}
+### GameWorldType
 #### Description
 Enum defying all Thetan Games
 
@@ -530,7 +530,7 @@ Enum defying all Thetan Games
 ---
 
 
-### NFTRarity {#NFTRarity}
+### NFTRarity
 #### Description
 Enum defying all NFT rarity
 
@@ -546,7 +546,7 @@ Enum defying all NFT rarity
 ---
 
 
-### ItemKind {#ItemKind}
+### ItemKind
 #### Description
 Enum defying item kind of NFT (Hero, Equipment, Ticket, ....)
 
@@ -559,7 +559,7 @@ Enum defying item kind of NFT (Hero, Equipment, Ticket, ....)
 ---
 
 
-### NftItemServiceErrorCode {#NftItemServiceErrorCode}
+### NftItemServiceErrorCode
 #### Description
 Enum defying ErrorCode when interact with NFT ITEM API
 
