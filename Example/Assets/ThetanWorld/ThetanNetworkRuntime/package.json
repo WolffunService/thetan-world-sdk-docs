@@ -1,0 +1,26 @@
+{
+  "name": "com.wolffun.thetan-network-runtime",
+  "displayName": "Thetan Network - Shared",
+  "description": "Thetan Network - Shared",
+  "version": "0.0.47-SHARE",
+  "unity": "2021.3",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/WolffunGame/thetan-unity-network.git"
+  },
+  "author": {
+    "name": "WolffunGame",
+    "email": "hoang@wolffungame.com",
+    "url": "https://github.com/WolffunGame"
+  },
+  "dependencies": {
+  },
+  "keywords": [
+    "restapi",
+    "dataloader"
+  ],
+  "release": {
+    "branches": ["main"]
+  }
+}
