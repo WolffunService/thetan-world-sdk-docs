@@ -24,26 +24,9 @@ public class ExampleManager : MonoBehaviour
             AutoShowPopupWhenLostConnection = true,
         }, state =>
         {
-            switch (state)
-            {
-                case ThetanNetworkClientState.LoggedIn:
-                    LoadingToMenu();
-                    break;
-                case ThetanNetworkClientState.NotLoggedIn:
-                    LoadingToLogin();
-                    break;
-                case ThetanNetworkClientState.Banned:
-                case ThetanNetworkClientState.NotInitialized:
-                case ThetanNetworkClientState.LoggedInNoNetwork:
-                case ThetanNetworkClientState.NotLoggedInNoNetwork:
-                    break;
-                default:
-                    break;
-            }
+            LoadingToMenu();
         });
     }
-
-    private async void LoadingToLogin() => await SceneManager.LoadSceneAsync("Login");
 
     private async void LoadingToMenu()
     {
@@ -56,5 +39,8 @@ public class ExampleManager : MonoBehaviour
         ThetanSDKManager.Instance.OnUserLogOutCallback += OnLogout;
     }
 
-    private void OnLogout() => SceneManager.LoadSceneAsync("Login");
+    private void OnLogout()
+    {
+        // DO Something here
+    }
 }
