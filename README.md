@@ -1,4 +1,5 @@
-# INTRODUCTION
+# Thetan World SDK
+
 This SDK allow player to select NFT, and bring NFT into game to play and earn THG. The process user play and earn THG through playing an NFT is called **Grind**
 
 Grind process with be splitted into phases that depend on your game to decide when to invoke which phase. Each phase is descript as following:
@@ -9,8 +10,9 @@ Grind process with be splitted into phases that depend on your game to decide wh
 - **End Grind**: This phase is called by your game to end grinding session and unlock selected NFT.
 - **Unlock UI Thetan World**: This phase is called by your game to unlock Thetan World UI interaction after grinding session is completed.
 
-# INSTALL GUIDE
-**Step 1:** Add these packages into your project
+# Install Guide
+
+### **Step 1:** Add these packages into your project
 - "com.zbase.collections.pooled": "https://github.com/Zitga-Tech/ZBase.Collections.Pooled.git?path=Packages/ZBase.Collections.Pooled",
 - "com.zbase.foundation.pooling": "https://github.com/Zitga-Tech/ZBase.Foundation.Pooling.git?path=Packages/ZBase.Foundation.Pooling",
 - "com.wolffun.download-from-storage": "https://github.com/WolffunGame/DownloadFromStorage.git#1.0.15",
@@ -28,9 +30,12 @@ And also add this Scope Registry into your project
 ]
 ```
 
-**Step 2:**: Import ThetanWorldSDK.unitypackage into your project
 
-**Step 3:** On menu bar, select Tools -> Wolffun -> CreateNetworkConfig
+### **Step 2**: Import SDK
+Download [ThetanWorldSDK.unitypackage](https://github.com/WolffunService/thetan-world-sdk-docs/blob/main/ThetanWorldSDK.unitypackage) and import it into your project
+
+
+### **Step 3:** On menu bar, select Tools -> Wolffun -> CreateNetworkConfig
 A network config will be created in ``Assets/ThetanWorld/Resources/ThetanSDKNetworkConfig.asset``
 In config, you will have to input application id and application secret we gave you. If you don't have that, please contact our technical support.
 
@@ -38,23 +43,30 @@ In config, you will have to input application id and application secret we gave 
 
 >**Step 3.2 (Optional):** If you want to custom your testing endpoint, you can tick on "Use Custom Endpoint" in ThetanSDKNetworkConfig and change value of Custom Endpoint Setting
 
-# USING GUIDE
-**Step 1:** Instantiate prefab "ThetanSDK - Partner" in the package folder. After you instantiated that prefab, you **must** call [`ThetanSDKManager.Instance.Initialize(options, onDoneCallback)`](#initialize). After the ``onDoneCallback`` is called, you can start using SDK.
+# Using Guide
+
+### **Step 1**: Initialize
+Instantiate prefab "ThetanSDK - Partner" in the package folder. After you instantiated that prefab, you **must** call [`ThetanSDKManager.Instance.Initialize(options, onDoneCallback)`](#initialize). After the ``onDoneCallback`` is called, you can start using SDK.
 > Note: When Initialize SDK, you can have option for handle when user have no internet, you can pass true to ``AutoShowPopupWhenLostConnection`` for SDK auto show popup when user have no internet, or you can pass false to handle it yourself.
 
-**Step 2:** To show button Thetan World, you can call [``ThetanSDKManager.Instance.ShowButtonMainAction``](#showbuttonmainaction). you can call [``ThetanSDKManager.Instance.HideButtonMainAction``](#hidebuttonmainaction) to hide button Thetan World.
+### **Step 2**: Show Main Button 
+To show button Thetan World, you can call [``ThetanSDKManager.Instance.ShowButtonMainAction``](#showbuttonmainaction). you can call [``ThetanSDKManager.Instance.HideButtonMainAction``](#hidebuttonmainaction) to hide button Thetan World.
 
-**Step 3:** Before you start the match, you should check if user is selecting any nft hero for grinding by calling ``ThetanSDKManager.Instance.IsSelectedAnyHeroNftItem``. If user select any nft hero for grinding, you can call [``ThetanSDKManager.Instance.PrepareMatchForSelectedNFT``](#preparematchforselectednft) to lock nft and prepare that nft for grinding. After [``PrepareMatchForSelectedNFT``](#preparematchforselectednft) return success, main button will become non-interactable, user can only drag them around. If you desired to turn off completely the button when user play game, you can call [``ThetanSDKManager.Instance.HideButtonMainAction``](#hidebuttonmainaction).
+### **Step 3:** Prepare to start match
+Before you start the match, you should check if user is selecting any nft hero for grinding by calling ``ThetanSDKManager.Instance.IsSelectedAnyHeroNftItem``. If user select any nft hero for grinding, you can call [``ThetanSDKManager.Instance.PrepareMatchForSelectedNFT``](#preparematchforselectednft) to lock nft and prepare that nft for grinding. After [``PrepareMatchForSelectedNFT``](#preparematchforselectednft) return success, main button will become non-interactable, user can only drag them around. If you desired to turn off completely the button when user play game, you can call [``ThetanSDKManager.Instance.HideButtonMainAction``](#hidebuttonmainaction).
 
-**Step 4:** After you load into the game success after [``PrepareMatchForSelectedNFT``](#preparematchforselectednft), you should call [``ThetanSDKManager.Instance.StartGrindingHeroItem``](#startgrindingheroitem) to start grinding user's selected nft
+### **Step 4:** Start Grinding
+After you load into the game success after [``PrepareMatchForSelectedNFT``](#preparematchforselectednft), you should call [``ThetanSDKManager.Instance.StartGrindingHeroItem``](#startgrindingheroitem) to start grinding user's selected nft
 
 >Note: `StartGrindingHeroItem` only affect on the current game session, if user somehow open game on another machine, you should check ``ThetanSDKManager.Instance.IsGrindingAnyHeroNftItem``, by then if you wish to end the grinding session, you can skip go to Step 5, or if you wish to continue grinding with previous grinding session, you have to call ``ThetanSDKManager.Instance.StartGrindingHeroItem``
 
 >**Step 4.1 (Optional):** If your game have pause match behaviour, you can call [``ThetanSDKManager.Instance.PauseGrindingHeroItem``](#pausegrindingheroitem) to pause grinding user's nft. After that, you can call [``ThetanSDKManager.Instance.StartGrindingHeroItem``](#startgrindingheroitem) to resume grinding again.
 
-**Step 5:** After the match end, you should call [``ThetanSDKManager.Instance.StopGrindingHeroItem``](#stopgrindingheroitem) to end grinding session and unlock selected NFT.
+### **Step 5:** Stop Grinding
+After the match end, you should call [``ThetanSDKManager.Instance.StopGrindingHeroItem``](#stopgrindingheroitem) to end grinding session and unlock selected NFT.
 
-**Step 6:** After [``ThetanSDKManager.Instance.StopGrindingHeroItem``](#stopgrindingheroitem), you can call [``ThetanSDKManager.Instance.UnlockButtonMain``](#unlockbuttonmain) to unlock interaction with Thetan World UI again.
+### **Step 6:** Unlock Main Button
+After [``ThetanSDKManager.Instance.StopGrindingHeroItem``](#stopgrindingheroitem), you can call [``ThetanSDKManager.Instance.UnlockButtonMain``](#unlockbuttonmain) to unlock interaction with Thetan World UI again.
 >Notice: this step is REQUIRED for user to start interaction with ui thetan world after grinding session.
 
 
