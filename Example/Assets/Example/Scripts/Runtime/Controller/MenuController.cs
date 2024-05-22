@@ -7,7 +7,6 @@ using ThetanSDK.SDKServices.NFTItem;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using Wolffun.Log;
 
 public class MenuController : MonoBehaviour
 {
