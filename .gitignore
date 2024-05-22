@@ -1,0 +1,15 @@
+*.csproj
+*.sln
+.vs/
+Library/
+Logs/
+Temp/
+Assets/Test.meta
+Assets/Scripts/ApplySelectedPrefabs.cs.meta
+Assets/Scripts/ApplySelectedPrefabs.cs
+obj/
+Library/
+Assets/StreamingAssets/
+Assets/StreamingAssets.meta
+.collabignore
+StreamingAssets/

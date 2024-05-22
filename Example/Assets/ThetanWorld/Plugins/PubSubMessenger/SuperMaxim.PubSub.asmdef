@@ -1,0 +1,16 @@
+{
+    "name": "SuperMaxim.PubSub",
+    "rootNamespace": "",
+    "references": [
+        "GUID:8ac231217a2656d4bbb3ba43c4e61aa3"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

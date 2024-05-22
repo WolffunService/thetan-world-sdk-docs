@@ -1,0 +1,27 @@
+{
+    "name": "ThetanSDK",
+    "rootNamespace": "",
+    "references": [
+        "ZBase.Collections.Pooled",
+        "ZBase.Foundation.Pooling",
+        "ThetanNetworkRuntime",
+        "Unity.TextMeshPro",
+        "UniTask",
+        "OSA.Core",
+        "StorageResource",
+        "DOTween.Modules",
+        "ZString",
+        "Wolffun.Log",
+        "OSA.Utilities",
+        "ThetanSDKPooling"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

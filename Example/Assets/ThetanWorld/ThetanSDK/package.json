@@ -1,0 +1,30 @@
+{
+  "name": "com.wolffun.thetan-world-sdk",
+  "displayName": "Thetan World SDK",
+  "description": "Thetan World SDK",
+  "version": "0.9.3-SDK",
+  "unity": "2021.3",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/WolffunGame/thetan-unity-network.git"
+  },
+  "author": {
+    "name": "WolffunGame",
+    "email": "hoang@wolffungame.com",
+    "url": "https://github.com/WolffunGame"
+  },
+  "dependencies": {
+    "com.wolffun.download-from-storage": "https://github.com/WolffunGame/DownloadFromStorage.git#1.0.15",
+    "com.zbase.collections.pooled": "https://github.com/WolffunGame/System.Collections.Pooled.git#2.8.1",
+    "com.zbase.foundation.pooling": "https://github.com/WolffunGame/Unity.Pooling.git?path=Packages/ZBase.Foundation.Pooling/#2.3.12",
+    "com.e7.notch-solution": "https://github.com/WolffunGame/NotchSolution.git#2.0.0"
+  },
+  "keywords": [
+    "restapi",
+    "dataloader"
+  ],
+  "release": {
+    "branches": ["feature/releae_tr_optimize"]
+  }
+}

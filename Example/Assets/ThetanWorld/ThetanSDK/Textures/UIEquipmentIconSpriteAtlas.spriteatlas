@@ -1,0 +1,88 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!687078895 &4343727234628468602
+SpriteAtlas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: UIEquipmentIconSpriteAtlas
+  m_EditorData:
+    serializedVersion: 2
+    textureSettings:
+      serializedVersion: 2
+      anisoLevel: 1
+      compressionQuality: 50
+      maxTextureSize: 2048
+      textureCompression: 0
+      filterMode: 1
+      generateMipMaps: 0
+      readable: 0
+      crunchedCompression: 0
+      sRGB: 1
+    platformSettings:
+    - serializedVersion: 3
+      m_BuildTarget: DefaultTexturePlatform
+      m_MaxTextureSize: 512
+      m_ResizeAlgorithm: 0
+      m_TextureFormat: -1
+      m_TextureCompression: 1
+      m_CompressionQuality: 50
+      m_CrunchedCompression: 0
+      m_AllowsAlphaSplitting: 0
+      m_Overridden: 0
+      m_IgnorePlatformSupport: 0
+      m_AndroidETC2FallbackOverride: 0
+      m_ForceMaximumCompressionQuality_BC6H_BC7: 0
+    packingSettings:
+      serializedVersion: 2
+      padding: 4
+      blockOffset: 1
+      allowAlphaSplitting: 0
+      enableRotation: 0
+      enableTightPacking: 0
+      enableAlphaDilation: 0
+    secondaryTextureSettings: {}
+    variantMultiplier: 1
+    packables:
+    - {fileID: 102900000, guid: 0e0f990fa13d2db489c268dd2019a199, type: 3}
+    bindAsDefault: 1
+    isAtlasV2: 0
+    cachedData: {fileID: 0}
+    packedSpriteRenderDataKeys:
+    - d25e7750d45e6f442a3d41109c162709: 21300000
+    - 79333e60b5cfd1e44afac815f8faf86e: 21300000
+    - 1ebc9ea3c5d50cb4e801def1b7479cd6: 21300000
+    - cafd7545fa291de4aa2c6f001c98a803: 21300000
+    - 5d5ee4a85b0c56348a66ebb6cfc365ec: 21300000
+    - 3c728699251f86b43a395411bca60019: 21300000
+    - 8cf7eca9141d4c549a844601df55679f: 21300000
+    - 11be04dbf88d7244a98aeec2d6a8b804: 21300000
+    - 59582dfc7ff12c84abffb3fdc9036137: 21300000
+    - 1882ebef97d1d4b4ea29c509b8bac650: 21300000
+  m_MasterAtlas: {fileID: 0}
+  m_PackedSprites:
+  - {fileID: 21300000, guid: d25e7750d45e6f442a3d41109c162709, type: 3}
+  - {fileID: 21300000, guid: 79333e60b5cfd1e44afac815f8faf86e, type: 3}
+  - {fileID: 21300000, guid: 1ebc9ea3c5d50cb4e801def1b7479cd6, type: 3}
+  - {fileID: 21300000, guid: cafd7545fa291de4aa2c6f001c98a803, type: 3}
+  - {fileID: 21300000, guid: 5d5ee4a85b0c56348a66ebb6cfc365ec, type: 3}
+  - {fileID: 21300000, guid: 3c728699251f86b43a395411bca60019, type: 3}
+  - {fileID: 21300000, guid: 8cf7eca9141d4c549a844601df55679f, type: 3}
+  - {fileID: 21300000, guid: 11be04dbf88d7244a98aeec2d6a8b804, type: 3}
+  - {fileID: 21300000, guid: 59582dfc7ff12c84abffb3fdc9036137, type: 3}
+  - {fileID: 21300000, guid: 1882ebef97d1d4b4ea29c509b8bac650, type: 3}
+  m_PackedSpriteNamesToIndex:
+  - spr_icon_equipment_shoe
+  - spr_bg_lucky_spin_item_pink
+  - spr_icon_equipment_pant
+  - spr_icon_slider_info
+  - spr_icon_equipment_weapon
+  - spr_bg_lucky_spin_item_blue
+  - spr_icon_equipment_hat
+  - spr_bg_lucky_spin_item_purple
+  - spr_icon_equipment_glove
+  - sr_icon_equipment_shirt
+  m_RenderDataMap: {}
+  m_Tag: UIEquipmentIconSpriteAtlas
+  m_IsVariant: 0

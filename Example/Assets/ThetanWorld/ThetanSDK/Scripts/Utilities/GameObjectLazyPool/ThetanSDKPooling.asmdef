@@ -1,0 +1,17 @@
+{
+    "name": "ThetanSDKPooling",
+    "rootNamespace": "",
+    "references": [
+        "ZBase.Foundation.Pooling",
+        "UniTask"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

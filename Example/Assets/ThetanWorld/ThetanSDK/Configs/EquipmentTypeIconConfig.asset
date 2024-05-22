@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 971401bcc75f4cbebf55a45cdf1ef3f2, type: 3}
+  m_Name: EquipmentTypeIconConfig
+  m_EditorClassIdentifier: 
+  configs:
+  - equipmentType: 3
+    sprIconEquipment: {fileID: 21300000, guid: 59582dfc7ff12c84abffb3fdc9036137, type: 3}
+  - equipmentType: 1
+    sprIconEquipment: {fileID: 21300000, guid: 8cf7eca9141d4c549a844601df55679f, type: 3}
+  - equipmentType: 4
+    sprIconEquipment: {fileID: 21300000, guid: 1ebc9ea3c5d50cb4e801def1b7479cd6, type: 3}
+  - equipmentType: 5
+    sprIconEquipment: {fileID: 21300000, guid: d25e7750d45e6f442a3d41109c162709, type: 3}
+  - equipmentType: 6
+    sprIconEquipment: {fileID: 21300000, guid: 5d5ee4a85b0c56348a66ebb6cfc365ec, type: 3}
+  - equipmentType: 2
+    sprIconEquipment: {fileID: 21300000, guid: 1882ebef97d1d4b4ea29c509b8bac650, type: 3}

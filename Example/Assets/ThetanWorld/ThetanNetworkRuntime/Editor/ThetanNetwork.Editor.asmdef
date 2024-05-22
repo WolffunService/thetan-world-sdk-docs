@@ -1,0 +1,19 @@
+{
+    "name": "ThetanNetwork.Editor",
+    "rootNamespace": "",
+    "references": [
+        "GUID:3b7f596bd88828f40b0aa6bfcebc4af3",
+        "GUID:d98f904c94ec7ed4ca561bdafb98c532"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
