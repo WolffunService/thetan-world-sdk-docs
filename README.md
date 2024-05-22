@@ -10,7 +10,14 @@ Grind process with be splitted into phases that depend on your game to decide wh
 - **End Grind**: This phase is called by your game to end grinding session and unlock selected NFT.
 - **Unlock UI Thetan World**: This phase is called by your game to unlock Thetan World UI interaction after grinding session is completed.
 
-# Install Guide
+## Table of Contents
+
+- [Installation](#installation)
+- [Using Guide](#using-guide)
+- [API](#api)
+- [Data Model](#data-model)
+
+# Installation
 
 ### **Step 1:** Add these packages into your project
 - "com.zbase.collections.pooled": "https://github.com/Zitga-Tech/ZBase.Collections.Pooled.git?path=Packages/ZBase.Collections.Pooled",
@@ -35,7 +42,8 @@ And also add this Scope Registry into your project
 Download [ThetanWorldSDK.unitypackage](https://github.com/WolffunService/thetan-world-sdk-docs/blob/main/ThetanWorldSDK.unitypackage) and import it into your project
 
 
-### **Step 3:** On menu bar, select Tools -> Wolffun -> CreateNetworkConfig
+### **Step 3:** CreateNetworkConfig
+On menu bar, select Tools -> Wolffun -> CreateNetworkConfig
 A network config will be created in ``Assets/ThetanWorld/Resources/ThetanSDKNetworkConfig.asset``
 In config, you will have to input application id and application secret we gave you. If you don't have that, please contact our technical support.
 
