@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0deb37db06c64eb595d3dcdf704aba17, type: 3}
   m_Name: ThetanSDKNetworkConfig
   m_EditorClassIdentifier: 
-  _applicationID_Staging: 
-  _applicationSecret_Staging: 
+  _applicationID_Staging: 72bfc6
+  _applicationSecret_Staging: WjFQSVh3Zi41M2YyOjcyYmZjNjoxYTg2MDFlYy1kY2U4LTQwZTYtYWIyMi1kZWFlODg2YmMyYzI=
   _applicationID_Prod: 
   _applicationSecret_Prod: 
   _logLevel: 0
