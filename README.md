@@ -14,6 +14,7 @@ Grind process with be splitted into phases that depend on your game to decide wh
 
 - [Installation](#installation)
 - [Using Guide](#using-guide)
+    - [Testing](#testing)
 - [API](#api)
     - [ThetanSDKManager](#thetansdkmanager)
     - [Data Model](#data-model)
@@ -78,6 +79,16 @@ After the match end, you should call [``ThetanSDKManager.Instance.StopGrindingHe
 After [``ThetanSDKManager.Instance.StopGrindingHeroItem``](#stopgrindingheroitem), you can call [``ThetanSDKManager.Instance.UnlockButtonMain``](#unlockbuttonmain) to unlock interaction with Thetan World UI again.
 >Notice: this step is REQUIRED for user to start interaction with ui thetan world after grinding session.
 
+## Testing
+First, you need add script define: **STAGING**
+
+After that, login and use SDK. You have 2 options for Thetan ID account:
+
+- Option1: Create Thetan ID by email and link wallet at https://marketplace.staging.thetanworld.com, then contact us to receive BNB, USDT and THG to buy box and mount NFT.
+
+- Option2: Login with Thetan ID by email: thetanarenatest@gmail.com and use verify code is  **111111**.
+
+>Notice: The STAGING environment only whitelist some IP addresses, for security purposes. So you need to provide your company's IP addresses that we can add it to the whitelist.
 
 # API
 ## ThetanSDKManager
