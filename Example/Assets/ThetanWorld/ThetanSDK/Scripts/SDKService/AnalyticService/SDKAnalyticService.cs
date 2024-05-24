@@ -14,18 +14,34 @@ using Wolffun.RestAPI.ThetanWorld;
 
 namespace ThetanSDK.SDKServices.Analytic
 {
+    /// <summary>
+    /// Service for sending analytic info
+    /// </summary>
     internal partial class SDKAnalyticService : BaseClassService, IPostAuthenProcessor
     {
+        /// <summary>
+        /// Hashkey for api analytic
+        /// </summary>
         private const string HASH_KEY = "*hi37*@W98CdZsjw";
         
+        // List failed analytic request that need to retry
         private Queue<SDKAnalyticRequestModel> _cachedFailAnalyticRequest = new Queue<SDKAnalyticRequestModel>();
         
         private ThetanNetworkConfig _networkConfig;
         
         private Dictionary<string, string> _dataLog = new Dictionary<string, string>();
-        private float _countTime;
+        
+        /// <summary>
+        /// Dictionary for caching nft info used for analytic. This reduce api call when need hero nft data for analytic
+        /// These info rarely change so don't need refresh cache behavior
+        /// </summary>
         private Dictionary<string, (OnChainInfo, NftIngameInfo)> _cachedNftIngameInfo = new Dictionary<string, (OnChainInfo, NftIngameInfo)>();
 
+        /// <summary>
+        /// Count time to retry send failed analytic request before, interval 1 second.
+        /// </summary>
+        private float _countTime;
+        
         public void InitialzeService(AuthenProcessContainer authenProcessContainer, ThetanNetworkConfig networkConfig)
         {
             _networkConfig = networkConfig;
@@ -59,6 +75,7 @@ namespace ThetanSDK.SDKServices.Analytic
             LogEvent(prevFailRequest);
         }
 
+        // Log event analytic
         private void LogEvent(string eventName, Dictionary<string, string> data)
         {
             if (ThetanSDKManager.Instance.NetworkClientState != ThetanNetworkClientState.LoggedIn)
@@ -131,6 +148,10 @@ namespace ThetanSDK.SDKServices.Analytic
 #endif
         }
 
+        /// <summary>
+        /// Get hero nft info for analytic.
+        /// This will first try get from cache, if fail, it will call server and cache response
+        /// </summary>
         private async UniTask<(OnChainInfo, NftIngameInfo)> GetAndCacheNFTIngameInfo(string heroNftId)
         {
             if (_cachedNftIngameInfo.TryGetValue(heroNftId, out var cachedData))
@@ -144,12 +165,19 @@ namespace ThetanSDK.SDKServices.Analytic
             return (nftData.onchainInfo, nftData.ingameInfo);
         }
 
+        /// <summary>
+        /// Clear cached data
+        /// </summary>
         public override void ClearDataService()
         {
             _cachedFailAnalyticRequest.Clear();
             _countTime = 0;
         }
 
+        /// <summary>
+        /// Called by authen processor.
+        /// Call analytic login success after user logged in
+        /// </summary>
         public async UniTask ProcessPostAuthenProcess(PostAuthenSuccessMetaData metaData)
         {
             var profileService = ThetanSDKManager.Instance.ProfileService;

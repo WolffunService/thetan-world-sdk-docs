@@ -440,6 +440,8 @@ GameObject:
   - component: {fileID: 1965155513300438797}
   - component: {fileID: 1915315568958648892}
   - component: {fileID: 9176328326351129364}
+  - component: {fileID: 5877885573470135349}
+  - component: {fileID: 8717135869340974406}
   m_Layer: 5
   m_Name: MainUIButton
   m_TagString: Untagged
@@ -592,6 +594,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b399e9282f6306498ca63f0b91c1522, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _canvasButton: {fileID: 5877885573470135349}
   _imgIconThetanWorld: {fileID: 1925073044626839289}
   _btnOpenThetanWorld: {fileID: 1965155513300438797}
   _objIconSelectedHeroNFT: {fileID: 7190278438025825984}
@@ -618,6 +621,45 @@ MonoBehaviour:
   _currencyScaleDuration: 0.1
   forceOpenThetanWorldConsecutiveClick: 3
   forceOpenThetanWorldClicMaxInterval: 0.4
+--- !u!223 &5877885573470135349
+Canvas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2029263619221462819}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_RenderMode: 2
+  m_Camera: {fileID: 0}
+  m_PlaneDistance: 100
+  m_PixelPerfect: 0
+  m_ReceivesEvents: 1
+  m_OverrideSorting: 0
+  m_OverridePixelPerfect: 0
+  m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 0
+  m_AdditionalShaderChannelsFlag: 0
+  m_SortingLayerID: 0
+  m_SortingOrder: 0
+  m_TargetDisplay: 0
+--- !u!114 &8717135869340974406
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2029263619221462819}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IgnoreReversedGraphics: 1
+  m_BlockingObjects: 0
+  m_BlockingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
 --- !u!1 &2186777265304721656
 GameObject:
   m_ObjectHideFlags: 0

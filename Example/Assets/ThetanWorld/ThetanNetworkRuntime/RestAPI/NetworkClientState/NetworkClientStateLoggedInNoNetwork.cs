@@ -4,6 +4,9 @@ using Wolffun.RestAPI.ThetanAuth;
 
 namespace Wolffun.RestAPI.NetworkClientState
 {
+    /// <summary>
+    /// Client state used when user has logged in but network connection is temporary not available
+    /// </summary>
     internal class NetworkClientStateLoggedInNoNetwork : BaseNetworkClientState
     {
         private IAuthenticationContainer _authenContainer;

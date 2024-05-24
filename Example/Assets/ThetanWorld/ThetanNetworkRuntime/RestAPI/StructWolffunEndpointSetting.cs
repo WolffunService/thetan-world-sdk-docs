@@ -4,6 +4,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using Wolffun.RestAPI;
 
+/// <summary>
+/// Struct that implement endpoint setting that contain url to common api endpoint
+/// </summary>
 [Serializable]
 public struct StructWolffunEndpointSetting : IWolffunEndpointSetting
 {

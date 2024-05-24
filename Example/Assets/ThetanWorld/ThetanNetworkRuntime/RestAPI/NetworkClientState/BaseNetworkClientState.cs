@@ -5,6 +5,9 @@ using Wolffun.RestAPI.ThetanAuth;
 
 namespace Wolffun.RestAPI.NetworkClientState
 {
+    /// <summary>
+    /// Base class for every network client state
+    /// </summary>
     internal abstract class BaseNetworkClientState : IDisposable
     {
         protected NetworkClient _networkClient;
@@ -47,7 +50,12 @@ namespace Wolffun.RestAPI.NetworkClientState
         
         public abstract ThetanNetworkClientState ClientState { get; }
         public virtual void OnEnterState(BaseNetworkClientState prevState){}
+        
+        /// <summary>
+        /// Function is called by network client every interval to update network client state
+        /// </summary>
         public virtual void OnUpdateState(){}
+        
         public virtual void OnExitState(BaseNetworkClientState nextState){}
     }
 }

@@ -6,6 +6,9 @@ using UnityEngine;
 
 namespace Wolffun.RestAPI.ThetanAuth
 {
+    /// <summary>
+    /// Authen processor used for login as guess, login with WFID, register WFID, link guess account with WFID
+    /// </summary>
     public class WolffunIdAuthenProcess : MonoBehaviorAuthenProcess
     {
         [SerializeField] private int _typeGameID = -1;
