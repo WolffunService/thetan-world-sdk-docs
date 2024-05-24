@@ -5,7 +5,9 @@ using Wolffun.RestAPI.ThetanAuth;
 
 namespace Wolffun.RestAPI.NetworkClientState
 {
-    // Todo: implement switch to banned if account is banned
+    /// <summary>
+    /// Client state used when client app is not initialized yet
+    /// </summary>
     internal class NetworkClientStateNotInitialize : BaseNetworkClientState
     {
         /// <summary>

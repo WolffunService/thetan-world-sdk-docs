@@ -7,8 +7,15 @@ using Wolffun.RestAPI.ThetanAuth;
 
 namespace ThetanSDK.SDKServices.Profile
 {
+    /// <summary>
+    /// Service for manage user profile
+    /// </summary>
     internal class SDKUserProfileService : BaseClassService, IPostAuthenProcessor
     {
+        /// <summary>
+        /// Cache user profile save file name.
+        /// Used to load cached user profile when user enter Thetan World without network
+        /// </summary>
         private const string SAVE_FILE_NAME = "ThetanWorldCacheProfileData";
         
         #region Dependency Properties
@@ -16,9 +23,19 @@ namespace ThetanSDK.SDKServices.Profile
         private NetworkClient _networkClient;
         #endregion
         
+        /// <summary>
+        /// User profile data
+        /// </summary>
         private SDKUserProfileModel _profileData;
+        
+        /// <summary>
+        /// Previous network client state
+        /// </summary>
         private ThetanNetworkClientState _prevNetworkClientState;
         
+        /// <summary>
+        /// File loader to load cached user profile from local file
+        /// </summary>
         [NonSerialized] private LocalDataLoadSaver<SDKUserProfileModel> _localDataLoadSaver;
         
         public string UserId => _profileData.id;
@@ -31,6 +48,9 @@ namespace ThetanSDK.SDKServices.Profile
         public string WalletAddress => _profileData.address;
         public string WalletProvider => _profileData.walletProvider;
 
+        /// <summary>
+        /// Call to init service before use
+        /// </summary>
         public async UniTask InitService(AuthenProcessContainer authenProcessContainer, NetworkClient networkClient)
         {
             _localDataLoadSaver = new LocalDataLoadSaver<SDKUserProfileModel>();
@@ -108,6 +128,10 @@ namespace ThetanSDK.SDKServices.Profile
             _localDataLoadSaver.SaveDataLocal(new SDKUserProfileModel().SetDefault(), SAVE_FILE_NAME);
         }
 
+        /// <summary>
+        /// Call server to load user profile.
+        /// Return true if load success, otherwise return false
+        /// </summary>
         public UniTask<bool> GetUserProfile()
         {
             UniTaskCompletionSource<bool> completionSource = new UniTaskCompletionSource<bool>();
@@ -116,13 +140,15 @@ namespace ThetanSDK.SDKServices.Profile
                 completionSource.TrySetResult(true);
             }, error =>
             {
-                // Todo: consider if we should handle error when load profile error
                 completionSource.TrySetResult(false);
             });
 
             return completionSource.Task;
         }
 
+        /// <summary>
+        /// Call server to load user profile
+        /// </summary>
         private void CallGetUserProfile(Action<SDKUserProfileModel> onSuccessCallback, Action<WolffunResponseError> onErrorCallback)
         {
             if (ThetanSDKManager.Instance.NetworkClientState != ThetanNetworkClientState.LoggedIn)
@@ -139,6 +165,10 @@ namespace ThetanSDK.SDKServices.Profile
             }, onErrorCallback, AuthType.TOKEN);
         }
 
+        /// <summary>
+        /// Invoked by authen processor after user logged in.
+        /// Load user profile right after user logged in
+        /// </summary>
         public UniTask ProcessPostAuthenProcess(PostAuthenSuccessMetaData metaData)
         {
             _profileData = new SDKUserProfileModel().SetDefault();
@@ -156,6 +186,9 @@ namespace ThetanSDK.SDKServices.Profile
             return completionSource.Task;
         }
 
+        /// <summary>
+        /// Clear cached data
+        /// </summary>
         public override void ClearDataService()
         {
             _profileData = new SDKUserProfileModel();

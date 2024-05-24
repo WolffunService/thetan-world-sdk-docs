@@ -24,9 +24,20 @@ namespace ThetanSDK.UI
 
         public Screen CurrentScreen => stackScreenActive.Count == 0 ? null : stackScreenActive.Peek().Screen;
 
+        public int CountTotalScreenInStack => stackScreenActive.Count;
+
         [Header("Animation config")]
         [SerializeField] private float pushScreenDuration;
         [SerializeField] private float popScreenDuration;
+
+        #region Callback
+
+        public event Action<Screen> OnBeforePushScreen;
+        public event Action<Screen> OnAfterPushScreen;
+        public event Action<Screen> OnBeforePopScreen;
+        public event Action<Screen> OnAfterPopScreen;
+
+        #endregion
 
         private Action _onClickCloseScreenCallback;
 
@@ -125,8 +136,22 @@ namespace ThetanSDK.UI
                     };
                     
                     newScreenActive.Screen.OnBeforePushScreen();
+                    try
+                    {
+                        OnBeforePushScreen?.Invoke(newScreenActive.Screen);
+                    }
+                    catch (Exception e)
+                    {
+                    }
                     stackScreenActive.Push(newScreenActive);
                     newScreenActive.Screen.OnAfterPushScreen();
+                    try
+                    {
+                        OnAfterPushScreen?.Invoke(newScreenActive.Screen);
+                    }
+                    catch (Exception e)
+                    {
+                    }
                 }
             }
 
@@ -177,6 +202,13 @@ namespace ThetanSDK.UI
                     };
 
                     newScreenActive.Screen.OnBeforePushScreen();
+                    try
+                    {
+                        OnBeforePushScreen?.Invoke(newScreenActive.Screen);
+                    }
+                    catch (Exception e)
+                    {
+                    }
                     PlayAnimPushScreen(new ScreenActive(), newScreenActive, () =>
                     {
                         int numberOfScreenKeepOnStack = isKeepRootScreen ? 1 : 0;
@@ -184,10 +216,24 @@ namespace ThetanSDK.UI
                         while (stackScreenActive.Count > numberOfScreenKeepOnStack)
                         {
                             stackScreenActive.Peek().Screen.OnBeforePopScreen();
+                            try
+                            {
+                                OnBeforePopScreen?.Invoke(stackScreenActive.Peek().Screen);
+                            }
+                            catch (Exception e)
+                            {
+                            }
                 
                             var screen = stackScreenActive.Pop();
                 
                             screen.Screen.OnAfterPopScreen();
+                            try
+                            {
+                                OnAfterPopScreen?.Invoke(screen.Screen);
+                            }
+                            catch (Exception e)
+                            {
+                            }
                 
                             GlobalLazyPool.Return(screen.Screen.gameObject);
                             ReturnScreenContainerToPool(screen.ScreenContainer);
@@ -195,6 +241,13 @@ namespace ThetanSDK.UI
                         
                         stackScreenActive.Push(newScreenActive);
                         newScreenActive.Screen.OnAfterPushScreen();
+                        try
+                        {
+                            OnAfterPushScreen?.Invoke(newScreenActive.Screen);
+                        }
+                        catch (Exception e)
+                        {
+                        }
                     });
 
                     if (_btnBack != null)
@@ -216,11 +269,24 @@ namespace ThetanSDK.UI
                     };
                     
                     newScreenActive.Screen.OnBeforePushScreen();
-
+                    try
+                    {
+                        OnBeforePushScreen?.Invoke(newScreenActive.Screen);
+                    }
+                    catch (Exception e)
+                    {
+                    }
                     stackScreenActive.Push(newScreenActive);
                     PlayAnimPushScreen(new ScreenActive(), newScreenActive, () =>
                     {
                         newScreenActive.Screen.OnAfterPushScreen();
+                        try
+                        {
+                            OnAfterPushScreen?.Invoke(newScreenActive.Screen);
+                        }
+                        catch (Exception e)
+                        {
+                        }
                     });
 
                     if (_btnBack && _isCanPopToEmpty)
@@ -237,8 +303,22 @@ namespace ThetanSDK.UI
                     };
 
                     newScreenActive.Screen.OnBeforePushScreen();
+                    try
+                    {
+                        OnBeforePushScreen?.Invoke(newScreenActive.Screen);
+                    }
+                    catch (Exception e)
+                    {
+                    }
                     stackScreenActive.Push(newScreenActive);
                     newScreenActive.Screen.OnAfterPushScreen();
+                    try
+                    {
+                        OnAfterPushScreen?.Invoke(newScreenActive.Screen);
+                    }
+                    catch (Exception e)
+                    {
+                    }
                 }
             }
 
@@ -252,6 +332,13 @@ namespace ThetanSDK.UI
             var curActiveScreen = stackScreenActive.Peek();
             
             curActiveScreen.Screen.OnBeforePopScreen();
+            try
+            {
+                OnBeforePopScreen?.Invoke(curActiveScreen.Screen);
+            }
+            catch (Exception e)
+            {
+            }
             stackScreenActive.Pop();
 
             if ((stackScreenActive.Count <= 1 && !_isAnimateFirstScreenInStack) ||
@@ -264,6 +351,13 @@ namespace ThetanSDK.UI
             if (stackScreenActive.Count == 0 && !_isAnimateFirstScreenInStack)
             {
                 curActiveScreen.Screen.OnAfterPopScreen();
+                try
+                {
+                    OnAfterPopScreen?.Invoke(curActiveScreen.Screen);
+                }
+                catch (Exception e)
+                {
+                }
                 GlobalLazyPool.Return(curActiveScreen.Screen.gameObject);
                 ReturnScreenContainerToPool(curActiveScreen.ScreenContainer);
             }
@@ -300,10 +394,24 @@ namespace ThetanSDK.UI
             while (stackScreenActive.Count > 1)
             {
                 stackScreenActive.Peek().Screen.OnBeforePopScreen();
+                try
+                {
+                    OnBeforePopScreen?.Invoke(stackScreenActive.Peek().Screen);
+                }
+                catch (Exception e)
+                {
+                }
                 
                 var screen = stackScreenActive.Pop();
                 
                 screen.Screen.OnAfterPopScreen();
+                try
+                {
+                    OnAfterPopScreen?.Invoke(screen.Screen);
+                }
+                catch (Exception e)
+                {
+                }
                 
                 GlobalLazyPool.Return(screen.Screen.gameObject);
                 ReturnScreenContainerToPool(screen.ScreenContainer);
@@ -320,10 +428,24 @@ namespace ThetanSDK.UI
             while (stackScreenActive.Count > 0)
             {
                 stackScreenActive.Peek().Screen.OnBeforePopScreen();
+                try
+                {
+                    OnBeforePopScreen?.Invoke(stackScreenActive.Peek().Screen);
+                }
+                catch (Exception e)
+                {
+                }
                 
                 var screen = stackScreenActive.Pop();
                 
                 screen.Screen.OnAfterPopScreen();
+                try
+                {
+                    OnAfterPopScreen?.Invoke(screen.Screen);
+                }
+                catch (Exception e)
+                {
+                }
                 
                 GlobalLazyPool.Return(screen.Screen.gameObject);
                 ReturnScreenContainerToPool(screen.ScreenContainer);
@@ -337,6 +459,13 @@ namespace ThetanSDK.UI
                 curScreenTransform.DOLocalMoveX(_viewport.rect.width, popScreenDuration).OnComplete(() =>
                 {
                     curScreenActive.Screen.OnAfterPopScreen();
+                    try
+                    {
+                        OnAfterPopScreen?.Invoke(curScreenActive.Screen);
+                    }
+                    catch (Exception e)
+                    {
+                    }
                     onDone?.Invoke();
                 });
             }
@@ -357,12 +486,26 @@ namespace ThetanSDK.UI
             }
             
             newScreenActive.Screen.OnBeforePushScreen();
+            try
+            {
+                OnBeforePushScreen?.Invoke(newScreenActive.Screen);
+            }
+            catch (Exception e)
+            {
+            }
             if (newScreenActive.ScreenContainer.transform is RectTransform newScreenTransform)
             {
                 newScreenTransform.DOLocalMoveX(0, pushScreenDuration).OnComplete(() =>
                 {
                     onDoneCallback?.Invoke();
                     newScreenActive.Screen.OnAfterPushScreen();
+                    try
+                    {
+                        OnAfterPushScreen?.Invoke(newScreenActive.Screen);
+                    }
+                    catch (Exception e)
+                    {
+                    }
                 });
             }
         }

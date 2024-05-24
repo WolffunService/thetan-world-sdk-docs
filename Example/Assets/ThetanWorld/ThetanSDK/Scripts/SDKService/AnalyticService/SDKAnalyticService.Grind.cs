@@ -11,7 +11,10 @@ namespace ThetanSDK.SDKServices.Analytic
             PauseGrind,
             EndBattle
         }
-
+        
+        /// <summary>
+        /// Log analytic grinding flow for SDK
+        /// </summary>
         /// <param name="timeBattle">only available when step is EndBattle</param>
         public async void LogBattleFlow(string grindingHeroNftId, string grindingSessionId, BattleFlowStep step, int timeBattle = -1)
         {

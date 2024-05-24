@@ -1639,6 +1639,8 @@ GameObject:
   m_Component:
   - component: {fileID: 5574653758969291700}
   - component: {fileID: 1272501264101019631}
+  - component: {fileID: 5172340267358329302}
+  - component: {fileID: 4107881600338541124}
   m_Layer: 5
   m_Name: Content
   m_TagString: Untagged
@@ -1689,6 +1691,45 @@ MonoBehaviour:
   ConformX: 0
   ConformY: 1
   Logging: 0
+--- !u!223 &5172340267358329302
+Canvas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4547447544913891923}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_RenderMode: 2
+  m_Camera: {fileID: 0}
+  m_PlaneDistance: 100
+  m_PixelPerfect: 0
+  m_ReceivesEvents: 1
+  m_OverrideSorting: 0
+  m_OverridePixelPerfect: 0
+  m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 0
+  m_AdditionalShaderChannelsFlag: 25
+  m_SortingLayerID: 0
+  m_SortingOrder: 0
+  m_TargetDisplay: 0
+--- !u!114 &4107881600338541124
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4547447544913891923}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IgnoreReversedGraphics: 1
+  m_BlockingObjects: 0
+  m_BlockingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
 --- !u!1 &4627925722524571440
 GameObject:
   m_ObjectHideFlags: 0
@@ -1790,6 +1831,7 @@ MonoBehaviour:
   _btnClose: {fileID: 2940095307452868592}
   _uiHelperContainer: {fileID: 5209286830293714173}
   _prefabPopupWelcomeToSDK: {fileID: 6546442809523196744, guid: 6c3d2ce701b6f3647b954ea6cc464935, type: 3}
+  _mainContentCanvas: {fileID: 5172340267358329302}
   _contentScreenContainer: {fileID: 4960766441847542478}
   _btnSelectNow: {fileID: 5308935262955106283}
   _btnProfile: {fileID: 6317288396352277110}

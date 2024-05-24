@@ -4,6 +4,9 @@ using Wolffun.RestAPI.ThetanAuth;
 
 namespace Wolffun.RestAPI.NetworkClientState
 {
+    /// <summary>
+    /// Client state used when user use account that has been deleted
+    /// </summary>
     internal class NetworkClientStateAccountDeleted : BaseNetworkClientState, IAuthenSuccessListener
     {
         private NetworkClientStateNotLoggedIn _stateNotLoggedIn;

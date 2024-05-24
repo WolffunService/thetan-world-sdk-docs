@@ -4,6 +4,9 @@ using UnityEngine;
 
 namespace Wolffun.RestAPI.ThetanAuth
 {
+    /// <summary>
+    /// Container for all authen process of Thetan World
+    /// </summary>
     public class AuthenProcessContainer : MonoBehaviour
     {
         [SerializeField] private WolffunIdAuthenProcess _wfidAuthenProcess;

@@ -6,6 +6,9 @@ using Wolffun.RestAPI.ThetanAuth;
 
 namespace Wolffun.RestAPI.NetworkClientState
 {
+    /// <summary>
+    /// Client state used when user has logged in and has network connection
+    /// </summary>
     internal class NetworkClientStateLoggedIn : BaseNetworkClientState, ITokenErrorAPIHandle, IAuthenSuccessListener
     {
         private int TOTAL_SECOND_REMAIN_TO_REFRESH_TOKEN = 7 * 60; // Refresh token if access token only have 7 minutes left

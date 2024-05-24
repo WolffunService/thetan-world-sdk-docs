@@ -3,6 +3,9 @@ using UnityEngine;
 
 namespace ThetanSDK.UI.LuckySpin
 {
+    /// <summary>
+    /// Enum defying all equipment type that can equipped on hero NFT
+    /// </summary>
     public enum EquipmentItemType
     {
         Hat = 1,

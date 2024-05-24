@@ -4,7 +4,8 @@ using UnityEngine;
 namespace Wolffun.RestAPI
 {
     /// <summary>
-    /// You must implement Handle error
+    /// Implement special error code handler.
+    /// You SHOULD NOT use this unless you know what you are doing
     /// </summary>
     public interface IWolffunHandleSpecialError
     {

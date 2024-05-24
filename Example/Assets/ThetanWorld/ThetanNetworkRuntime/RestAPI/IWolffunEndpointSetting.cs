@@ -4,6 +4,9 @@ using UnityEngine;
 
 namespace Wolffun.RestAPI
 {
+    /// <summary>
+    /// Interface contain all common URL used for network api
+    /// </summary>
     public interface IWolffunEndpointSetting
     {
         public string RemoteServiceURL { get; }

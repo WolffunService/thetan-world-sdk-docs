@@ -14,6 +14,10 @@ namespace Wolffun.RestAPI.ThetanAuth
         LinkAccount         = 4,
     }
 
+    /// <summary>
+    /// Struct contain data after authen success
+    /// Usually used for analytic purpose
+    /// </summary>
     public struct AuthenResultData
     {
         private AuthResultType _authType;

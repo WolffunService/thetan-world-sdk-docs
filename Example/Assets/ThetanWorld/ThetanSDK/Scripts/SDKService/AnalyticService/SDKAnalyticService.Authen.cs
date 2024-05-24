@@ -9,6 +9,10 @@ namespace ThetanSDK.SDKServices.Analytic
 {
     internal partial class SDKAnalyticService
     {
+        /// <summary>
+        /// Log login success everytime user log in
+        /// </summary>
+        /// <param name="metaData"></param>
         public async void LogLoginSuccess(PostAuthenSuccessMetaData metaData)
         {
             try
@@ -61,7 +65,7 @@ namespace ThetanSDK.SDKServices.Analytic
 
         private struct UserWalletInfo
         {
-            public int gTHG;
+            public long gTHG;
         }
     }
 }

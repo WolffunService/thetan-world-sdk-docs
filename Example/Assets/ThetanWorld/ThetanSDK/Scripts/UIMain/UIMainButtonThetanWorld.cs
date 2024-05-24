@@ -19,6 +19,7 @@ namespace ThetanSDK.UI
 {
     internal class UIMainButtonThetanWorld : MonoBehaviour
     {
+        [SerializeField] private Canvas _canvasButton;
         [SerializeField] private Image _imgIconThetanWorld;
         [SerializeField] private Button _btnOpenThetanWorld;
 
@@ -79,8 +80,39 @@ namespace ThetanSDK.UI
             SetUpUINotLoggedIn();
 
             _btnOpenThetanWorld.onClick.AddListener(OnClickBtnThetanWorld);
+
+            ThetanSDKManager.Instance.OnOpenMainUI += OnOpenMainUI;
+            ThetanSDKManager.Instance.OnCloseMainUI += OnCloseMainUI;
         }
 
+        private void OnDestroy()
+        {
+            if (ThetanSDKManager.IsAlive)
+            {
+                ThetanSDKManager.Instance.OnChangeNetworkClientState -= OnChangeNetworkClientState;
+
+                var nftItemService = ThetanSDKManager.Instance.NftItemService;
+
+                if (nftItemService != null)
+                {
+                    nftItemService.UnRegisterOnChangeNftItemData(OnChangeNFTItemData);
+                    nftItemService.UnRegisterOnChangeSelectedNftHeroCallback(OnChangeSelectedNFT);
+                    
+                    nftItemService._onChangeGrindingStatus -= OnChangeGrindingStatus;
+                }
+            }
+
+            if (_nftItemService != null)
+            {
+                _nftItemService._onChangeGrindingStatus -= OnChangeGrindingStatus;
+            }
+            
+            if(ThetanSDKManager.IsAlive)
+            {
+                ThetanSDKManager.Instance.OnOpenMainUI -= OnOpenMainUI;
+                ThetanSDKManager.Instance.OnCloseMainUI -= OnCloseMainUI;
+            }
+        }
         private void Update()
         {
             if (ThetanSDKManager.Instance.NetworkClientState != ThetanNetworkClientState.LoggedIn)
@@ -103,6 +135,16 @@ namespace ThetanSDK.UI
             {
                 _countTimePlayGrindingAnim = 0;
             }
+        }
+
+        private void OnCloseMainUI()
+        {
+            _canvasButton.enabled = true;
+        }
+
+        private void OnOpenMainUI()
+        {
+            _canvasButton.enabled = false;
         }
 
         private void OnClickBtnThetanWorld()
@@ -144,29 +186,6 @@ namespace ThetanSDK.UI
             _countConsecutiveClick = 0;
             
             _onClickOpenThetanWorld?.Invoke();
-        }
-
-        private void OnDestroy()
-        {
-            if (ThetanSDKManager.IsAlive)
-            {
-                ThetanSDKManager.Instance.OnChangeNetworkClientState -= OnChangeNetworkClientState;
-
-                var nftItemService = ThetanSDKManager.Instance.NftItemService;
-
-                if (nftItemService != null)
-                {
-                    nftItemService.UnRegisterOnChangeNftItemData(OnChangeNFTItemData);
-                    nftItemService.UnRegisterOnChangeSelectedNftHeroCallback(OnChangeSelectedNFT);
-                    
-                    nftItemService._onChangeGrindingStatus -= OnChangeGrindingStatus;
-                }
-            }
-
-            if (_nftItemService != null)
-            {
-                _nftItemService._onChangeGrindingStatus -= OnChangeGrindingStatus;
-            }
         }
 
         public void Initialize(ShowAnimCurrencyFly animCurrencyFly, NftItemService nftItemService, Action onClickOpenThetanWorld)

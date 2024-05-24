@@ -1,4 +1,7 @@
-﻿namespace ThetanSDK.UI
+﻿using System;
+using Wolffun.Log;
+
+namespace ThetanSDK.UI
 {
     public abstract class ScreenContentMainUI : Screen
     {

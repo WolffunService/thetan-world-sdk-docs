@@ -13,6 +13,7 @@ namespace ThetanSDK.UI
 {
     public class ScreenMainUIPortrait : ScreenMainUI
     {
+        [SerializeField] private Canvas _mainContentCanvas;
         [SerializeField] private ScreenContainer _contentScreenContainer;
         [SerializeField] private Button _btnSelectNow;
         
@@ -44,11 +45,29 @@ namespace ThetanSDK.UI
             
             
             _contentScreenContainer.RegisterOnClickCloseScreen(OnUserCloseScreen);
+            _contentScreenContainer.OnBeforePopScreen += CheckShowMainContentBeforePop;
+            _contentScreenContainer.OnAfterPushScreen += CheckShowMainContentAfterPush;
+        }
+
+        private void CheckShowMainContentBeforePop(Screen screen)
+        {
+            if (_contentScreenContainer != null)
+            {
+                _mainContentCanvas.enabled = _contentScreenContainer.CountTotalScreenInStack <= 1;
+            }
+        }
+        
+        private void CheckShowMainContentAfterPush(Screen screen)
+        {
+            _mainContentCanvas.enabled = false;
         }
 
         private void OnDestroy()
         {
             _contentScreenContainer.UnRegisterOnClickCloseScreen(OnUserCloseScreen);
+            
+            _contentScreenContainer.OnBeforePopScreen -= CheckShowMainContentBeforePop;
+            _contentScreenContainer.OnAfterPushScreen -= CheckShowMainContentAfterPush;
         }
 
         public override void OnBeforePushScreen()

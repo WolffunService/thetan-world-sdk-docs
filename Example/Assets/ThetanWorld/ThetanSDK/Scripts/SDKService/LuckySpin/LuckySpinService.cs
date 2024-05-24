@@ -3,9 +3,19 @@ using Wolffun.RestAPI;
 
 namespace ThetanSDK.SDKService.LuckySpin
 {
+    /// <summary>
+    /// Service to contain lucky spin data
+    /// </summary>
     internal class LuckySpinService : BaseClassService
     {
+        /// <summary>
+        /// Current user lucky spin data
+        /// </summary>
         private LuckySpinData _cachedData;
+        
+        /// <summary>
+        /// Current lucky spin config data
+        /// </summary>
         private LuckySpinConfig _luckySpinConfig;
 
         public LuckySpinData CacheData => _cachedData;
@@ -13,11 +23,17 @@ namespace ThetanSDK.SDKService.LuckySpin
         
         private NetworkClient _networkClient;
         
+        /// <summary>
+        /// Clear all cached data
+        /// </summary>
         public override void ClearDataService()
         {
             _cachedData = _cachedData.SetDefault();
         }
 
+        /// <summary>
+        /// Call to init service. Must call before use any service's other functions
+        /// </summary>
         public void InitService(NetworkClient networkClient)
         {
             _networkClient = networkClient;
@@ -55,6 +71,9 @@ namespace ThetanSDK.SDKService.LuckySpin
             }
         }
 
+        /// <summary>
+        /// Call server to get user lucky spin data
+        /// </summary>
         public void CallGetDataLuckySpin(Action<LuckySpinData> onSuccessCallback, Action<WolffunResponseError> onErrorCallback)
         {
             WolffunRequestCommon reqCommon = WolffunRequestCommon
@@ -68,6 +87,9 @@ namespace ThetanSDK.SDKService.LuckySpin
             }, onErrorCallback, AuthType.TOKEN);
         }
 
+        /// <summary>
+        /// Call server to get lucky spin config data
+        /// </summary>
         public void CallGetLuckySpinConfig(Action<LuckySpinConfig> onSuccessCallback,
             Action<WolffunResponseError> onErrorCallback)
         {
