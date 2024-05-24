@@ -5,6 +5,9 @@ using UnityEngine;
 
 namespace Wolffun.RestAPI
 {
+    /// <summary>
+    /// Common class that help send REST API
+    /// </summary>
     public static class WolffunHttp
     {
         public static async void SendAPI(WolffunRequestCommon request, WolffunHttpLog log, Action<WolffunResponseCommon> success,

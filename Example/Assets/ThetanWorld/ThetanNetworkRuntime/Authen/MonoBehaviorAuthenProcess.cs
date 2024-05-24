@@ -5,6 +5,9 @@ using UnityEngine;
 
 namespace Wolffun.RestAPI.ThetanAuth
 {
+    /// <summary>
+    /// Base class for all authen processor monobehavior
+    /// </summary>
     public class MonoBehaviorAuthenProcess : MonoBehaviour, IAuthenSuccessCallback, IAuthenProcessor
     {
         private List<IAuthenSuccessListener> _listAuthenSuccessListeners = new List<IAuthenSuccessListener>();
@@ -27,6 +30,10 @@ namespace Wolffun.RestAPI.ThetanAuth
             return ProcessPostAuthenSuccess(loginType);
         }
 
+        /// <summary>
+        /// Processing after user authen succeed
+        /// </summary>
+        /// <param name="loginType"></param>
         protected async UniTask ProcessPostAuthenSuccess(LoginType loginType)
         {
             if (_listPostAuthenProcessors == null || _listPostAuthenProcessors.Count == 0)
@@ -48,6 +55,10 @@ namespace Wolffun.RestAPI.ThetanAuth
             await UniTask.WhenAll(listTask);
         }
 
+        /// <summary>
+        /// Used to add custom meta data about authen process
+        /// Usually used for analytic purpose
+        /// </summary>
         protected virtual PostAuthenSuccessMetaData AddCustomDataToMetaData(PostAuthenSuccessMetaData metaData)
         {
             return metaData;

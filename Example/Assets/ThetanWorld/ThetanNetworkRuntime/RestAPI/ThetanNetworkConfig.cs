@@ -4,6 +4,9 @@ using Wolffun.RestAPI;
 
 namespace Wolffun.RestAPI
 {
+    /// <summary>
+    /// Network config used by client application to config SDK network behavior
+    /// </summary>
     [CreateAssetMenu(fileName = "ThetanSDKNetworkConfig", menuName = "ThetanSDK/ThetanSDKNetworkConfig")]
     public class ThetanNetworkConfig : ScriptableObject
     {

@@ -4,6 +4,9 @@ using Wolffun.RestAPI;
 
 namespace ThetanSDK.SDKServices.Equipment
 {
+    /// <summary>
+    /// Contain string define status of equipment
+    /// </summary>
     [Serializable]
     internal class EquipmentStatus
     {
@@ -12,6 +15,10 @@ namespace ThetanSDK.SDKServices.Equipment
         public static string EquipmentStatusDeleted = "deleted";
     }
 
+    /// <summary>
+    /// A custom list that implement ICustomDefaultable
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     [Serializable]
     internal class CustomList<T> : List<T>, ICustomDefaultable<CustomList<T>>
     {
@@ -27,14 +34,40 @@ namespace ThetanSDK.SDKServices.Equipment
         }
     }
 
+    /// <summary>
+    /// User equipment data
+    /// </summary>
     [Serializable]
     internal struct EquipmentItemData : ICustomDefaultable<EquipmentItemData>
     {
+        /// <summary>
+        /// Id of equipment
+        /// </summary>
         public string id;
+        
+        /// <summary>
+        /// Owner id of this equipment
+        /// </summary>
         public string userId;
+        
+        /// <summary>
+        /// ItemKindID of equipment
+        /// </summary>
         public int kind;
+        
+        /// <summary>
+        /// Equipment Type Id
+        /// </summary>
         public int type;
+        
+        /// <summary>
+        /// Total amount of this equipment user has
+        /// </summary>
         public int amount;
+        
+        /// <summary>
+        /// Other properties
+        /// </summary>
         public EquipmentProps props;
         
         public EquipmentItemData SetDefault()
@@ -50,10 +83,20 @@ namespace ThetanSDK.SDKServices.Equipment
         }
     }
 
+    /// <summary>
+    /// Equipment properties
+    /// </summary>
     [Serializable]
     internal struct EquipmentProps
     {
+        /// <summary>
+        /// Number of star of this equipment
+        /// </summary>
         public int stars;
+        
+        /// <summary>
+        /// Status of this equipment, define by class EquipmentStatus
+        /// </summary>
         public string status;
     }
 }

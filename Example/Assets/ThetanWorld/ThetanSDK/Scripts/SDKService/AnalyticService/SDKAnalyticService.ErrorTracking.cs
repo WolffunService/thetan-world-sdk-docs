@@ -4,6 +4,9 @@ namespace ThetanSDK.SDKServices.Analytic
 {
     internal partial class SDKAnalyticService
     {
+        /// <summary>
+        /// Log analytic when error is occured in SDK
+        /// </summary>
         public async void LogErrorOccured(string screen, string source, bool isShowPopup, string description)
         {
             try

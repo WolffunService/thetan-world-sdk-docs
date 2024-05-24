@@ -16,12 +16,19 @@ namespace Wolffun.RestAPI.ThetanAuth
         public void UnregisterAuthenSuccessCalback(IAuthenSuccessListener listener);
     }
 
+    /// <summary>
+    /// Interface for all authen processor
+    /// </summary>
     public interface IAuthenProcessor
     {
         public void RegisterPostAuthenProcessor(IPostAuthenProcessor processor);
         public void UnRegisterPostAuthenProcessor(IPostAuthenProcessor processor);
     }
 
+    /// <summary>
+    /// Interface for authen post processor.
+    /// Post processor will be invoked right after user logged in using authen processor
+    /// </summary>
     public interface IPostAuthenProcessor
     {
         public UniTask ProcessPostAuthenProcess(PostAuthenSuccessMetaData metaData);

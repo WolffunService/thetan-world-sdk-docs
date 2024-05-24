@@ -11,16 +11,33 @@ using Wolffun.RestAPI.ThetanAuth;
 
 namespace Wolffun.RestAPI
 {
+    /// <summary>
+    /// An enum descript current client state, can use this to determine whether is user logged in, or is connected to network?
+    /// </summary>
     public enum ThetanNetworkClientState
     {
+        /// <summary>Client is not initialized yet, must call Initialize </summary>
         NotInitialized = 0,
+        
+        /// <summary>User is not logged in </summary>
         NotLoggedIn = 1,
+        
+        /// <summary>User is not logged in and not connected to network</summary>
         NotLoggedInNoNetwork = 2,
+        
+        /// <summary>User is logged in</summary>
         LoggedIn = 3,
+        
+        /// <summary>User is logged in but temporary not connected to network</summary>
         LoggedInNoNetwork = 4,
+        
+        /// <summary>User is banned </summary>
         Banned = 5,
     }
 
+    /// <summary>
+    /// Base network client that manager client network state
+    /// </summary>
     public abstract class NetworkClient : MonoBehaviour, ITokenErrorAPIHandle, IAuthenSuccessListener
     {
         [SerializeField] private NetworkReachabilityDetect _networkReachabilityDetect;
@@ -114,7 +131,7 @@ namespace Wolffun.RestAPI
 
             //CheckTokenExpired_Internal(doneInitializeNetworkCallback);
         }
-
+        
         private void CreateAllClientStateAndStartStateProcess(Action<ThetanNetworkClientState> doneCallback)
         {
             if (_listAvailableNetworkClientStates != null)

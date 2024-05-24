@@ -3,18 +3,31 @@ using Wolffun.RestAPI;
 
 namespace ThetanSDK.SDKService.RemoteConfig
 {
+    /// <summary>
+    /// Service for manage Thetan World remote config
+    /// </summary>
     public class RemoteConfigService : BaseClassService
     {
+        /// <summary>
+        /// Data remote config
+        /// </summary>
         private ThetanWorldRemoteConfigModel _remoteConfig;
         public ThetanWorldRemoteConfigModel RemoteConfig => _remoteConfig;
 
         private NetworkClient _networkClient;
         
+        /// <summary>
+        /// Clear cached data
+        /// </summary>
         public override void ClearDataService()
         {
             _remoteConfig = _remoteConfig.SetDefault();
         }
 
+        /// <summary>
+        /// Call to init service. Must call before use any service's other functions
+        /// </summary>
+        /// <param name="networkClient"></param>
         public void InitService(NetworkClient networkClient)
         {
             _networkClient = networkClient;

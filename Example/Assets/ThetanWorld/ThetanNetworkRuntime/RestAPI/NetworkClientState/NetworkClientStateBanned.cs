@@ -4,7 +4,9 @@ using Wolffun.RestAPI.ThetanAuth;
 
 namespace Wolffun.RestAPI.NetworkClientState
 {
-    // Todo: impement me
+    /// <summary>
+    /// Client state used when user use account that has been banned
+    /// </summary>
     internal class NetworkClientStateBanned : BaseNetworkClientState, IAuthenSuccessListener
     {
         private NetworkClientStateNotLoggedIn _stateNotLoggedIn;

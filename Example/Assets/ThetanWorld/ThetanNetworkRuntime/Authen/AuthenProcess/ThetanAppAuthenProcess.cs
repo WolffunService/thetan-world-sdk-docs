@@ -12,6 +12,7 @@ using Wolffun.Log;
 
 namespace Wolffun.RestAPI.ThetanAuth
 {
+    
     internal struct ThetanAppAuthenCmdRequest
     {
         public int cmd;
@@ -53,6 +54,9 @@ namespace Wolffun.RestAPI.ThetanAuth
         }
     }
     
+    /// <summary>
+    /// Authen process used for login with thetan app, login by qr code on thetan app
+    /// </summary>
     public class ThetanAppAuthenProcess : MonoBehaviorAuthenProcess
     {
         private const string URL_LOGIN_FORMAT = "thetanmarket://logincode?code={0}&source={1}&name={2}";
@@ -72,6 +76,9 @@ namespace Wolffun.RestAPI.ThetanAuth
         private int countErrorTotal = 0;
         private float _countTime;
         
+        /// <summary>
+        /// Clear all cached data
+        /// </summary>
         public void ClearCache()
         {
             countErrorTotal = 0;
