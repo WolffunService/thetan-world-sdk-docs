@@ -22,6 +22,7 @@ Grind process with be splitted into phases that depend on your game to decide wh
 # Installation
 
 ### **Step 1:** Add these packages into your project
+>Add these lines into your manifest.json
 - "com.zbase.collections.pooled": "https://github.com/Zitga-Tech/ZBase.Collections.Pooled.git?path=Packages/ZBase.Collections.Pooled",
 - "com.zbase.foundation.pooling": "https://github.com/Zitga-Tech/ZBase.Foundation.Pooling.git?path=Packages/ZBase.Foundation.Pooling",
 - "com.wolffun.download-from-storage": "https://github.com/WolffunService/DownloadFromStorage.git#1.0.16",
@@ -42,7 +43,7 @@ And also add this Scope Registry into your project
 
 ### **Step 2**: Import SDK
 Download [ThetanWorldSDK.unitypackage](https://github.com/WolffunService/thetan-world-sdk-docs/blob/main/ThetanWorldSDK.unitypackage) and import it into your project
-
+>Note: Incase your project already have Dotween Package and you receive compile error message about some Dotween function cannot be found. That because SDK depend on Dotween/Modules and the one in SDK is not imported due to one has already existed in your project. You can add your Dotween assembly into ThetanWorld/ThetanSDK/ThetanSDK.asmdef. If your Dotween folder does not have assembly, you can create one at Dotween folder and add to ThetanSDK.asmdef.
 
 ### **Step 3:** CreateNetworkConfig
 On menu bar, select Tools -> Wolffun -> CreateNetworkConfig
