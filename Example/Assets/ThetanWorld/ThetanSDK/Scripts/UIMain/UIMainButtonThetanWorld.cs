@@ -123,7 +123,7 @@ namespace ThetanSDK.UI
             if (nftService.IsGrinding() &&
                 nftService.IsAllowPingGrindingServer)
             {
-                _countTimePlayGrindingAnim += Time.deltaTime;
+                _countTimePlayGrindingAnim += Time.unscaledDeltaTime;
 
                 if (_countTimePlayGrindingAnim >= grindingAnimInterval)
                 {
@@ -150,7 +150,7 @@ namespace ThetanSDK.UI
         private void OnClickBtnThetanWorld()
         {
             var prevTimeClickButon = _lastTimeClickButton;
-            _lastTimeClickButton = Time.time;
+            _lastTimeClickButton = Time.unscaledTime;
             if (_isLockButton)
             {
                 // if (Time.time - prevTimeClickButon <= forceOpenThetanWorldClicMaxInterval ||
@@ -236,12 +236,17 @@ namespace ThetanSDK.UI
             _curCurrencyFlySequence.Append(DOVirtual.DelayedCall(_currencyScaleDelay, () => { }));
             for (int i = 0; i < 2; i++)
             {
-                _curCurrencyFlySequence.Append(_contentScale.DOScale(defaullContentSize * _currencyScaleDelta, _currencyScaleDuration * 0.5f)
+                _curCurrencyFlySequence.Append(_contentScale
+                    .DOScale(defaullContentSize * _currencyScaleDelta, _currencyScaleDuration * 0.5f)
+                    .SetUpdate(true)
                     .SetEase(Ease.OutQuad));
-                _curCurrencyFlySequence.Append(_contentScale.DOScale(defaullContentSize, _currencyScaleDuration * 0.5f)
+                _curCurrencyFlySequence.Append(_contentScale
+                    .DOScale(defaullContentSize, _currencyScaleDuration * 0.5f)
+                    .SetUpdate(true)
                     .SetEase(Ease.OutQuad));
             }
-            
+
+            _curCurrencyFlySequence.SetUpdate(true);
             _curCurrencyFlySequence.Play();
         }
 
@@ -425,16 +430,20 @@ namespace ThetanSDK.UI
 
             _curAnimSequence.Append(
                 _contentScale.DOScale(new Vector3(_scaleDownValue, _scaleDownValue, _scaleDownValue), _scaleDuration)
+                    .SetUpdate(true)
                     .SetEase(Ease.OutBack));
 
             _curAnimSequence.Join(
                 _canvasGroupBackground.DOFade(0, _scaleDuration * 0.8f)
+                    .SetUpdate(true)
                     .SetEase(Ease.OutQuad));
 
             _curAnimSequence.Join(
                 _canvasGroupGrindTime.DOFade(0, _scaleDuration * 0.8f)
+                    .SetUpdate(true)
                     .SetEase(Ease.OutQuad));
 
+            _curAnimSequence.SetUpdate(true);
             _curAnimSequence.Play();
         }
 
@@ -449,18 +458,22 @@ namespace ThetanSDK.UI
 
             _curAnimSequence.Append(
                 _contentScale.DOScale(new Vector3(1, 1, 1), _scaleDuration)
+                    .SetUpdate(true)
                     .SetEase(Ease.OutBack));
 
             _curAnimSequence.Join(
                 _canvasGroupBackground.DOFade(1, _scaleDuration * 0.8f)
                     .SetDelay(_scaleDuration * 0.2f)
+                    .SetUpdate(true)
                     .SetEase(Ease.OutQuad));
 
             _curAnimSequence.Join(
                 _canvasGroupGrindTime.DOFade(1, _scaleDuration * 0.8f)
                     .SetDelay(_scaleDuration * 0.2f)
+                    .SetUpdate(true)
                     .SetEase(Ease.OutQuad));
 
+            _curAnimSequence.SetUpdate(true);
             _curAnimSequence.Play();
 
             if (_isPendingUnlockButton)
@@ -496,13 +509,16 @@ namespace ThetanSDK.UI
             
             _curAnimSequence.Append(
                 _contentScale.DOScale(targetScaleValue, scaleDownDuration)
+                    .SetUpdate(true)
                     .SetEase(Ease.Linear));
             
             _curAnimSequence.Append(
                 _contentScale.DOScale(curContentScaleValue, scaleUpDuration)
                     .SetEase(Ease.OutBack)
+                    .SetUpdate(true)
                     .SetDelay(scaleUpDelay));
 
+            _curAnimSequence.SetUpdate(true);
             _curAnimSequence.Play();
             
             if(_listAnimImgGrinding != null)

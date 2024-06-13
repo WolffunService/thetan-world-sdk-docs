@@ -257,7 +257,7 @@ namespace ThetanSDK.UI
 		{
 			_Params.ScrollEnabled = false;
 			_Params.DragEnabled = false;
-			await UniTask.Delay(300);
+			await UniTask.Delay(300, ignoreTimeScale: true);
 			
 			_Params.ScrollEnabled = true;
 			_Params.DragEnabled = true;

@@ -100,6 +100,7 @@ namespace ThetanSDK.UI
             floatingWindowGO.transform.localScale = Vector3.zero;
 
             floatingWindowGO.transform.DOScale(Vector3.one, animationShowDuration)
+                .SetUpdate(true)
                 .SetEase(animationShowEase)
                 .OnComplete(() =>
                 {
@@ -113,6 +114,7 @@ namespace ThetanSDK.UI
 
             floatingWindowGO.transform.DOScale(Vector3.zero, animationCloseDuration)
                 .SetEase(animationCloseEase)
+                .SetUpdate(true)
                 .OnComplete(() =>
                 {
                     floatingWindow.OnAfterClose();

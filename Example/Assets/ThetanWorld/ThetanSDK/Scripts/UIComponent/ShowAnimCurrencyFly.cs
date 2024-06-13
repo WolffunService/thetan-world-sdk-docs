@@ -62,18 +62,23 @@ namespace ThetanSDK.UI
 
                 var sequence = DOTween.Sequence();
                 sequence.Append(instanceGO.transform.DOLocalMove(startDelta * 0.8f, _startExpandDuration - _moveToTargetDelay)
-                    .SetEase(_expandEase));
-                sequence.Append(instanceGO.transform.DOLocalMove(startDelta, _moveToTargetDelay));
+                    .SetEase(_expandEase)
+                    .SetUpdate(true));
+                sequence.Append(instanceGO.transform.DOLocalMove(startDelta, _moveToTargetDelay)
+                    .SetUpdate(true));
 
                 var moveToTargetDuration = UnityEngine.Random.Range(
                     _moveToTargetDurationRandomRange.x,
                     _moveToTargetDurationRandomRange.y);
                 sequence.Append(instanceGO.transform.DOMove(targetPosition.position, moveToTargetDuration)
-                    .SetEase(_moveToTargetEase));
+                    .SetEase(_moveToTargetEase)
+                    .SetUpdate(true));
                 sequence.Join(instanceImg.DOFade(0, moveToTargetDuration)
-                    .SetEase(Ease.InQuad));
+                    .SetEase(Ease.InQuad)
+                    .SetUpdate(true));
 
                 var itemIndex = i;
+                sequence.SetUpdate(true);
                 sequence.Play().OnComplete(() =>
                 {
                     if(itemIndex == 0)

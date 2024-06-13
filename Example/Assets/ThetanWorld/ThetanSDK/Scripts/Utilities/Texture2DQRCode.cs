@@ -1,7 +1,8 @@
 using System.Collections.Generic;
-using QRCoder;
+//using QRCoder;
 using UnityEngine;
 
+/*
 public class Texture2DQRCode : AbstractQRCode
     {
         /// <summary>
@@ -66,3 +67,4 @@ public class Texture2DQRCode : AbstractQRCode
             return brush.ToArray();
         }
     }
+    */

@@ -6,7 +6,6 @@ using UnityEngine;
 using Wolffun.Log;
 using Wolffun.RestAPI;
 using Wolffun.RestAPI.ThetanAuth;
-using QRCoder;
 
 namespace ThetanSDK.UI.Authen.UIProcess
 {
@@ -36,6 +35,7 @@ namespace ThetanSDK.UI.Authen.UIProcess
 
         private void PrepareQRCode()
         {
+            /* Bring back QRCode later
             _thetanAppAuthenProcess.PrepareForLoginWithQRCode(_networkClient, ShowQRCode, error =>
                 {
                     QRCodeGenerator qrGenerator = new QRCodeGenerator();
@@ -53,16 +53,19 @@ namespace ThetanSDK.UI.Authen.UIProcess
                     });
                     _thetanAppAuthenProcess.ClearCache();
                 });
+                */
         }
 
         private void ShowQRCode(string loginUrl)
         {
+            /*
             QRCodeGenerator qrGenerator = new QRCodeGenerator();
             QRCodeData qrCodeData = qrGenerator.CreateQrCode(loginUrl, QRCodeGenerator.ECCLevel.Q);
             var qrCode = new Texture2DQRCode(qrCodeData);
             var textureQRCode = qrCode.GetGraphic(10);
             
             _uiLoginWithThetanApp.SetQRCode(ThetanSDKUtilities.CreateSpriteFromTexture2D(textureQRCode));
+            */
         }
         
         private void OnApplicationPause(bool pauseStatus)

@@ -18,7 +18,7 @@ public class LoginMainUI_Mini : LoginMainUI
 
     private void Awake()
     {
-        _btnCloseScreenBg.onClick.AddListener(OnClickBgCloseScreen);
+        //_btnCloseScreenBg.onClick.AddListener(OnClickBgCloseScreen);
         
         _content.transform.localScale = Vector3.zero;
     }
@@ -28,7 +28,8 @@ public class LoginMainUI_Mini : LoginMainUI
         base.OnAfterPushScreen();
 
         _content.transform.DOScale(Vector3.one, _showScreenAnimDuration)
-            .SetEase(_showScreenAnimEase);
+            .SetEase(_showScreenAnimEase)
+            .SetUpdate(true);
     }
 
     private void OnClickBgCloseScreen()

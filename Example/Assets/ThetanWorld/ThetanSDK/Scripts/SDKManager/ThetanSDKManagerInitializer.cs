@@ -104,10 +104,10 @@ namespace ThetanSDK
             //Todo: delete me
             isVersionSupported = true;
 
-            _analyticService.InitialzeService(_authenProcessContainer, _networkClient.NetworkConfig);
             
             if (!isVersionSupported)
             {
+                _analyticService.InitialzeService(_authenProcessContainer, _networkClient.NetworkConfig);
                 _btnMainAction.Initialize(_showAnimCurrencyFly, _nftItemService, _onClickMainAction);
                 onDoneCallback?.Invoke(networkClientState, isVersionSupported);
                 return;
@@ -123,6 +123,7 @@ namespace ThetanSDK
             
             _luckySpinService.InitService(_networkClient);
             _remoteConfigService.InitService(_networkClient);
+            _analyticService.InitialzeService(_authenProcessContainer, _networkClient.NetworkConfig);
 
             await UniTask.WhenAll(listTask);
             
@@ -131,7 +132,6 @@ namespace ThetanSDK
                 _showPopopWhenLostConnection.Initialize(_networkClient, _uiHelperContainer, _onConfirmLostConnectionCallback);
             }
             _btnMainAction.Initialize(_showAnimCurrencyFly, _nftItemService, _onClickMainAction);
-            _analyticService.LogLoginSuccess(new PostAuthenSuccessMetaData());
             onDoneCallback?.Invoke(networkClientState, isVersionSupported);
         }
         

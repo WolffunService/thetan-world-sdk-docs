@@ -102,7 +102,7 @@ namespace ThetanSDK.UI
             
             SetActiveBtnProcess(true);
 
-            await UniTask.Delay(500);
+            await UniTask.Delay(500, ignoreTimeScale: true);
 
             OnClickSendCode();
         }

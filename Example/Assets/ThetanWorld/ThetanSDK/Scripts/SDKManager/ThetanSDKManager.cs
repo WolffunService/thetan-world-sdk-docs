@@ -121,7 +121,7 @@ namespace ThetanSDK
         #endregion
         
         #region Version
-        private const string _version = "0.9.6";
+        private const string _version = "0.9.9";
 
         public string Version
         {

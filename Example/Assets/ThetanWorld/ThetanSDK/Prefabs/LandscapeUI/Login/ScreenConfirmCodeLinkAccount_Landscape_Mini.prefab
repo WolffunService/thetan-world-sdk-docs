@@ -91,6 +91,18 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7251206515147046278, guid: 03f47102e92f98843930a38ace2cdf49, type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: 26f49309e34246348a9ffe803d58f62a, type: 2}
+    - target: {fileID: 7251206515147046278, guid: 03f47102e92f98843930a38ace2cdf49, type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: 5353734283318711112, guid: 26f49309e34246348a9ffe803d58f62a, type: 2}
+    - target: {fileID: 7251206515147046278, guid: 03f47102e92f98843930a38ace2cdf49, type: 3}
+      propertyPath: m_hasFontAssetChanged
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8343488049878358884, guid: 03f47102e92f98843930a38ace2cdf49, type: 3}
       propertyPath: m_Name
       value: ScreenConfirmCodeLinkAccount_Landscape_Mini

@@ -50,7 +50,7 @@ namespace ThetanSDK.UI
 
 		public async void RefreshData()
 		{
-			await UniTask.Delay(500);
+			await UniTask.Delay(500, ignoreTimeScale: true);
 			
 			ThetanSDKManager.Instance.NftItemService.FetchDailyGameSummary(newData =>
 			{

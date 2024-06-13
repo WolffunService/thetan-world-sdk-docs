@@ -248,7 +248,7 @@ namespace Wolffun.RestAPI.ThetanAuth
 
             await UniTask.WaitUntil(() => _websocket.IsOpen || Time.time >= timeOutOpenWs);
 
-            if (Time.time >= timeOutOpenWs)
+            if (Time.unscaledTime >= timeOutOpenWs)
             {
                 _isGettingLoginCode = false;
                 onErrorCallback?.Invoke(new WolffunResponseError(-99, "Timeout open ws"));

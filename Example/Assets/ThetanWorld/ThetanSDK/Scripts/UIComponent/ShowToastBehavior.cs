@@ -61,10 +61,13 @@ namespace ThetanSDK.UI
 
             _curTweenAnimation = DOTween.Sequence();
             
-            _curTweenAnimation.Append(rt.DOMove(_endPosision.position, _moveTextDuration));
-            _curTweenAnimation.AppendInterval(_idleTextDuration);
-            _curTweenAnimation.Append(_txtMsg.DOFade(0, _fadeOutDuration));
+            _curTweenAnimation.Append(rt.DOMove(_endPosision.position, _moveTextDuration)
+                .SetUpdate(true));
+            _curTweenAnimation.Append(_txtMsg.DOFade(0, _fadeOutDuration)
+                .SetDelay(_idleTextDuration)
+                .SetUpdate(true));
 
+            _curTweenAnimation.SetUpdate(true);
             _curTweenAnimation.OnComplete(() =>
             {
                 _txtMsg.text = string.Empty;

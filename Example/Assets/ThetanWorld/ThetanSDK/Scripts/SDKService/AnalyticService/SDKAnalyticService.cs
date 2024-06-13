@@ -89,6 +89,7 @@ namespace ThetanSDK.SDKServices.Analytic
             requestData.userId = profileService.UserId;
             requestData.country = profileService.UserCountry;
             requestData.platform = GetAnalyticPlatform();
+            requestData.deviceOS = GetAnalyticPlatform();
 
             if (data != null)
             {
@@ -180,6 +181,8 @@ namespace ThetanSDK.SDKServices.Analytic
         /// </summary>
         public async UniTask ProcessPostAuthenProcess(PostAuthenSuccessMetaData metaData)
         {
+            await UniTask.DelayFrame(1);
+            
             var profileService = ThetanSDKManager.Instance.ProfileService;
             if (string.IsNullOrEmpty(profileService.UserId))
                 await UniTask.WaitUntil(() => !string.IsNullOrEmpty(profileService.UserId));
