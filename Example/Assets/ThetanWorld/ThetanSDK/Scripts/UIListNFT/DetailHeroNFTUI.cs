@@ -121,7 +121,7 @@ namespace ThetanSDK.UI
                 _heroData.grindInfo.IsMaxLifeTime())
                 return;
             
-            _countTime -= Time.deltaTime;
+            _countTime -= Time.unscaledDeltaTime;
 
             if (_countTime > 0)
             {
@@ -438,7 +438,8 @@ namespace ThetanSDK.UI
             {
                 // Todo: use app name
                 _uiHelperContainer.ShowPopUpMsg(ThetanSDKErrorMsg.Error, 
-                    ZString.Format(UINftErrorMsg.ERROR_SELECT_HERO_NFT_HERO_IS_GRINDING_IN_ANOTHER_GAME_NAME, _heroData.grindInfo.status.appId),
+                    ZString.Format(UINftErrorMsg.ERROR_SELECT_HERO_NFT_HERO_IS_GRINDING_IN_ANOTHER_GAME_NAME, 
+                        _heroData.grindInfo.status.appName),
                     ThetanSDKErrorMsg.Okay);
             }
             else

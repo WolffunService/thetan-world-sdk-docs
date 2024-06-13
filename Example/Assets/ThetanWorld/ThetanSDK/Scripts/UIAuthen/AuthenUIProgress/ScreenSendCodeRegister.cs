@@ -24,6 +24,7 @@ namespace ThetanSDK.UI.Authen.UIProcess
 
         public void OnPointerClick(PointerEventData eventData)
         {
+            /*
             if (eventData.button == PointerEventData.InputButton.Left)
             {
                 var index = TMP_TextUtilities.FindIntersectingLink(_txtTermAndPrivacy, Input.mousePosition, null);
@@ -33,6 +34,7 @@ namespace ThetanSDK.UI.Authen.UIProcess
                     Application.OpenURL(_txtTermAndPrivacy.textInfo.linkInfo[index].GetLinkID());
                 }
             }
+            */
         }
 
         protected override bool HandleSpecificSendCodeError(string email, WolffunResponseError sendCodeError)

@@ -250,6 +250,11 @@ namespace Wolffun.RestAPI.ThetanWorld
         /// AppId of app this NFT is grinding
         /// </summary>
         public string appId;
+
+        /// <summary>
+        /// App name this NFT is grinding
+        /// </summary>
+        public string appName;
         
         /// <summary>
         /// Grind session ID

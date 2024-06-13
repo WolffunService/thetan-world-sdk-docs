@@ -40,12 +40,16 @@ namespace ThetanSDK.UI
             _curSequence = DOTween.Sequence();
 
             _curSequence.Append(_imgItem.DOFade(1, _fadeInDuration)
-                .SetEase(_fadeInEase));
+                .SetEase(_fadeInEase)
+                .SetUpdate(true));
             _curSequence.Append(_imgItem.transform.DOMove(_endPosition.position, _moveToTargetDuration)
-                .SetEase(_moveToTargetEase));
+                .SetEase(_moveToTargetEase)
+                .SetUpdate(true));
             _curSequence.Join(_imgItem.DOFade(0, _fadeOutDuration)
                 .SetDelay(_fadeOutDelay)
-                .SetEase(_fadeOutEase));
+                .SetEase(_fadeOutEase)
+                .SetUpdate(true));
+            _curSequence.SetUpdate(true);
             _curSequence.Play();
         }
     }

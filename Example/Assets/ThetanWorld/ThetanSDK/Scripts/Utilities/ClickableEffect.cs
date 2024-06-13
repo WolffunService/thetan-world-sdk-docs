@@ -115,7 +115,7 @@ namespace ThetanSDK.Utilities
 
                 Vector3 targetSize = scaleEnd;
 
-                scaleTween = transform.DOScale(targetSize, duration);
+                scaleTween = transform.DOScale(targetSize, duration).SetUpdate(true);
 
                 scaleTween.SetEase(easeIn);
             }
@@ -147,7 +147,7 @@ namespace ThetanSDK.Utilities
                 if (scaleTween != default)
                     scaleTween.Complete();
 
-                scaleTween = transform.DOScale(defaultSize, duration);
+                scaleTween = transform.DOScale(defaultSize, duration).SetUpdate(true);
 
                 scaleTween.SetEase(easeOut);
             }
@@ -162,7 +162,7 @@ namespace ThetanSDK.Utilities
 
                 //prevent spam click on multiple buttons: temporarily disable the button, so the button click action don't trigger in the current frame------------------
 
-                float curTime = Time.time;
+                float curTime = Time.unscaledTime;
                 if (curTime <= s_lastTimeStampTriggerAction + PREVENT_MULTIPLE_BUTTON_CLICK_COOLDOWN)
                 {
                     PreventSpamCoolDownMultipleButtonsClick();
@@ -184,7 +184,7 @@ namespace ThetanSDK.Utilities
 
             selectableController.image.raycastTarget = false;
 
-            await UniTask.Delay(spamCooldownInMs);
+            await UniTask.Delay(spamCooldownInMs, ignoreTimeScale: true);
 
             if (selectableController || selectableController.image)
             {

@@ -138,7 +138,9 @@ namespace ThetanSDK.UI
             _content.position = positionTransform.position;
             
             _content.localScale = Vector3.zero;
-            _content.DOScale(Vector3.one, durationIn).OnComplete(() =>
+            _content.DOScale(Vector3.one, durationIn)
+                .SetUpdate(true)
+                .OnComplete(() =>
             {
                 _btnAutoHideTooltip.interactable = true;
                 _btnAutoHideTooltip.image.raycastTarget = true;
@@ -149,7 +151,9 @@ namespace ThetanSDK.UI
         {
             _btnAutoHideTooltip.interactable = false;
             _btnAutoHideTooltip.image.raycastTarget = false;
-            _content.DOScale(Vector3.zero, durationOut).OnComplete(() =>
+            _content.DOScale(Vector3.zero, durationOut)
+                .SetUpdate(true)
+                .OnComplete(() =>
             {
                 if (_popupContainer.CurrentPopup == this)
                 {

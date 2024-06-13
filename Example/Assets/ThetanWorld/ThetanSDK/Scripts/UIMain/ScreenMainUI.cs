@@ -21,7 +21,7 @@ namespace ThetanSDK.UI
             if (!PlayerPrefs.HasKey(KEY_CHECK_FIRST_TIME_OPEN_SDK) &&
                 PlayerPrefs.GetInt(KEY_CHECK_FIRST_TIME_OPEN_SDK) != 1)
             {
-                await UniTask.Delay(350);
+                await UniTask.Delay(350, ignoreTimeScale: true);
                 
                 ShowPopupWelcomeToSDK();
                 PlayerPrefs.SetInt(KEY_CHECK_FIRST_TIME_OPEN_SDK, 1);

@@ -91,7 +91,8 @@ public class PopupMsg : Popup
 
         SetSizePopupBasedOnMsg();
 
-        _popupContent.DOScale(Vector3.one, showPopupDuration).SetEase(showPopupEase);
+        _popupContent.DOScale(Vector3.one, showPopupDuration)
+            .SetUpdate(true).SetEase(showPopupEase);
     }
 
     public void ShowPopUp(string title, string msg, string buttonTextLeft, string buttonTextRight,
@@ -117,7 +118,9 @@ public class PopupMsg : Popup
 
         SetSizePopupBasedOnMsg();
 
-        _popupContent.DOScale(Vector3.one, showPopupDuration).SetEase(showPopupEase);
+        _popupContent.DOScale(Vector3.one, showPopupDuration)
+            .SetUpdate(true)
+            .SetEase(showPopupEase);
     }
 
     private void SetSizePopupBasedOnMsg()
@@ -133,6 +136,7 @@ public class PopupMsg : Popup
         _onConfirmCallback = null;
         _canvasGroupPopup.DOFade(0, fadeOutDuration)
             .SetEase(fadeOutEase)
+            .SetUpdate(true)
             .OnComplete(() =>
             {
                 _imgGreyBg.gameObject.SetActive(false);

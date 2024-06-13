@@ -56,7 +56,7 @@ namespace ThetanSDK.UI
                 _data.grindInfo.maxGrindTime == 0)
                 return;
             
-            _countTime -= Time.deltaTime;
+            _countTime -= Time.unscaledDeltaTime;
 
             if (_countTime > 0)
             {

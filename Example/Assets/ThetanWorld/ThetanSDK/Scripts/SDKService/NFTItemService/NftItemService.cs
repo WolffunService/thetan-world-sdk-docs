@@ -345,7 +345,7 @@ namespace ThetanSDK.SDKServices.NFTItem
             /* If pausing grind, count time and refresh data selected NFT Id, grinding session Id, grinding NFT id */
             if (!_isAllowPingGrindingServer)
             {
-                _countTimeRefreshDataWhenPauseGrind += Time.deltaTime;
+                _countTimeRefreshDataWhenPauseGrind += Time.unscaledDeltaTime;
 
                 if (_countTimeRefreshDataWhenPauseGrind >= REFRESH_DATA_WHEN_PAUSE_GRIND_INTERVAL)
                 {

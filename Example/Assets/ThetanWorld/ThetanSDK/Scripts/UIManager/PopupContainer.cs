@@ -78,6 +78,7 @@ public class PopupContainer : MonoBehaviour
         {
             rt.DOScale(Vector3.one, scaleInDuration)
                 .SetEase(scaleInEase)
+                .SetUpdate(true)
                 .OnComplete(() =>
                 {
                     instance.OnAfterPushPopup();
@@ -112,6 +113,7 @@ public class PopupContainer : MonoBehaviour
         {
             rt.DOScale(Vector3.zero, scaleOutDuration)
                 .SetEase(scaleOutEase)
+                .SetUpdate(true)
                 .OnComplete(() =>
                 {
                     curActivePopup.popup.OnAfterPopPopup();

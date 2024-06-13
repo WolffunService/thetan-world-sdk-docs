@@ -18,6 +18,7 @@ namespace ThetanSDK.SDKServices.Analytic
         public string userId;
         public string platform;
         public string thetan;
+        public string deviceOS;
         
         public AnalyticPCParamModel[] eventParams;
     }

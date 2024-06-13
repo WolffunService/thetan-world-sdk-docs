@@ -456,7 +456,9 @@ namespace ThetanSDK.UI
         {
             if (curScreenActive.ScreenContainer.transform is RectTransform curScreenTransform)
             {
-                curScreenTransform.DOLocalMoveX(_viewport.rect.width, popScreenDuration).OnComplete(() =>
+                curScreenTransform.DOLocalMoveX(_viewport.rect.width, popScreenDuration)
+                    .SetUpdate(true)
+                    .OnComplete(() =>
                 {
                     curScreenActive.Screen.OnAfterPopScreen();
                     try
@@ -473,7 +475,7 @@ namespace ThetanSDK.UI
             if (nextScreenActive.ScreenContainer != null &&
                 nextScreenActive.ScreenContainer.transform is RectTransform newScreenTransform)
             {
-                newScreenTransform.DOLocalMoveX(0, popScreenDuration);
+                newScreenTransform.DOLocalMoveX(0, popScreenDuration).SetUpdate(true);
             }
         }
 
@@ -482,7 +484,7 @@ namespace ThetanSDK.UI
             if (curScreenActive.ScreenContainer != null &&
                 curScreenActive.ScreenContainer.transform is RectTransform curScreenTransform)
             {
-                curScreenTransform.DOLocalMoveX(-_viewport.rect.width, pushScreenDuration);
+                curScreenTransform.DOLocalMoveX(-_viewport.rect.width, pushScreenDuration).SetUpdate(true);
             }
             
             newScreenActive.Screen.OnBeforePushScreen();
@@ -495,7 +497,9 @@ namespace ThetanSDK.UI
             }
             if (newScreenActive.ScreenContainer.transform is RectTransform newScreenTransform)
             {
-                newScreenTransform.DOLocalMoveX(0, pushScreenDuration).OnComplete(() =>
+                newScreenTransform.DOLocalMoveX(0, pushScreenDuration)
+                    .SetUpdate(true)
+                    .OnComplete(() =>
                 {
                     onDoneCallback?.Invoke();
                     newScreenActive.Screen.OnAfterPushScreen();
