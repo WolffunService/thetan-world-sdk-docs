@@ -121,7 +121,7 @@ namespace ThetanSDK
         #endregion
         
         #region Version
-        private const string _version = "0.9.9";
+        private string _version = "0.9.10";
 
         public string Version
         {
@@ -193,6 +193,10 @@ namespace ThetanSDK
         public void Initialize(SDKOption option, Action<ThetanNetworkClientState> onDoneCallback)
         {
             _option = option;
+            
+#if STAGING
+            _version += "_S";
+#endif
 
             ThetanSDKManagerInitializer thetanSDKManagerInitializer = new ThetanSDKManagerInitializer(
                 _networkClient, _remoteConfigService, _analyticService, _authenProcessContainer, _profileService,
