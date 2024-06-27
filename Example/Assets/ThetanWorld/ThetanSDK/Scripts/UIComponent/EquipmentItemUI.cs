@@ -137,8 +137,9 @@ namespace ThetanSDK.UI
             {
                 return;
             }
-
+#if UNITY_2021_3_OR_NEWER
             textureIcon.ignoreMipmapLimit = true;
+#endif
 
             Sprite spriteIcon = null;
 

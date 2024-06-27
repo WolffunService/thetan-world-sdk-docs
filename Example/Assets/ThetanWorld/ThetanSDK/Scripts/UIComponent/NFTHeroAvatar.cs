@@ -76,8 +76,9 @@ namespace ThetanSDK.UI
                 CommonLog.LogError($"Cannot load img {imgUrl}");
                 return;
             }
-
+#if UNITY_2021_3_OR_NEWER
             imgTexture.ignoreMipmapLimit = true;
+#endif
             var heroSpr = ThetanSDKUtilities.CreateSpriteFromTexture2D(imgTexture);
 
             _imgAvatar.sprite = heroSpr;
