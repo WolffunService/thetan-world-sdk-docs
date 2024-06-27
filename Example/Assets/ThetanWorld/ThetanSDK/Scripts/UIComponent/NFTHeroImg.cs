@@ -82,7 +82,9 @@ namespace ThetanSDK.UI
                 return;
             }
 
+#if UNITY_2021_3_OR_NEWER
             imgTexture.ignoreMipmapLimit = true;
+#endif
             
             if (_spriteCacheManager != null)
             {

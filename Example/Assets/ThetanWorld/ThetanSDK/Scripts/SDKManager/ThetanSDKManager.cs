@@ -120,7 +120,7 @@ namespace ThetanSDK
         #endregion
         
         #region Version
-        private string _version = "0.9.11";
+        private string _version = "0.9.12";
 
         public string Version
         {
