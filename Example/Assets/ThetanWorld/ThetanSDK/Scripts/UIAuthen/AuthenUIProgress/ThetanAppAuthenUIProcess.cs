@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Cysharp.Text;
 using ThetanSDK.Utilities;
 using UnityEngine;
 using Wolffun.Log;
@@ -102,7 +101,7 @@ namespace ThetanSDK.UI.Authen.UIProcess
                 else
                 {
                     _uiHelperContainer.ShowPopUpMsg("Error",
-                        ZString.Format(AuthenErrorMsg.UnknownErrorContext, error.Code, error.Message),
+                        string.Format(AuthenErrorMsg.UnknownErrorContext, error.Code, error.Message),
                         "Confirm", null);
                 }
 

@@ -3,7 +3,6 @@ using UnityEngine.EventSystems;
 using System;
 using Cysharp.Threading.Tasks;
 using UnityEngine.UI;
-using ZBase.Foundation.Pooling;
 
 namespace ThetanSDK.UI.CustomComponent
 {

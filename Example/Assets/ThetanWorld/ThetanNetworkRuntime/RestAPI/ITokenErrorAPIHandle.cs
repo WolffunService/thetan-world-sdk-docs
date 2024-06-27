@@ -17,5 +17,5 @@ public interface ITokenErrorAPIHandle
     /// <summary>
     /// When receive error code WSErrorCode.UserBanned
     /// </summary>
-    public void HandleAccountBanned() {}
+    public void HandleAccountBanned();
 }

@@ -23,22 +23,10 @@ Grind process with be splitted into phases that depend on your game to decide wh
 
 ### **Step 1:** Add these packages into your project
 >Add these lines into your manifest.json
-- "com.zbase.collections.pooled": "https://github.com/Zitga-Tech/ZBase.Collections.Pooled.git?path=Packages/ZBase.Collections.Pooled",
-- "com.zbase.foundation.pooling": "https://github.com/Zitga-Tech/ZBase.Foundation.Pooling.git?path=Packages/ZBase.Foundation.Pooling",
-- "com.wolffun.download-from-storage": "https://github.com/WolffunService/DownloadFromStorage.git#1.0.16",
+- "com.wolffun.download-from-storage": "https://github.com/WolffunService/DownloadFromStorage.git#1.0.17",
 - "com.unity.nuget.newtonsoft-json": "3.2.1",
 - "com.wolffun.log": "https://github.com/WolffunService/Wolffun-Log.git#1.0.1",
 - "com.cysharp.unitask": "https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask",
-- "com.cysharp.zstring": "https://github.com/Cysharp/ZString.git?path=src/ZString.Unity/Assets/Scripts/ZString",
-
-And also add this Scope Registry into your project
-```
-"name": "Unity NuGet",
-"url": "https://unitynuget-registry.azurewebsites.net",
-"scopes": [
-    "org.nuget"
-]
-```
 
 
 ### **Step 2**: Import SDK

@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using ThetanSDK.UI;
-using ThetanSDK.Utilities.Pooling;
 using UnityEngine;
 using UnityEngine.UI;
+using Wolffun.Pooling;
 
 public class PopupContainer : MonoBehaviour
 {
@@ -39,7 +39,7 @@ public class PopupContainer : MonoBehaviour
             popupBackdrop.transform.SetAsLastSibling();
         }
 
-        var instance = (await GlobalLazyPool.Rent(prefab.gameObject)).GetComponent<Popup>();
+        var instance = SimplePool.Instance.Rent(prefab.gameObject).GetComponent<Popup>();
         instance.SetPopupContainer(this);
 
         instance.gameObject.SetActive(true);
@@ -48,7 +48,8 @@ public class PopupContainer : MonoBehaviour
         instanceTransform.SetParent(_viewport, false);
         instanceTransform.SetAsLastSibling();
         instanceTransform.localScale = Vector3.zero;
-        instanceTransform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
+        instanceTransform.localPosition = Vector3.zero;
+        instanceTransform.localRotation = Quaternion.identity;
         
         if (instanceTransform.transform is RectTransform popupRectTransform &&
             prefab.transform is RectTransform prefabRectTransform)
@@ -117,7 +118,7 @@ public class PopupContainer : MonoBehaviour
                 .OnComplete(() =>
                 {
                     curActivePopup.popup.OnAfterPopPopup();
-                    GlobalLazyPool.Return(curActivePopup.popup.gameObject);
+                    SimplePool.Instance.Return(curActivePopup.popup.gameObject);
                     if(curActivePopup.backdrop != null)
                     {
                         curActivePopup.backdrop.ClearData();
@@ -128,7 +129,7 @@ public class PopupContainer : MonoBehaviour
         else
         {
             curActivePopup.popup.OnAfterPopPopup();
-            GlobalLazyPool.Return(curActivePopup.popup.gameObject);
+            SimplePool.Instance.Return(curActivePopup.popup.gameObject);
             
             if(curActivePopup.backdrop)
             {
@@ -149,7 +150,7 @@ public class PopupContainer : MonoBehaviour
                 
             popup.popup.OnAfterPopPopup();
                 
-            GlobalLazyPool.Return(popup.popup.gameObject);
+            SimplePool.Instance.Return(popup.popup.gameObject);
             
             if(popup.backdrop != null)
                 ReturnBackdropToPool(popup.backdrop);

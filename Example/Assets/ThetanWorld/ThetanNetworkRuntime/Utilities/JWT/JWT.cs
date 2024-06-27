@@ -266,7 +266,8 @@ namespace Wolffun.RestAPI.JWT
                     //throw new SignatureVerificationException("Claim 'exp' must be an integer.");
                 }
 
-                return DateTime.UnixEpoch.AddSeconds(exp);
+                
+                return UnixEpoch.AddSeconds(exp);
             }
 
             return default;

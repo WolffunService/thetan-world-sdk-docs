@@ -3,9 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
-using ThetanSDK.Utilities.Pooling;
 using UnityEngine;
 using UnityEngine.UI;
+using Wolffun.Pooling;
 
 namespace ThetanSDK.UI
 {
@@ -42,7 +42,7 @@ namespace ThetanSDK.UI
             {
                 _btnBlockCanvas.gameObject.SetActive(false);
                 
-                GlobalLazyPool.Return(_curFloatingWindow.gameObject);
+                SimplePool.Instance.Return(_curFloatingWindow.gameObject);
                 _curFloatingWindow = null;
             });
         }
@@ -56,14 +56,14 @@ namespace ThetanSDK.UI
 
             _btnBlockCanvas.gameObject.SetActive(true);
             
-            var instanceFloatingWindowGO = await GlobalLazyPool.Rent(prefabFloatingWindow.gameObject);
+            var instanceFloatingWindowGO = SimplePool.Instance.Rent(prefabFloatingWindow.gameObject);
             instanceFloatingWindowGO.SetActive(true);
             instanceFloatingWindowGO.transform.SetParent(_viewport);
 
             if (!instanceFloatingWindowGO.TryGetComponent<FloatingWindow>(out var instanceFloatingWindow))
             {
                 Debug.LogError($"Prefab {prefabFloatingWindow.name} does not contain FloatingWindow component");
-                GlobalLazyPool.Return(instanceFloatingWindowGO);
+                SimplePool.Instance.Return(instanceFloatingWindowGO);
                 return null;
             }
 

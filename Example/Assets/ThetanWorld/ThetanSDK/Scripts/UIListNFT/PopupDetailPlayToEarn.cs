@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Cysharp.Text;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -30,10 +29,10 @@ public class PopupDetailPlayToEarn : Popup
 
     public void SetData(DetailHeroGrindInfo data)
     {
-        txtEquipment.SetTextFormat("{0}/{1}", 0, 0);
-        txtEquipmentEffect.SetTextFormat("{0}%", data.grindRewardBonus);
-        txtMaxEquipmentEffect.SetTextFormat("(Max={0}%)", data.maxGrindRewarBonus);
-        txtGrindStage.SetTextFormat("{0}/{1}", data.stage, data.maxStage);
-        txtGrindSpeed.SetTextFormat("{0}/h", data.currentGrindSpeed);
+        txtEquipment.SetText("{0}/{1}", 0, 0);
+        txtEquipmentEffect.SetText("{0}%", data.grindRewardBonus);
+        txtMaxEquipmentEffect.SetText("(Max={0}%)", data.maxGrindRewarBonus);
+        txtGrindStage.SetText("{0}/{1}", data.stage, data.maxStage);
+        txtGrindSpeed.SetText("{0}/h", data.currentGrindSpeed);
     }
 }

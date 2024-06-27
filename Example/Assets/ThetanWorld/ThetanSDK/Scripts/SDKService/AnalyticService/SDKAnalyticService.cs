@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
-using Cysharp.Text;
 using Cysharp.Threading.Tasks;
 using Newtonsoft.Json;
 using ThetanSDK.SDKService;
@@ -107,19 +106,19 @@ namespace ThetanSDK.SDKServices.Analytic
                 }
             }
 
-            using (var hashValueBuilder = ZString.CreateUtf8StringBuilder())
+            var hashValueBuilder = Utils.StringBuilderPool.Get();
+            hashValueBuilder.Clear();
+            hashValueBuilder.Append(requestData.timeStamp);
+            
+            foreach (var eventData in data)
             {
-                hashValueBuilder.Append(requestData.timeStamp);
-
-
-                foreach (var eventData in data)
-                {
-                    string eventValue = eventData.Value == null ? string.Empty : Convert.ToString(eventData.Value,CultureInfo.InvariantCulture);
-                    hashValueBuilder.Append(eventValue);
-                }
-
-                requestData.thetan = ThetanSDKUtilities.Hash(hashValueBuilder.ToString(), HASH_KEY);
+                string eventValue = eventData.Value == null ? string.Empty : Convert.ToString(eventData.Value,CultureInfo.InvariantCulture);
+                hashValueBuilder.Append(eventValue);
             }
+
+            requestData.thetan = ThetanSDKUtilities.Hash(hashValueBuilder.ToString(), HASH_KEY);
+            
+            Utils.StringBuilderPool.Release(hashValueBuilder);
             
             LogEvent(requestData);
         }

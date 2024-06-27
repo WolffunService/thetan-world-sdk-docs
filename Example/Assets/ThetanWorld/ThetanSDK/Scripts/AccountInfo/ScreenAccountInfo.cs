@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Cysharp.Text;
 using ThetanSDK.Utilities;
 using TMPro;
 using UnityEngine;
@@ -113,8 +112,8 @@ namespace ThetanSDK.UI
         {
             _txtGrindTime.SetText(ThetanSDKUtilities.ToStringTime(statisticData.grindTimeToday));
             _txtGrindReward.SetText(statisticData.grindRewardToday.FormatUnitCurrency());
-            _txtNftUsed.SetText(statisticData.nftUsed);
-            _txtNewSpin.SetTextFormat("+{0}", statisticData.incSpinChanceToday);
+            _txtNftUsed.SetText("{0}", statisticData.nftUsed);
+            _txtNewSpin.SetText("+{0}", statisticData.incSpinChanceToday);
         }
 
         private void HandleFetchDataError(WolffunResponseError error)

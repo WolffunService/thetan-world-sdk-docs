@@ -3,15 +3,20 @@ using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 using UnityEngine.Networking;
-using UnityEngine.Pool;
 using Wolffun.Log;
+
+#if UNITY_2021_3_OR_NEWER
+using UnityEngine.Pool;
+#endif
 
 namespace Wolffun.RestAPI
 {
     public static class Utils
     {
-        internal static class WolffunRequestCommonPool
+        
+        public static class WolffunRequestCommonPool
         {
+#if UNITY_2021_3_OR_NEWER
             private static readonly ObjectPool<WolffunRequestCommon> WolffunRequestPool = new(() => new());
             public static WolffunRequestCommon Get() => WolffunRequestPool.Get();
 
@@ -19,18 +24,33 @@ namespace Wolffun.RestAPI
                 WolffunRequestPool.Get(out value);
 
             public static void Release(WolffunRequestCommon toRelease) => WolffunRequestPool.Release(toRelease);
+#else
+            private static readonly Wolffun.Pooling.ObjectPool<WolffunRequestCommon> WolffunRequestPool = new Wolffun.Pooling.ObjectPool<WolffunRequestCommon>(
+                () => new WolffunRequestCommon());
+            public static WolffunRequestCommon Get() => WolffunRequestPool.Get();
+
+            public static void Release(WolffunRequestCommon toRelease) => WolffunRequestPool.Release(toRelease);
+#endif
         }
         
-        internal static class StringBuilderPool
+        public static class StringBuilderPool
         {
+#if UNITY_2021_3_OR_NEWER
             private static readonly ObjectPool<StringBuilder> SPool = new(() => new(), null, sb => sb.Clear());
             public static StringBuilder Get() => SPool.Get();
             public static PooledObject<StringBuilder> Get(out StringBuilder value) => SPool.Get(out value);
             public static void Release(StringBuilder toRelease) => SPool.Release(toRelease);
+#else
+            private static readonly Wolffun.Pooling.ObjectPool<StringBuilder> SPool = new Wolffun.Pooling.ObjectPool<StringBuilder>(
+                () => new StringBuilder(), null, sb => sb.Clear());
+            public static StringBuilder Get() => SPool.Get();
+            public static void Release(StringBuilder toRelease) => SPool.Release(toRelease);
+#endif
         }
         
-        internal static class WolffunResponseCommonPool
+        public static class WolffunResponseCommonPool
         {
+#if UNITY_2021_3_OR_NEWER
             private static readonly ObjectPool<WolffunResponseCommon> WolffunRequestPool = new(() => new());
             public static WolffunResponseCommon Get() => WolffunRequestPool.Get();
 
@@ -38,11 +58,23 @@ namespace Wolffun.RestAPI
                 WolffunRequestPool.Get(out value);
 
             public static void Release(WolffunResponseCommon toRelease) => WolffunRequestPool.Release(toRelease);
+#else
+            private static readonly Wolffun.Pooling.ObjectPool<WolffunResponseCommon> WolffunRequestPool = new Wolffun.Pooling.ObjectPool<WolffunResponseCommon>(
+                () => new WolffunResponseCommon());
+            public static WolffunResponseCommon Get() => WolffunRequestPool.Get();
+
+            public static void Release(WolffunResponseCommon toRelease) => WolffunRequestPool.Release(toRelease);
+#endif
         }
-        
+
         public static KeyValuePair<string, string>[] GetProperties(this object me)
         {
-            var result = CollectionPool<List<KeyValuePair<string, string>>, KeyValuePair<string, string>>.Get();
+#if UNITY_2021_3_OR_NEWER
+            var result = ListPool<KeyValuePair<string, string>>.Get();
+#else
+            var result = Wolffun.Pooling.ListPool<KeyValuePair<string, string>>.Get();
+#endif
+            
             try
             {
                 foreach (var property in me.GetType().GetProperties())
@@ -62,13 +94,22 @@ namespace Wolffun.RestAPI
                 }
 
                 var res = result.ToArray();
-                CollectionPool<List<KeyValuePair<string, string>>, KeyValuePair<string, string>>.Release(result);
+                
+#if UNITY_2021_3_OR_NEWER
+                ListPool<KeyValuePair<string, string>>.Release(result);
+#else
+                Wolffun.Pooling.ListPool<KeyValuePair<string, string>>.Release(result);
+#endif
                 return res;
             }
             catch (Exception ex)
             {
                 CommonLog.Log(ex.StackTrace);
-                CollectionPool<List<KeyValuePair<string, string>>, KeyValuePair<string, string>>.Release(result);
+#if UNITY_2021_3_OR_NEWER
+                ListPool<KeyValuePair<string, string>>.Release(result);
+#else
+                Wolffun.Pooling.ListPool<KeyValuePair<string, string>>.Release(result);
+#endif
                 return null;
             }
         }

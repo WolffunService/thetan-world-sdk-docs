@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices.WindowsRuntime;
-using Cysharp.Text;
 using Cysharp.Threading.Tasks;
 using ThetanSDK.SDKService;
 using ThetanSDK.SDKService.LuckySpin;
@@ -121,7 +120,7 @@ namespace ThetanSDK
         #endregion
         
         #region Version
-        private string _version = "0.9.10";
+        private string _version = "0.9.11";
 
         public string Version
         {

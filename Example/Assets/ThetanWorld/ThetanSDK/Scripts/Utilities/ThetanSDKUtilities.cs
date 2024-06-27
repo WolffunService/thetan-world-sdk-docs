@@ -2,9 +2,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
-using Cysharp.Text;
 using UnityEngine;
 using UnityEngine.UI;
+using Wolffun.RestAPI;
 using Wolffun.RestAPI.ThetanWorld;
 using Random = UnityEngine.Random;
 
@@ -25,11 +25,11 @@ namespace ThetanSDK.Utilities
             var customPosfixSize = GetCustomImgPostfix(customSize);
             if (string.IsNullOrEmpty(customPosfixSize))
             {
-                return ZString.Format("/resources/{0}/hero/full_avatar/{1}.png", GetResourceGameFolderName(gameType), skinId);
+                return $"/resources/{GetResourceGameFolderName(gameType)}/hero/full_avatar/{skinId}.png";
             }
             else
             {
-                return ZString.Format("/resources/{0}/hero/full_avatar/{1}{2}.png", 
+                return string.Format("/resources/{0}/hero/full_avatar/{1}{2}.png", 
                     GetResourceGameFolderName(gameType), skinId, customPosfixSize);
             }
         }
@@ -54,17 +54,17 @@ namespace ThetanSDK.Utilities
         
         public static string GetUrlPathHeroAvatar(GameWorldType gameType, int skinId)
         {
-            return ZString.Format("/resources/{0}/hero/sdk_avatar/{1}.png", GetResourceGameFolderName(gameType), skinId);
+            return $"/resources/{GetResourceGameFolderName(gameType)}/hero/sdk_avatar/{skinId}.png";
         }
 
         public static string GetUrlPathGameIcon(GameWorldType gameType)
         {
-            return ZString.Format("/GameIcon/{0}.png", (int)gameType);
+            return $"/GameIcon/{(int)gameType}.png";
         }
 
         public static string GetUrlImageProfileCosmetic(int cosmeticId)
         {
-            return ZString.Format("/cosmetics/cosmetic_{0}.png", cosmeticId);
+            return $"/cosmetics/cosmetic_{cosmeticId}.png";
         }
         
         private static string GetResourceGameFolderName(GameWorldType gameType)
@@ -144,23 +144,23 @@ namespace ThetanSDK.Utilities
             {
                 if (timeSpan.Days > 30)
                 {
-                    strTimer = ZString.Format("{0}M {1}d", timeSpan.Days / 30, timeSpan.Days % 30);
+                    strTimer = $"{timeSpan.Days / 30}M {timeSpan.Days % 30}d";
                 }
                 else if (timeSpan.Days > 0)
                 {
-                    strTimer = ZString.Format("{0}d {1}h", timeSpan.Days, timeSpan.Hours);
+                    strTimer = $"{timeSpan.Days}d {timeSpan.Hours}h";
                 }
                 else if (timeSpan.Hours > 0)
                 {
-                    strTimer = ZString.Format("{0}h {1}m", timeSpan.Hours, timeSpan.Minutes);
+                    strTimer = $"{timeSpan.Hours}h {timeSpan.Minutes}m";
                 }
                 else if(timeSpan.Minutes > 0)
                 {
-                    strTimer = ZString.Format("{0}m {1}s", timeSpan.Minutes, timeSpan.Seconds);
+                    strTimer = $"{timeSpan.Minutes}m {timeSpan.Seconds}s";
                 }
                 else
                 {
-                    strTimer = ZString.Format("{0}s", timeSpan.Seconds);
+                    strTimer = $"{timeSpan.Seconds}s";
                 }
             }
             catch (Exception ex)
@@ -177,23 +177,23 @@ namespace ThetanSDK.Utilities
             {
                 if (timeSpan.Days > 30)
                 {
-                    strTimer = ZString.Format("{0}M", timeSpan.Days / 30);
+                    strTimer = $"{timeSpan.Days / 30}M";
                 }
                 else if (timeSpan.Days > 0)
                 {
-                    strTimer = ZString.Format("{0}d", timeSpan.Days);
+                    strTimer = $"{timeSpan.Days}d";
                 }
                 else if (timeSpan.Hours > 0)
                 {
-                    strTimer = ZString.Format("{0}h", timeSpan.Hours);
+                    strTimer = $"{timeSpan.Hours}h";
                 }
                 else if(timeSpan.Minutes > 0)
                 {
-                    strTimer = ZString.Format("{0}m", timeSpan.Minutes);
+                    strTimer = $"{timeSpan.Minutes}m";
                 }
                 else
                 {
-                    strTimer = ZString.Format("{0}s", timeSpan.Seconds);
+                    strTimer = $"{timeSpan.Seconds}s";
                 }
             }
             catch (Exception ex)
@@ -210,23 +210,23 @@ namespace ThetanSDK.Utilities
             {
                 if (timeSpan.Days > 30)
                 {
-                    strTimer = ZString.Format("{0:00}:{1:00}", timeSpan.Days / 30, timeSpan.Days % 30);
+                    strTimer = string.Format("{0:00}:{1:00}", timeSpan.Days / 30, timeSpan.Days % 30);
                 }
                 else if (timeSpan.Days > 0)
                 {
-                    strTimer = ZString.Format("{0:00}:{1:00}", timeSpan.Days, timeSpan.Hours);
+                    strTimer = string.Format("{0:00}:{1:00}", timeSpan.Days, timeSpan.Hours);
                 }
                 else if (timeSpan.Hours > 0)
                 {
-                    strTimer = ZString.Format("{0:00}:{1:00}", timeSpan.Hours, timeSpan.Minutes);
+                    strTimer = string.Format("{0:00}:{1:00}", timeSpan.Hours, timeSpan.Minutes);
                 }
                 else if(timeSpan.Minutes > 0)
                 {
-                    strTimer = ZString.Format("{0:00}:{1:00}", timeSpan.Minutes, timeSpan.Seconds);
+                    strTimer = string.Format("{0:00}:{1:00}", timeSpan.Minutes, timeSpan.Seconds);
                 }
                 else
                 {
-                    strTimer = ZString.Format("00:{0:00}", timeSpan.Seconds);
+                    strTimer = string.Format("00:{0:00}", timeSpan.Seconds);
                 }
             }
             catch (Exception ex)
@@ -388,23 +388,22 @@ namespace ThetanSDK.Utilities
 
              string result = string.Empty;
              
-             using (var strBuilder = ZString.CreateUtf8StringBuilder())
+             var strBuilder = Utils.StringBuilderPool.Get();
+             strBuilder.Clear();
+             for (int i = 0; i < numberCharacterHeadReserve; i++)
              {
-                 for (int i = 0; i < numberCharacterHeadReserve; i++)
-                 {
-                     strBuilder.Append(str[i]);
-                 }
+                 strBuilder.Append(str[i]);
+             }
                  
-                 strBuilder.Append("...");
+             strBuilder.Append("...");
 
-                 for (int i = str.Length - numberCharacterTailReserve; i < str.Length; i++)
-                 {
-                     strBuilder.Append(str[i]);
-                 }
-
-                 result = strBuilder.ToString();
+             for (int i = str.Length - numberCharacterTailReserve; i < str.Length; i++)
+             {
+                 strBuilder.Append(str[i]);
              }
 
+             result = strBuilder.ToString();
+             Utils.StringBuilderPool.Release(strBuilder);
              return result;
          }
 

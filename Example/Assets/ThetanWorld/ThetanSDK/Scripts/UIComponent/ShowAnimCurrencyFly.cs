@@ -1,11 +1,9 @@
 ﻿using System;
 using DG.Tweening;
 using ThetanSDK.Utilities;
-using ThetanSDK.Utilities.Pooling;
 using UnityEngine;
 using UnityEngine.UI;
-using ZBase.Foundation.Pooling;
-using ZBase.Foundation.Pooling.UnityPools;
+using Wolffun.Pooling;
 using Random = System.Random;
 
 namespace ThetanSDK.UI
@@ -22,29 +20,28 @@ namespace ThetanSDK.UI
         [SerializeField] private Vector2 _moveToTargetDurationRandomRange;
         [SerializeField] private Ease _moveToTargetEase;
         
-        private GameObjectItemPool _pool;
+        private ObjectPool<GameObject> _pool;
 
         private void Awake()
         {
-            _pool = new GameObjectItemPool(new GameObjectPrefab()
-            {
-                Parent = this.transform,
-                Source = _prefabImgCoin.gameObject,
-            });
+            _pool = new ObjectPool<GameObject>(
+                () => Instantiate(_prefabImgCoin.gameObject, this.transform),
+                actionOnGet: instance => instance.SetActive(true),
+                actionOnRelease: instance => instance.SetActive(false));
         }
 
         public async void DoAnimCurrencyFly(RectTransform targetPosition, Action callbackOnFirstItemReachTarget = null)
         {
             for (int i = 0; i < _numberInstance; i++)
             {
-                var instanceGO = await _pool.Rent();
+                var instanceGO = _pool.Get();
                 instanceGO.SetActive(true);
 
                 var instanceImg = instanceGO.GetComponent<Image>();
 
                 if (instanceImg == null)
                 {
-                    _pool.Return(instanceGO);
+                    _pool.Release(instanceGO);
                     return;
                 }
                 instanceImg.SetAlphaImg(1);
@@ -83,7 +80,7 @@ namespace ThetanSDK.UI
                 {
                     if(itemIndex == 0)
                         callbackOnFirstItemReachTarget?.Invoke();
-                    _pool.Return(instanceGO);
+                    _pool.Release(instanceGO);
                 });
             }
         }

@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Cysharp.Text;
 using ThetanSDK.SDKService.LuckySpin;
 using ThetanSDK.Utilities;
 using TMPro;
@@ -96,15 +95,15 @@ namespace ThetanSDK.UI.LuckySpin
             _sliderProcessTime.minValue = 0;
             _sliderProcessTime.maxValue = luckySpinData.grindSecsPerSpin;
             _sliderProcessTime.value = luckySpinData.currentGrindSecs;
-            _txtProcessTime.SetTextFormat("{0}m", luckySpinData.currentGrindSecs/60);
+            _txtProcessTime.SetText("{0}m", luckySpinData.currentGrindSecs/60);
 
             var availableSpin = luckySpinData.spinChance;
-            _txtAvailableSpin.SetText(availableSpin);
+            _txtAvailableSpin.SetText("{0}", availableSpin);
 
             if (availableSpin <= 0)
                 _txtTitle.text = "Lucky Spin";
             else
-                _txtTitle.SetTextFormat("Lucky Spin ({0})", availableSpin);
+                _txtTitle.SetText("Lucky Spin ({0})", availableSpin);
         }
         
         private void OnClickSpinOnThetanWorld()

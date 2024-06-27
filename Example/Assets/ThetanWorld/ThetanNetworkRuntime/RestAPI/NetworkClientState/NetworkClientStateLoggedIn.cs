@@ -95,6 +95,10 @@ namespace Wolffun.RestAPI.NetworkClientState
             RefreshToken();
         }
 
+        public void HandleAccountBanned()
+        {
+        }
+
         private void RefreshToken()
         {
             _isRefreshingToken = true;

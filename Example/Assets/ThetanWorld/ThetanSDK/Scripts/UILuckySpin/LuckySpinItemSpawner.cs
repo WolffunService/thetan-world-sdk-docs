@@ -13,7 +13,7 @@ namespace ThetanSDK.UI.LuckySpin
             public LuckySpinItem prefabItem;
         }
 
-        [SerializeField] private List<PrefabConfig> _listPrefabConfigs = new();
+        [SerializeField] private List<PrefabConfig> _listPrefabConfigs = new List<PrefabConfig>();
         [SerializeField] private RectTransform _parentTransform;
 
         private List<LuckySpinItem> _listInstanceItem = new List<LuckySpinItem>();
