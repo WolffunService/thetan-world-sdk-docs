@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
-using Cysharp.Text;
 using UnityEngine;
 
 namespace Wolffun.RestAPI.ThetanWorld
@@ -16,22 +15,20 @@ namespace Wolffun.RestAPI.ThetanWorld
 
             if (listSort != null && listSort.Count > 0)
             {
-                using (var strBuilder = ZString.CreateUtf8StringBuilder())
+                var strBuilder = Utils.StringBuilderPool.Get();
+                for (int i = 0; i < listSort.Count; i++)
                 {
-                    for (int i = 0; i < listSort.Count; i++)
+                    strBuilder.Append((int)listSort[i]);
+
+                    if (i != listSort.Count - 1)
                     {
-                        strBuilder.Append((int)listSort[i]);
-
-                        if (i != listSort.Count - 1)
-                        {
-                            strBuilder.Append(",");
-                        }
+                        strBuilder.Append(",");
                     }
-
-                    queryStr = strBuilder.ToString();
                 }
+
+                queryStr = strBuilder.ToString();
+                Utils.StringBuilderPool.Release(strBuilder);
             }
-            
             
             WolffunRequestCommon reqCommon = WolffunRequestCommon
                 .Create(WolffunUnityHttp.Settings.ThetanWorldURL + "/user/nfts")

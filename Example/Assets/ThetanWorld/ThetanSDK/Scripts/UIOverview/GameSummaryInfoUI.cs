@@ -1,5 +1,4 @@
-﻿using Cysharp.Text;
-using ThetanSDK.Utilities;
+﻿using ThetanSDK.Utilities;
 using TMPro;
 using UnityEngine;
 using Wolffun.RestAPI.ThetanWorld;
@@ -18,7 +17,7 @@ namespace ThetanSDK.UI
             _gameIcon.ShowUI(data.GameWorldType);
             _txtGameName.text = ThetanSDKUtilities.GetWorldName(data.GameWorldType);
             _txtGrindTime.text = data.grindInfo.grindTime.ToStringTime();
-            _txtGrindReward.SetText(data.grindInfo.grindPoint);
+            _txtGrindReward.SetText("{0}", data.grindInfo.grindPoint);
         }
     }
 }

@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Cysharp.Text;
-using ThetanSDK.SDKServices.Equipment;
 using ThetanSDK.SDKServices.NFTItem;
 using ThetanSDK.Utilities;
 using TMPro;
@@ -241,7 +239,7 @@ namespace ThetanSDK.UI
                 }
                 else
                 {
-                    _txtGrindTime.SetTextFormat("{0}/{1} m",
+                    _txtGrindTime.SetText("{0}/{1} m",
                         data.grindInfo.grindTime.ConvertSecondToMinute(),
                         data.grindInfo.maxGrindTime.ConvertSecondToMinute());
 
@@ -257,24 +255,24 @@ namespace ThetanSDK.UI
             if (_txtGrindSpeed)
             {
                 // Convert THG/s -> THG/h
-                _txtGrindSpeed.SetTextFormat("{0}/h", (data.grindInfo.currentGrindSpeed * 3600).FormatUnitCurrency());
+                _txtGrindSpeed.text = $"{(data.grindInfo.currentGrindSpeed * 3600).FormatUnitCurrency()}/h";
             }
             
             if(_txtGrindStage)
-                _txtGrindStage.SetText(data.grindInfo.stage);
+                _txtGrindStage.SetText("{0}", data.grindInfo.stage);
             
             if(_txtMaxGrindStage)
-                _txtMaxGrindStage.SetTextFormat("/{0}", data.grindInfo.maxStage);
+                _txtMaxGrindStage.SetText("/{0}", data.grindInfo.maxStage);
 
             
             if (_txtDailyReward)
                 _txtDailyReward.SetText(data.grindInfo.grindPoint.FormatUnitCurrency());
             
             if (_txtGrindAbility)
-                _txtGrindAbility.SetTextFormat("{0}%", (data.grindInfo.grindAbility * 100).FormatUnitPercent());
+                _txtGrindAbility.text = $"{(data.grindInfo.grindAbility * 100).FormatUnitPercent()}%";
             
             if(_txtGrindAbilityBonus)
-                _txtGrindAbilityBonus.SetTextFormat("(+{0}% grind ability)", (data.grindInfo.equipmentEffect * 100).FormatUnitPercent());
+                _txtGrindAbilityBonus.text = $"(+{(data.grindInfo.equipmentEffect * 100).FormatUnitPercent()}% grind ability)";
             
             SetContentButtonInteractHero(data, selectedHeroNftId);
         }
@@ -401,10 +399,10 @@ namespace ThetanSDK.UI
             }
             
             if (_txtEquipment)
-                _txtEquipment.SetText(totalSlotEquipped);
+                _txtEquipment.SetText("{0}", totalSlotEquipped);
             
             if(_txtMaxEquipment)
-                _txtMaxEquipment.SetTextFormat("/{0}", totalEquipmentSlot);
+                _txtMaxEquipment.SetText("/{0}", totalEquipmentSlot);
         }
         
         private void SetUILoadingDetailGrindInfo()
@@ -438,7 +436,7 @@ namespace ThetanSDK.UI
             {
                 // Todo: use app name
                 _uiHelperContainer.ShowPopUpMsg(ThetanSDKErrorMsg.Error, 
-                    ZString.Format(UINftErrorMsg.ERROR_SELECT_HERO_NFT_HERO_IS_GRINDING_IN_ANOTHER_GAME_NAME, 
+                    string.Format(UINftErrorMsg.ERROR_SELECT_HERO_NFT_HERO_IS_GRINDING_IN_ANOTHER_GAME_NAME, 
                         _heroData.grindInfo.status.appName),
                     ThetanSDKErrorMsg.Okay);
             }
@@ -507,14 +505,14 @@ namespace ThetanSDK.UI
                     {
                         _uiHelperContainer.TurnOffLoading();
                         _uiHelperContainer.ShowPopUpMsg(ThetanSDKErrorMsg.Error,
-                            ZString.Format(UINftErrorMsg.ERROR_DESELECT_HERO_UNKNOWN_ERROR, error.Code, error.Message),
+                            string.Format(UINftErrorMsg.ERROR_DESELECT_HERO_UNKNOWN_ERROR, error.Code, error.Message),
                             ThetanSDKErrorMsg.Okay);
                     });
                     break;
                 }
                 default:
                     _uiHelperContainer.ShowPopUpMsg(ThetanSDKErrorMsg.Error,
-                        ZString.Format(UINftErrorMsg.ERROR_DESELECT_HERO_UNKNOWN_ERROR, error.Code, error.Message),
+                        string.Format(UINftErrorMsg.ERROR_DESELECT_HERO_UNKNOWN_ERROR, error.Code, error.Message),
                         ThetanSDKErrorMsg.Okay);
                     break;
             }
@@ -634,7 +632,7 @@ namespace ThetanSDK.UI
                     break;
                 default:
                     _uiHelperContainer.ShowPopUpMsg(ThetanSDKErrorMsg.Error, 
-                        ZString.Format(UINftErrorMsg.ERROR_SELECT_HERO_UNKNOWN_ERROR, error.Code, error.Message), 
+                        string.Format(UINftErrorMsg.ERROR_SELECT_HERO_UNKNOWN_ERROR, error.Code, error.Message), 
                         ThetanSDKErrorMsg.Okay);
                     break;
             }

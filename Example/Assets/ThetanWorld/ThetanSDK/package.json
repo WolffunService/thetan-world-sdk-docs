@@ -2,7 +2,7 @@
   "name": "com.wolffun.thetan-world-sdk",
   "displayName": "Thetan World SDK",
   "description": "Thetan World SDK",
-  "version": "0.9.10-SDK",
+  "version": "0.9.11-SDK",
   "unity": "2021.3",
   "license": "MIT",
   "repository": {

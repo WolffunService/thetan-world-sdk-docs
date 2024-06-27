@@ -47,7 +47,7 @@ namespace Wolffun.RestAPI
 	
 		public byte[] RawBody() =>_rawBody;
 	
-		public bool IsOk() => _status is >= 200 and < 300;
+		public bool IsOk() => _status >= 200 && _status < 300;
 
 		public override string ToString()
 		{

@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Cysharp.Text;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using ThetanSDK;
@@ -195,6 +194,7 @@ namespace ThetanSDK.UI
             _isGrinding = false;
             _nftItemService = nftItemService;
             nftItemService._onChangeGrindingStatus += OnChangeGrindingStatus;
+            nftItemService._onPingGrindSuccess += OnPingGrindSuccess;
             
             ThetanSDKManager.Instance.OnChangeNetworkClientState += OnChangeNetworkClientState;
             nftItemService.RegisterOnChangeNftItemData(OnChangeNFTItemData);
@@ -202,6 +202,15 @@ namespace ThetanSDK.UI
 
             OnChangeNetworkClientState(ThetanSDKManager.Instance.NetworkClientState);
         }
+
+        private void OnPingGrindSuccess()
+        {
+            if (!_isGrinding)
+                return;
+
+            _hasPendingRewardToShowUI = true;
+        }
+
         public void UnlockButtonAndDoAnimReward()
         {
             if (_nftItemService.IsGrinding())

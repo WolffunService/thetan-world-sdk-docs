@@ -1,5 +1,4 @@
 ﻿using System;
-using Cysharp.Text;
 using ThetanSDK.Utilities;
 using TMPro;
 using UnityEngine;
@@ -104,10 +103,10 @@ namespace ThetanSDK.UI
             // }
             
             if(_txtGrindSpeed) // Convert THG/s -> THG/h
-                _txtGrindSpeed.text = ZString.Format("{0}/h", (data.grindInfo.currentGrindSpeed * 3600).FormatUnitCurrency()); 
+                _txtGrindSpeed.text = $"{(data.grindInfo.currentGrindSpeed * 3600).FormatUnitCurrency()}/h"; 
 
             if (_txtGrindAbility)
-                _txtGrindAbility.text = ZString.Format("{0}%", (data.grindInfo.grindAbility * 100).FormatUnitPercent());
+                _txtGrindAbility.text = $"{(data.grindInfo.grindAbility * 100).FormatUnitPercent()}%";
 
             if (data.grindInfo.IsMaxLifeTime())
             {
@@ -144,8 +143,8 @@ namespace ThetanSDK.UI
 
         private void SetTextNextReset()
         {
-            _txtResetIn.text = ZString.Format("Reset in: <color=#53EDFE>{0}</color>",
-                ThetanSDKUtilities.ToStringTimeShort(_nextResetData - DateTime.UtcNow));
+            _txtResetIn.text =
+                $"Reset in: <color=#53EDFE>{ThetanSDKUtilities.ToStringTimeShort(_nextResetData - DateTime.UtcNow)}</color>";
         }
 
         public void ChangeIsSelected(bool isSelected)

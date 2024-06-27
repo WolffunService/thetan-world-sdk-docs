@@ -1,5 +1,4 @@
 ﻿using System;
-using Cysharp.Text;
 using Cysharp.Threading.Tasks;
 using ThetanSDK.SDKServices.Analytic;
 using ThetanSDK.SDKServices.NFTItem;
@@ -195,7 +194,7 @@ namespace ThetanSDK
                             break;
                         default:
                             _uiHelperContainer.ShowPopUpMsg("Error", 
-                                ZString.Format(NFTServiceErrorMsg.ERROR_PREPARE_MATCH_UNKNOWN_ERROR, error.Code, error.Message),
+                                string.Format(NFTServiceErrorMsg.ERROR_PREPARE_MATCH_UNKNOWN_ERROR, error.Code, error.Message),
                                 "Go back", "Continue",
                                 () =>
                                 {

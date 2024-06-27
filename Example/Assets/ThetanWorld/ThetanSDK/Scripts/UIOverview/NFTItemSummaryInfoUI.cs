@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using Cysharp.Text;
 using ThetanSDK.UI;
 using ThetanSDK.Utilities;
 using TMPro;
@@ -22,7 +21,7 @@ namespace ThetanSDK.UI
             _txtNFTName.text = data.metaData.name;
             _nftHeroAvatar.ShowUI(data.ingameInfo);
             _txtGrindTime.text = data.grindInfo.grindTime.ToStringTime();
-            _txtGrindReward.SetText(data.grindInfo.grindPoint);
+            _txtGrindReward.SetText("{0}", data.grindInfo.grindPoint);
         }
     }
 }

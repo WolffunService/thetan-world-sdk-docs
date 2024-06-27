@@ -13,6 +13,7 @@ Grind process with be splitted into phases that depend on your game to decide wh
 ## Table of Contents
 
 - [Installation](#installation)
+    - [Upgrade Guide](#upgrade-guide)
 - [Using Guide](#using-guide)
     - [Testing](#testing)
 - [API](#api)
@@ -21,25 +22,19 @@ Grind process with be splitted into phases that depend on your game to decide wh
 
 # Installation
 
-### **Step 1:** Add these packages into your project
->Add these lines into your manifest.json
-- "com.zbase.collections.pooled": "https://github.com/Zitga-Tech/ZBase.Collections.Pooled.git?path=Packages/ZBase.Collections.Pooled",
-- "com.zbase.foundation.pooling": "https://github.com/Zitga-Tech/ZBase.Foundation.Pooling.git?path=Packages/ZBase.Foundation.Pooling",
-- "com.wolffun.download-from-storage": "https://github.com/WolffunService/DownloadFromStorage.git#1.0.16",
-- "com.unity.nuget.newtonsoft-json": "3.2.1",
-- "com.wolffun.log": "https://github.com/WolffunService/Wolffun-Log.git#1.0.1",
-- "com.cysharp.unitask": "https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask",
-- "com.cysharp.zstring": "https://github.com/Cysharp/ZString.git?path=src/ZString.Unity/Assets/Scripts/ZString",
+> [!WARNING]
+> If you upgrade sdk from version below 0.9.11, please follow instructions in [Upgrade guide](#upgrade-guide)
 
-And also add this Scope Registry into your project
-```
-"name": "Unity NuGet",
-"url": "https://unitynuget-registry.azurewebsites.net",
-"scopes": [
-    "org.nuget"
+### **Step 1:** Add these packages into your project
+>Add these package into your manifest.json
+```json
+[
+    "com.wolffun.download-from-storage": "https://github.com/WolffunService/DownloadFromStorage.git#1.0.17",
+    "com.unity.nuget.newtonsoft-json": "3.2.1",
+    "com.wolffun.log": "https://github.com/WolffunService/Wolffun-Log.git#1.0.1",
+    "com.cysharp.unitask": "https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask",
 ]
 ```
-
 
 ### **Step 2**: Import SDK
 Download [ThetanWorldSDK.unitypackage](https://github.com/WolffunService/thetan-world-sdk-docs/blob/main/ThetanWorldSDK.unitypackage) and import it into your project
@@ -53,6 +48,37 @@ In config, you will have to input application id and application secret we gave 
 >**Step 3.1 (Optional):** If you are in developer mode and want to use our staging environment, you can add script define "STAGING" in your Project Setting -> Player -> Script Define Symbol
 
 >**Step 3.2 (Optional):** If you want to custom your testing endpoint, you can tick on "Use Custom Endpoint" in ThetanSDKNetworkConfig and change value of Custom Endpoint Setting
+
+
+## Upgrade guide
+If you upgrade sdk from version below 0.9.11, please follow these instructions below.
+
+### Step 1
+Backup your ThetanSDKNetworkConfig in Assets/ThetanWorld/Resources/ThetanSDKNetworkConfig
+
+### Step 2
+Delete folder Assets/ThetanWorld.
+
+### Step 3
+If your project does not depend on these packages, please delete them from your manifest.json since ThetanWorld SDK does not depend on them anymore
+```json
+[
+    "com.cysharp.zstring": "https://github.com/Cysharp/ZString.git?path=src/ZString.Unity/Assets/Scripts/ZString",
+    "com.zbase.collections.pooled": "https://github.com/Zitga-Tech/ZBase.Collections.Pooled.git?path=Packages/ZBase.Collections.Pooled",
+    "com.zbase.foundation.pooling": "https://github.com/Zitga-Tech/ZBase.Foundation.Pooling.git?path=Packages/ZBase.Foundation.Pooling"
+]
+```
+
+And also please upgrade package "com.wolffun.download-from-storage" to version 1.0.17
+```json
+[
+    "com.wolffun.download-from-storage": "https://github.com/WolffunService/DownloadFromStorage.git#1.0.17"
+]
+```
+
+### Step 4
+Inport new ThetanWorld SDK package, and restore your ThetanSDKNetworkConfig from backup at step 1
+
 
 # Using Guide
 

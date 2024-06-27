@@ -39,7 +39,7 @@ namespace Wolffun.RestAPI
             _method = HTTPMethods.Get;
             _body = null;
             _timeout = TimeSpan.FromSeconds(30);
-            _headers = new();
+            _headers = new Dictionary<string, string>();
         }
 
         public void SetUrl(string url) => _url = url;

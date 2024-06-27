@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Cysharp.Text;
 using UnityEngine;
 using Wolffun.RestAPI.ThetanWorld;
 
@@ -13,7 +12,7 @@ namespace ThetanSDK.Utilities
         
         public Sprite GetHeroRarityBackground(GameWorldType gameWorldType, NFTRarity rarity)
         {
-            var sprite =  Resources.Load<Sprite>(ZString.Format(
+            var sprite =  Resources.Load<Sprite>(string.Format(
                 "TexturesRarityBG/NFT_BG_{0}_{1}",
                 gameWorldType.ToString(), rarity.ToString()));
 

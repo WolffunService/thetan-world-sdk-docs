@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Cysharp.Text;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -73,14 +72,14 @@ namespace ThetanSDK.UI
             }
             else
             {
-                _txtNFTCount.SetText(nftService.CountTotalNFT);
+                _txtNFTCount.SetText("{0}", nftService.CountTotalNFT);
             }
             
             // Todo: wait backend for api get data
-            _txtGrindTime.SetText(0);
-            _txtGrindReward.SetText(0);
-            _txtNewSpinEarn.SetText("+0");
-            _txtTotalSpinAvailable.SetText(0);
+            _txtGrindTime.text = "0";
+            _txtGrindReward.text = "0";
+            _txtNewSpinEarn.text = "+0";
+            _txtTotalSpinAvailable.text = "0";
         }
         
         private void RefreshData()
@@ -88,10 +87,10 @@ namespace ThetanSDK.UI
             FetchTotalNFTCount();
             
             // Todo: wait backend for api get data
-            _txtGrindTime.SetText(0);
-            _txtGrindReward.SetText(0);
-            _txtNewSpinEarn.SetText("+0");
-            _txtTotalSpinAvailable.SetText(0);
+            _txtGrindTime.text = "0";
+            _txtGrindReward.text = "0";
+            _txtNewSpinEarn.text = "+0";
+            _txtTotalSpinAvailable.text = "0";
         }
 
         private void FetchTotalNFTCount()
@@ -102,7 +101,7 @@ namespace ThetanSDK.UI
             
             nftService.FetchTotalNFTCount(totalNFT =>
             {
-                _txtNFTCount.SetText(totalNFT);
+                _txtNFTCount.SetText("{0}", totalNFT);
             }, error =>
             {
                 _txtNFTCount.SetText("Error");

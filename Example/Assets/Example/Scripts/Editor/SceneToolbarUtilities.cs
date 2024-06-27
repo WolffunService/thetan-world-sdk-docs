@@ -67,8 +67,8 @@ namespace TW.Editor
 
             if (_scenePaths == null || _scenePaths.Length != EditorBuildSettings.scenes.Length)
             {
-                List<string> scenePaths = new();
-                List<string> sceneNames = new();
+                List<string> scenePaths = new List<string>();
+                List<string> sceneNames = new List<string>();
 
                 foreach (var scene in EditorBuildSettings.scenes)
                 {

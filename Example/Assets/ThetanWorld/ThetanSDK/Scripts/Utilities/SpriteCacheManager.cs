@@ -51,7 +51,7 @@ namespace ThetanSDK.Utilities
 
             var newSprite = ThetanSDKUtilities.CreateSpriteFromTexture2D(texture2D);
 
-            _cachedSprites.TryAdd(key, newSprite);
+            _cachedSprites[key] = newSprite;
 
             return newSprite;
         }

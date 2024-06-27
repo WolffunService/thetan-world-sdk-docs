@@ -1015,7 +1015,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6313535038283958577}
   - component: {fileID: 8628527316280832945}
-  - component: {fileID: 7061844105317300281}
+  - component: {fileID: 1575614269417205083}
   m_Layer: 5
   m_Name: GameObjectPool
   m_TagString: Untagged
@@ -1066,7 +1066,7 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
---- !u!114 &7061844105317300281
+--- !u!114 &1575614269417205083
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1075,7 +1075,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 7635269329959142084}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7c3a7c8aad809ec49914844b77354f8a, type: 3}
+  m_Script: {fileID: 11500000, guid: 14bf8542f898d954dacd3026d38d6b91, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _poolParent: {fileID: 2660865690281253889}

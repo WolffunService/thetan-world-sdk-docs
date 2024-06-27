@@ -6,7 +6,7 @@ using DG.Tweening;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
-using ThetanSDK.Utilities.Pooling;
+using Wolffun.Pooling;
 
 namespace ThetanSDK.UI
 {
@@ -66,13 +66,14 @@ namespace ThetanSDK.UI
             screenContainer.transform.SetAsLastSibling();
 
             
-            var intanceScreenGO = await GlobalLazyPool.Rent(prefabScreen.gameObject);
+            var intanceScreenGO = SimplePool.Instance.Rent(prefabScreen.gameObject);
 
             intanceScreenGO.SetActive(true);
             
             intanceScreenGO.transform.SetParent(screenContainer.transform);
             intanceScreenGO.transform.localScale = Vector3.one;
-            intanceScreenGO.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
+            intanceScreenGO.transform.localPosition = Vector3.zero;
+            intanceScreenGO.transform.localRotation = Quaternion.identity;
 
             var instanceScreen = intanceScreenGO.GetComponent<Screen>();
             
@@ -164,13 +165,14 @@ namespace ThetanSDK.UI
             
             screenContainer.transform.SetAsLastSibling();
 
-            var intanceScreenGO = await GlobalLazyPool.Rent(prefabScreen.gameObject);
+            var intanceScreenGO = SimplePool.Instance.Rent(prefabScreen.gameObject);
 
             intanceScreenGO.SetActive(true);
             
             intanceScreenGO.transform.SetParent(screenContainer.transform);
             intanceScreenGO.transform.localScale = Vector3.one;
-            intanceScreenGO.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
+            intanceScreenGO.transform.localPosition = Vector3.zero;
+            intanceScreenGO.transform.localRotation = Quaternion.identity;
 
             var instanceScreen = intanceScreenGO.GetComponent<Screen>();
             
@@ -235,7 +237,7 @@ namespace ThetanSDK.UI
                             {
                             }
                 
-                            GlobalLazyPool.Return(screen.Screen.gameObject);
+                            SimplePool.Instance.Return(screen.Screen.gameObject);
                             ReturnScreenContainerToPool(screen.ScreenContainer);
                         }
                         
@@ -358,14 +360,14 @@ namespace ThetanSDK.UI
                 catch (Exception e)
                 {
                 }
-                GlobalLazyPool.Return(curActiveScreen.Screen.gameObject);
+                SimplePool.Instance.Return(curActiveScreen.Screen.gameObject);
                 ReturnScreenContainerToPool(curActiveScreen.ScreenContainer);
             }
             else if (stackScreenActive.Count == 0 && _isAnimateFirstScreenInStack)
             {
                 PlayAnimPopScreen(curActiveScreen, new ScreenActive(), () =>
                 {
-                    GlobalLazyPool.Return(curActiveScreen.Screen.gameObject);
+                    SimplePool.Instance.Return(curActiveScreen.Screen.gameObject);
                     ReturnScreenContainerToPool(curActiveScreen.ScreenContainer);
                 });
             }
@@ -380,7 +382,7 @@ namespace ThetanSDK.UI
                 
                 PlayAnimPopScreen(curActiveScreen, nextActiveScreen, () =>
                 {
-                    GlobalLazyPool.Return(curActiveScreen.Screen.gameObject);
+                    SimplePool.Instance.Return(curActiveScreen.Screen.gameObject);
                     ReturnScreenContainerToPool(curActiveScreen.ScreenContainer);
                 });
             }
@@ -413,7 +415,7 @@ namespace ThetanSDK.UI
                 {
                 }
                 
-                GlobalLazyPool.Return(screen.Screen.gameObject);
+                SimplePool.Instance.Return(screen.Screen.gameObject);
                 ReturnScreenContainerToPool(screen.ScreenContainer);
             }
             
@@ -447,7 +449,7 @@ namespace ThetanSDK.UI
                 {
                 }
                 
-                GlobalLazyPool.Return(screen.Screen.gameObject);
+                SimplePool.Instance.Return(screen.Screen.gameObject);
                 ReturnScreenContainerToPool(screen.ScreenContainer);
             }
         }

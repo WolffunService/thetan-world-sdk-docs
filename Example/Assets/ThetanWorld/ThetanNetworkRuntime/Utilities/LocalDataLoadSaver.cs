@@ -59,7 +59,7 @@ namespace Wolffun.RestAPI
             }
 
             IsDoneLoad = true;
-            T result = new();
+            T result = new T();
             result.SetDefault();
             return result;
         }
