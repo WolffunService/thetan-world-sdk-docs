@@ -77,7 +77,7 @@ And also please upgrade package "com.wolffun.download-from-storage" to version 1
 ```
 
 ### Step 4
-Inport new ThetanWorld SDK package
+Inport new ThetanWorld SDK package, and restore your ThetanSDKNetworkConfig from backup at step 1
 
 
 # Using Guide
