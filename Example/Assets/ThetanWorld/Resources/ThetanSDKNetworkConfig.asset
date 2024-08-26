@@ -21,12 +21,12 @@ MonoBehaviour:
   _iosDeepLinkUrl: 
   useCustomEndpoint: 0
   _customEndpointSetting:
-    _remoteServiceURL: https://thetan-support.thetanarena.com/api/remote-config/view
-    _authServiceURL: https://thetan-auth.thetanarena.com/api/v1
-    _authServiceWsUrl: wss://thetan-auth.thetanarena.com/ws
+    _remoteServiceURL: https://thetan-support.staging.thetanarena.com/api/remote-config/view
+    _authServiceURL: https://thetan-auth.staging.thetanarena.com/api/v1
+    _authServiceWsUrl: wss://thetan-auth.staging.thetanarena.com/ws
     _dataServiceURL: 
     _verifyServiceURL: 
-    _analyticServiceURL: https://analytic.thetanarena.com/analytic/v1
+    _analyticServiceURL: https://analytic.staging.thetanarena.com/analytic/v1
     _leaderBoardServiceURL: 
     _storageServiceURL: https://storage.googleapis.com/thetan-staging-asset
     _thetanRivalsServiceURL: 
@@ -41,5 +41,5 @@ MonoBehaviour:
     _restAPIWSURL: 
     _matchRivalServiceURL: 
     _thetanImmortalWebSocket: 
-    _thetanWorldURL: https://data.thetanworld.com/api/v1
-    _marketPlaceURL: https://marketplace.thetanworld.com
+    _thetanWorldURL: https://data.staging.thetanworld.com/api/v1
+    _marketPlaceURL: https://marketplace.staging.thetanworld.com

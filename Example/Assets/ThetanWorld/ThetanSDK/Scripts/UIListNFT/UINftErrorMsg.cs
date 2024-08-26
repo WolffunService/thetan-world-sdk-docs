@@ -43,6 +43,9 @@
             "This NFT reached its grind limit. Please select another or continue playing without grind rewards.";
 
         public static string WARNING_OTHER_NFT_IS_GRINDING_FORCE_STOP =
-            "Other NFT is grinding in this game that prevent you from selecting other NFT.\nYou can force stop grinding to select your NFT";
+            "Other NFT is grinding in this game that prevent you from selecting other NFT.\nYou can force stop grinding to select your NFT.";
+        
+        public static string WARNING_SELECT_FREE_HERO_MAX_GRIND_TIME =
+            "This free NFT reached session grind limit, you will not receive reward when playing with this NFT.\n\nYou can reset grind time via our website.";
     }
 }

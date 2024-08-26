@@ -3,30 +3,33 @@
     public class NFTServiceErrorMsg
     {
         public static string ERROR_PREPARE_MATCH_NFT_GRINDING_IN_ANOTHER_GAME =
-            "The chosen NFT is grinding in another game. Please select another or continue playing without grind rewards.";
+            "The selected NFT is in another game. Choose another or continue without rewards.";
 
         public static string ERROR_PREPARE_MATCH_OTHER_NFT_IS_GRINDING =
-            "Another NFT is grinding in this game. Please wait for previous match end before start another match or continue playing without grind rewards.";
+            "Another NFT is in this game. Wait for the current match to end or continue without rewards.";
 
         public static string ERROR_PREPARE_MATCH_NFT_DAILY_LIMIT =
-            "The chosen NFT has hit its daily grind limit. Please select another or continue playing without grind rewards.";
+            "The selected NFT reached its daily limit. Choose another or continue without rewards.";
         
         public static string ERROR_PREPARE_MATCH_NFT_MAX_GRIND_STAGE =
-            "The chosen NFT has hit its grind limit. Please select another or continue playing without grind rewards.";
+            "The selected NFT reached its total limit. Choose another or continue without rewards.";
         
         public static string ERROR_PREPARE_MATCH_NOT_SELECT_NFT =
-            "You are not select any NFT, are you forget to select NFT to start match?";
+            "No NFT selected. Did you forget to select one to start the match?";
         
         public static string ERROR_PREPARE_MATCH_SERVER_MAINTAIN =
-            "Server is under maintenance. If you continue, your NFT will not be grind in next match.";
+            "Server is under maintenance. Continuing means no rewards for your NFT in the next match.";
         
         public static string ERROR_PREPARE_MATCH_UNKNOWN_ERROR =
-            "Cannot prepare NFT for the match. Do you want to continue playing without grind rewards.\nErrorCode: {0}.\nErrorMessage: {1}";
+            "Cannot prepare NFT for the match. Continue without rewards?\nErrorCode: {0}.\nErrorMessage: {1}";
 
         public static string ERROR_PREPARE_MATCH_NFT_NOT_MINT =
-            "Your NFT is not minted yet. Do you want to continue playing without grind rewards.";
+            "Your NFT isn't minted yet. Continue without rewards?";
 
         public static string ERROR_PREPARE_MATCH_NFT_NOT_OWNED =
-            "You are not the owner of the NFT. Do you want to continue playing without grind rewards.";
+            "You don't own this NFT. Continue without rewards?";
+        
+        public static string ERROR_PREPARE_MATCH_FREE_NFT_IN_REST_SESSION =
+            "The selected NFT is resting. Choose another or continue without rewards.";
     }
 }

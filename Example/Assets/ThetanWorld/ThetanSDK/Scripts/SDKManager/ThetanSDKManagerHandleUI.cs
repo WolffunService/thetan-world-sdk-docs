@@ -115,7 +115,7 @@ namespace ThetanSDK
             
             _currentAuthenUIControl = GameObject.Instantiate(_prefabAuthenUIControl, _rootTransform);
             _currentAuthenUIControl.transform.SetAsLastSibling();
-            _currentAuthenUIControl.ShowUISelectLoginMethodWithCloseButton(ThetanSDKManager.Instance.SdkOption.UseFullscreenLogin,
+            _currentAuthenUIControl.ShowUISelectLoginMethodWithCloseButton(
                 _networkClient, _authenProcessContainer, (authResult) =>
                 {
                     GameObject.Destroy(_currentAuthenUIControl.gameObject);
@@ -140,16 +140,13 @@ namespace ThetanSDK
             
             if (!ThetanSDKManager.Instance.IsVersionSupported)
             {
-                _uiHelperContainer.ShowPopUpMsg("Version out dated", 
-                    "This Thetan World version is out dated. Please update your application to newest version.", 
-                    AuthenErrorMsg.Confirm);
+                ShowPopupVersionNotSupported();
                 return;
             }
             
             _currentAuthenUIControl = GameObject.Instantiate(_prefabAuthenUIControl, _rootTransform);
             _currentAuthenUIControl.transform.SetAsLastSibling();
-            _currentAuthenUIControl.ShowUILinkAccount(ThetanSDKManager.Instance.SdkOption.UseFullscreenLogin,
-                _networkClient, _authenProcessContainer, (authResult) =>
+            _currentAuthenUIControl.ShowUILinkAccount(_networkClient, _authenProcessContainer, (authResult) =>
                 {
                     GameObject.Destroy(_currentAuthenUIControl.gameObject);
                     _currentAuthenUIControl = null;
@@ -209,7 +206,7 @@ namespace ThetanSDK
             var screen = await ShowMainUI();
             
             if(screen != null)
-                screen.ShowTabNFT();
+                screen.ShowScreenListNFT();
         }
         
         internal void CloseMainUI()
@@ -226,6 +223,13 @@ namespace ThetanSDK
             _uiHelperContainer.ShowPopUpMsg("Maintenance", 
                 "Thetan World is in maintenance. Please come back later.",
                 "Confirm", () => _screenContainer.PopAllScreen());
+        }
+
+        internal void ShowPopupVersionNotSupported()
+        {
+            _uiHelperContainer.ShowPopUpMsg("Version out dated", 
+                "This Thetan World version is out dated. Please update your application to newest version.", 
+                AuthenErrorMsg.Confirm);
         }
 
         public void Dispose()

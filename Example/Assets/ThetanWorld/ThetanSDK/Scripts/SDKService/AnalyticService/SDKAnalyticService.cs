@@ -47,7 +47,6 @@ namespace ThetanSDK.SDKServices.Analytic
             
             authenProcessContainer.WFIDAuthenProcess.RegisterPostAuthenProcessor(this);
             authenProcessContainer.ThetanAppAuthenProcess.RegisterPostAuthenProcessor(this);
-            
         }
         
         private void FixedUpdate()

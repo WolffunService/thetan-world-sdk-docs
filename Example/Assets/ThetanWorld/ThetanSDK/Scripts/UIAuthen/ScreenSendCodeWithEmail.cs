@@ -132,6 +132,12 @@ namespace ThetanSDK.UI
 
                 switch (error.Code)
                 {
+                    case (int)WSErrorCode.DoNotHavePermission:
+                    {
+                        _uiHelperContainer.ShowPopUpMsg(AuthenErrorMsg.Error, AuthenErrorMsg.DO_NOT_HAVE_PERMISSION,
+                            AuthenErrorMsg.Okay);
+                        break;
+                    }
                     case (int)WSErrorCode.EmailNotExist:
                     {
                         _uiHelperContainer.ShowPopUpMsg(AuthenErrorMsg.InvalidEmail, AuthenErrorMsg.EmailNotExistContext,

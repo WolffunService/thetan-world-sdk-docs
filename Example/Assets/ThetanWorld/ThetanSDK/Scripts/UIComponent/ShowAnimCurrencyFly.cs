@@ -1,10 +1,10 @@
 ﻿using System;
-using DG.Tweening;
 using ThetanSDK.Utilities;
 using UnityEngine;
 using UnityEngine.UI;
 using Wolffun.Pooling;
 using Random = System.Random;
+using Wolffun.Tweening;
 
 namespace ThetanSDK.UI
 {
@@ -57,7 +57,7 @@ namespace ThetanSDK.UI
                 var startDelta = new Vector3(randomVecStart.x, randomVecStart.y, 0);
                 instanceGO.transform.localPosition = Vector3.zero;
 
-                var sequence = DOTween.Sequence();
+                var sequence = WolfTween.GetSequence();
                 sequence.Append(instanceGO.transform.DOLocalMove(startDelta * 0.8f, _startExpandDuration - _moveToTargetDelay)
                     .SetEase(_expandEase)
                     .SetUpdate(true));
@@ -76,7 +76,7 @@ namespace ThetanSDK.UI
 
                 var itemIndex = i;
                 sequence.SetUpdate(true);
-                sequence.Play().OnComplete(() =>
+                sequence.OnComplete(() =>
                 {
                     if(itemIndex == 0)
                         callbackOnFirstItemReachTarget?.Invoke();

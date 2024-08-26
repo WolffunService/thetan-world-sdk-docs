@@ -21,11 +21,11 @@ namespace Wolffun.RestAPI
         [Header("LogLevel")]
         [SerializeField] private LogLevel _logLevel = LogLevel.None;
 
-        [Header("Deeplink (Optional)")]
-        [Tooltip("DeepLink to this app, example: testsdk://mygame")]
-        [HideInInspector] [SerializeField] private string _androidDeepLinkUrl;
-        [Tooltip("DeepLink to this app, example: testsdk://mygame")]
-        [HideInInspector] [SerializeField] private string _iosDeepLinkUrl;
+        [Header("Deeplink")]
+        [Tooltip("DeepLink to this app, example: testsdk://mygame. https://docs.unity3d.com/Manual/deep-linking-android.html")]
+        [HideInInspector, SerializeField] private string _androidDeepLinkUrl;
+        [Tooltip("DeepLink to this app, example: testsdk://mygame. https://docs.unity3d.com/Manual/deep-linking-ios.html")]
+        [HideInInspector, SerializeField] private string _iosDeepLinkUrl;
 
         [Header("Developer mode (Optional)")]
         [SerializeField] private bool useCustomEndpoint;

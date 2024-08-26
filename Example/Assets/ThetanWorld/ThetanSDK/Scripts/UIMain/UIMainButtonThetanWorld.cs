@@ -1,23 +1,20 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
-using DG.Tweening;
-using ThetanSDK;
 using ThetanSDK.SDKServices.NFTItem;
-using ThetanSDK.UI;
 using ThetanSDK.Utilities;
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Wolffun.Log;
 using Wolffun.RestAPI;
 using Wolffun.RestAPI.ThetanWorld;
+using Wolffun.Tweening;
 
 namespace ThetanSDK.UI
 {
     internal class UIMainButtonThetanWorld : MonoBehaviour
     {
+        private const float UPDATE_UI_FREE_NFT_SECOND_INTERVAL = 5;
         [SerializeField] private Canvas _canvasButton;
         [SerializeField] private Image _imgIconThetanWorld;
         [SerializeField] private Button _btnOpenThetanWorld;
@@ -41,6 +38,7 @@ namespace ThetanSDK.UI
         [SerializeField] private CanvasGroup _canvasGroupBackground;
         [SerializeField] private CanvasGroup _canvasGroupGrindTime;
         [SerializeField] private RectTransform _contentScale;
+        [SerializeField] private AnimationIconVictory _animVictoryIcon;
 
         [SerializeField] private float grindingAnimInterval = 2.5f;
         
@@ -55,12 +53,13 @@ namespace ThetanSDK.UI
         [SerializeField] private float forceOpenThetanWorldConsecutiveClick = 3;
         [SerializeField] private float forceOpenThetanWorldClicMaxInterval = 0.4f;
         
-        private Sequence _curCurrencyFlySequence;
+        private TweenSequence _curCurrencyFlySequence;
 
         private Action _onClickOpenThetanWorld;
 
         private float _countTimePlayGrindingAnim;
-        private Sequence _curAnimSequence;
+        private float _countTimeUpdateUIFreeNFT;
+        private TweenSequence _curAnimSequence;
         private NftItemService _nftItemService;
         private bool _isGrinding;
         private bool _isLockButton;
@@ -83,6 +82,25 @@ namespace ThetanSDK.UI
             ThetanSDKManager.Instance.OnOpenMainUI += OnOpenMainUI;
             ThetanSDKManager.Instance.OnCloseMainUI += OnCloseMainUI;
         }
+        
+        public void Initialize(ShowAnimCurrencyFly animCurrencyFly, NftItemService nftItemService, Action onClickOpenThetanWorld)
+        {
+            _onClickOpenThetanWorld = onClickOpenThetanWorld;
+            _showAnimCurrencyFly = animCurrencyFly;
+            _isGrinding = false;
+            _nftItemService = nftItemService;
+            nftItemService._onChangeGrindingStatus += OnChangeGrindingStatus;
+            nftItemService._onPingGrindSuccess += OnPingGrindSuccess;
+            nftItemService._onRefreshFreeNFTInfo += OnFreeNFTChangedData;
+            nftItemService._onReceiveVictoryMatch += OnVictoryMatch;
+            nftItemService._onListNFTFetchSuccessCallback += OnRefetchListNFT;
+            
+            ThetanSDKManager.Instance.OnChangeNetworkClientState += OnChangeNetworkClientState;
+            nftItemService.RegisterOnChangeNftItemData(OnChangeNFTItemData);
+            nftItemService.RegisterOnChangeSelectedNftHeroCallback(OnChangeSelectedNFT);
+
+            OnChangeNetworkClientState(ThetanSDKManager.Instance.NetworkClientState);
+        }
 
         private void OnDestroy()
         {
@@ -98,6 +116,9 @@ namespace ThetanSDK.UI
                     nftItemService.UnRegisterOnChangeSelectedNftHeroCallback(OnChangeSelectedNFT);
                     
                     nftItemService._onChangeGrindingStatus -= OnChangeGrindingStatus;
+                    nftItemService._onRefreshFreeNFTInfo -= OnFreeNFTChangedData;
+                    nftItemService._onReceiveVictoryMatch -= OnVictoryMatch;
+                    nftItemService._onListNFTFetchSuccessCallback -= OnRefetchListNFT;
                 }
             }
 
@@ -116,11 +137,9 @@ namespace ThetanSDK.UI
         {
             if (ThetanSDKManager.Instance.NetworkClientState != ThetanNetworkClientState.LoggedIn)
                 return;
-        
-            var nftService = ThetanSDKManager.Instance.NftItemService;
 
-            if (nftService.IsGrinding() &&
-                nftService.IsAllowPingGrindingServer)
+            if (_nftItemService.IsGrinding() &&
+                _nftItemService.IsAllowPingGrindingServer)
             {
                 _countTimePlayGrindingAnim += Time.unscaledDeltaTime;
 
@@ -128,11 +147,34 @@ namespace ThetanSDK.UI
                 {
                     _countTimePlayGrindingAnim = 0;
                     PlayAnimGrinding();
+
+                    if (_nftItemService.DicHeroNftIdToListIndex != null &&
+                        _nftItemService.DicHeroNftIdToListIndex.TryGetValue(_selectedHeroNFTInfo.id, out var index) &&
+                        index >= 0 && index < _nftItemService.ListHeroNftItems.Count &&
+                        _nftItemService.ListHeroNftItems[index].id == _selectedHeroNFTInfo.id)
+                    {
+                        _selectedHeroNFTInfo.grindInfo = _nftItemService.ListHeroNftItems[index].grindInfo;
+                    }
+                    SetUISlider(_selectedHeroNFTInfo);
                 }
             }
             else
             {
                 _countTimePlayGrindingAnim = 0;
+            }
+
+            if (!_selectedHeroNFTInfo.IsEmpty() &&
+                _selectedHeroNFTInfo.nftType == NFTType.FreeNFT &&
+                !_nftItemService.IsGrinding())
+            {
+                _countTimeUpdateUIFreeNFT += Time.unscaledDeltaTime;
+
+                if (_countTimeUpdateUIFreeNFT >= UPDATE_UI_FREE_NFT_SECOND_INTERVAL)
+                {
+                    _countTimeUpdateUIFreeNFT = 0;
+                    
+                    SetUISlider(_selectedHeroNFTInfo);
+                }
             }
         }
 
@@ -187,22 +229,6 @@ namespace ThetanSDK.UI
             _onClickOpenThetanWorld?.Invoke();
         }
 
-        public void Initialize(ShowAnimCurrencyFly animCurrencyFly, NftItemService nftItemService, Action onClickOpenThetanWorld)
-        {
-            _onClickOpenThetanWorld = onClickOpenThetanWorld;
-            _showAnimCurrencyFly = animCurrencyFly;
-            _isGrinding = false;
-            _nftItemService = nftItemService;
-            nftItemService._onChangeGrindingStatus += OnChangeGrindingStatus;
-            nftItemService._onPingGrindSuccess += OnPingGrindSuccess;
-            
-            ThetanSDKManager.Instance.OnChangeNetworkClientState += OnChangeNetworkClientState;
-            nftItemService.RegisterOnChangeNftItemData(OnChangeNFTItemData);
-            nftItemService.RegisterOnChangeSelectedNftHeroCallback(OnChangeSelectedNFT);
-
-            OnChangeNetworkClientState(ThetanSDKManager.Instance.NetworkClientState);
-        }
-
         private void OnPingGrindSuccess()
         {
             if (!_isGrinding)
@@ -237,10 +263,10 @@ namespace ThetanSDK.UI
 
             var defaullContentSize = _contentScale.localScale;
             _showAnimCurrencyFly.DoAnimCurrencyFly(this.transform as RectTransform);
-            if(_curCurrencyFlySequence != null && !_curCurrencyFlySequence.IsComplete())
+            if(_curCurrencyFlySequence != null && !_curCurrencyFlySequence.IsComplete)
                 _curCurrencyFlySequence.Kill();
 
-            _curCurrencyFlySequence = DOTween.Sequence();
+            _curCurrencyFlySequence = WolfTween.GetSequence();
 
             _curCurrencyFlySequence.Append(DOVirtual.DelayedCall(_currencyScaleDelay, () => { }));
             for (int i = 0; i < 2; i++)
@@ -256,7 +282,6 @@ namespace ThetanSDK.UI
             }
 
             _curCurrencyFlySequence.SetUpdate(true);
-            _curCurrencyFlySequence.Play();
         }
 
         private void OnChangeNetworkClientState(ThetanNetworkClientState newState)
@@ -334,6 +359,7 @@ namespace ThetanSDK.UI
         {
             if (string.IsNullOrEmpty(selectedNFTId))
             {
+                _selectedHeroNFTInfo = default;
                 SetUpUISelectNFT();
                 SetContentGreyScale();
             }
@@ -361,6 +387,35 @@ namespace ThetanSDK.UI
                 SetContentGreyScale();
             }
         }
+        
+        private async void OnFreeNFTChangedData(FreeNFTInfo freeNFT)
+        {
+            if (_nftItemService.SelectedHeroNftId == freeNFT.nftId && 
+                !string.IsNullOrEmpty(freeNFT.nftId))
+            {
+                var nftItemInfo = await ThetanSDKManager.Instance.GetHeroNftItemInfo(freeNFT.nftId);
+                _selectedHeroNFTInfo = nftItemInfo;
+                SetUISelectedNFT(nftItemInfo);
+                SetContentGreyScale();
+            }
+        }
+
+        private void OnVictoryMatch()
+        {
+            _animVictoryIcon.PlayAnimation();
+        }
+
+        private async void OnRefetchListNFT()
+        {
+            
+            if (!string.IsNullOrEmpty(ThetanSDKManager.Instance.SelectedHeroNftId))
+            {
+                var nftItemInfo = await ThetanSDKManager.Instance.GetHeroNftItemInfo(ThetanSDKManager.Instance.SelectedHeroNftId);
+                _selectedHeroNFTInfo = nftItemInfo;
+                SetUISelectedNFT(nftItemInfo);
+                SetContentGreyScale();
+            }
+        }
 
         private void SetUISelectedNFT(HeroNftItem data)
         {
@@ -369,11 +424,30 @@ namespace ThetanSDK.UI
             _imgIconThetanWorld.enabled = false;
             _avatarNFT.ShowUI(data.ingameInfo);
 
-            bool isMaxDailyGrindTime = data.grindInfo.grindTime >= data.grindInfo.maxGrindTime;
+            SetUISlider(data);
+
+            SetContentGreyScale();
+        }
+
+        private void SetUISlider(HeroNftItem data)
+        {
+            var grindTime = data.grindInfo.grindTime;
+            var maxGrindTime = data.grindInfo.maxGrindTime;
+            bool isMaxDailyGrindTime = grindTime >= maxGrindTime;
+            if (data.nftType == NFTType.FreeNFT)
+            {
+                var freeNftGrindTimeInfo = ThetanSDKUtilities.ConvertFreeNFTInfoToGrindTimeInfo(
+                    ThetanSDKManager.Instance.NftItemService.FreeNftInfo,
+                    data);
+
+                maxGrindTime = freeNftGrindTimeInfo.maxTime;
+                isMaxDailyGrindTime = freeNftGrindTimeInfo.grindTime >= maxGrindTime;
+            }
+            
 
             if (_imgGrindTimeInDay != null)
             {
-                var percentGrindTime = data.grindInfo.grindTime / data.grindInfo.maxGrindTime;
+                var percentGrindTime = grindTime/ maxGrindTime;
                 percentGrindTime = Mathf.Clamp01(percentGrindTime);
                 _imgGrindTimeInDay.fillAmount = percentGrindTime;
                 _imgGrindTimeInDay.color = isMaxDailyGrindTime ? _colorGrindTimeLimit : _colorGrindTimeNormal;
@@ -383,8 +457,6 @@ namespace ThetanSDK.UI
             {
                 _contentMaxDailyGrindTime.SetActive(isMaxDailyGrindTime || data.grindInfo.IsMaxLifeTime());
             }
-
-            SetContentGreyScale();
         }
 
         private void SetContentNoInternet(bool isNoInternet)
@@ -432,10 +504,10 @@ namespace ThetanSDK.UI
             _isPendingUnlockButton = false;
             _isLockButton = true;
             
-            if(_curAnimSequence != null && !_curAnimSequence.IsComplete())
+            if(_curAnimSequence != null && !_curAnimSequence.IsComplete)
                 _curAnimSequence.Complete();
             
-            _curAnimSequence = DOTween.Sequence();
+            _curAnimSequence = WolfTween.GetSequence();
 
             _curAnimSequence.Append(
                 _contentScale.DOScale(new Vector3(_scaleDownValue, _scaleDownValue, _scaleDownValue), _scaleDuration)
@@ -447,23 +519,24 @@ namespace ThetanSDK.UI
                     .SetUpdate(true)
                     .SetEase(Ease.OutQuad));
 
+            /*
             _curAnimSequence.Join(
                 _canvasGroupGrindTime.DOFade(0, _scaleDuration * 0.8f)
                     .SetUpdate(true)
                     .SetEase(Ease.OutQuad));
+            */
 
             _curAnimSequence.SetUpdate(true);
-            _curAnimSequence.Play();
         }
 
         private void ChangeUIToNormal()
         {
             CommonLog.Log("ChangeUIToNormal");
             
-            if(_curAnimSequence != null && !_curAnimSequence.IsComplete())
+            if(_curAnimSequence != null && !_curAnimSequence.IsComplete)
                 _curAnimSequence.Complete();
             
-            _curAnimSequence = DOTween.Sequence();
+            _curAnimSequence = WolfTween.GetSequence();
 
             _curAnimSequence.Append(
                 _contentScale.DOScale(new Vector3(1, 1, 1), _scaleDuration)
@@ -476,14 +549,15 @@ namespace ThetanSDK.UI
                     .SetUpdate(true)
                     .SetEase(Ease.OutQuad));
 
+            /*
             _curAnimSequence.Join(
                 _canvasGroupGrindTime.DOFade(1, _scaleDuration * 0.8f)
                     .SetDelay(_scaleDuration * 0.2f)
                     .SetUpdate(true)
                     .SetEase(Ease.OutQuad));
+            */
 
             _curAnimSequence.SetUpdate(true);
-            _curAnimSequence.Play();
 
             if (_isPendingUnlockButton)
             {
@@ -505,16 +579,18 @@ namespace ThetanSDK.UI
                 ChangeUIToGrinding();
             }
             
-            if(_curAnimSequence != null && !_curAnimSequence.IsComplete())
+            if(_curAnimSequence != null && !_curAnimSequence.IsComplete)
                 _curAnimSequence.Complete();
 
-            var curContentScaleValue = _contentScale.localScale;
+            var curContentScaleValue = new Vector3(_scaleDownValue, _scaleDownValue, _scaleDownValue);
 
             var targetScaleValue = curContentScaleValue * 0.8f;
 
             var scaleDownDuration = 0.15f;
             var scaleUpDuration = 0.15f;
             var scaleUpDelay = 0.1f;
+
+            _curAnimSequence = WolfTween.GetSequence();
             
             _curAnimSequence.Append(
                 _contentScale.DOScale(targetScaleValue, scaleDownDuration)
@@ -528,7 +604,6 @@ namespace ThetanSDK.UI
                     .SetDelay(scaleUpDelay));
 
             _curAnimSequence.SetUpdate(true);
-            _curAnimSequence.Play();
             
             if(_listAnimImgGrinding != null)
                 foreach(var anim in _listAnimImgGrinding)

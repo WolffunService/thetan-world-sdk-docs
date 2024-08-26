@@ -102,6 +102,7 @@ namespace Wolffun.RestAPI.ThetanAuth
 
         public void FixedUpdate()
         {
+            /*
             if (string.IsNullOrEmpty(_currentLoginCodeData.loginCode))
                 return;
 
@@ -121,6 +122,7 @@ namespace Wolffun.RestAPI.ThetanAuth
                 }
                 _countTime = 0;
             }
+            */
         }
 
         /// <param name="onSuccessCallback">Callback when ready for login with qr, callback with url to convert to qr code</param>
@@ -244,9 +246,9 @@ namespace Wolffun.RestAPI.ThetanAuth
             
             _websocket.Open();
 
-            var timeOutOpenWs = Time.time + 5;
+            var timeOutOpenWs = Time.unscaledTime + 5;
 
-            await UniTask.WaitUntil(() => _websocket.IsOpen || Time.time >= timeOutOpenWs);
+            await UniTask.WaitUntil(() => _websocket.IsOpen || Time.unscaledTime >= timeOutOpenWs);
 
             if (Time.unscaledTime >= timeOutOpenWs)
             {

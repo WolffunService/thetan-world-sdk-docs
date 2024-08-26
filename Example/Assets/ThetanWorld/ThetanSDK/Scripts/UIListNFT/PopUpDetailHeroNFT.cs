@@ -21,7 +21,7 @@ namespace ThetanSDK.UI
 
         private void ClosePopup()
         {
-            if(_popupContainer.CurrentPopup == this)
+            if(_popupContainer)
                 _popupContainer.Pop();
         }
 
@@ -46,10 +46,8 @@ namespace ThetanSDK.UI
 
         private void OnSelectHeroNFTCallback(HeroNftItem selectedNFT)
         {
-            if(selectedNFT.IsEmpty())
-                _popupContainer.Pop();
-            
             _onSelectCallback?.Invoke(selectedNFT);
+            ClosePopup();
         }
     }
 }

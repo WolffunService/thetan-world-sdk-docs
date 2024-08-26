@@ -35,6 +35,7 @@ namespace ThetanSDK.UI.Authen
 
         private ContentType _currentContentType;
         private Action _onClickRetryQRCode;
+        private bool _disableLoginTapOnThetaApp;
         
         private void Awake()
         {
@@ -51,9 +52,19 @@ namespace ThetanSDK.UI.Authen
             ChangeContentType(ContentType.TapOnThetanApp);
         }
 
+        public void DisableTapOnThetanApp()
+        {
+            _disableLoginTapOnThetaApp = true;
+            if (_currentContentType == ContentType.TapOnThetanApp)
+            {
+                ChangeContentType(ContentType.QRCode);
+            }
+        }
+
         private void OnClickSwitchLoginType()
         {
-            if (_currentContentType == ContentType.QRCode)
+            if (_currentContentType == ContentType.QRCode && 
+                !_disableLoginTapOnThetaApp)
             {
                 ChangeContentType(ContentType.TapOnThetanApp);
             }
@@ -95,6 +106,10 @@ namespace ThetanSDK.UI.Authen
 
         private void ChangeContentType(ContentType newContentType)
         {
+            if (newContentType == ContentType.TapOnThetanApp &&
+                _disableLoginTapOnThetaApp)
+                return;
+            
             _currentContentType = newContentType;
 
             if (newContentType == ContentType.TapOnThetanApp)

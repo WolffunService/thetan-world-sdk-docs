@@ -7,7 +7,7 @@ namespace ThetanSDK.UI
     {
         [SerializeField] private ScreenDetailHeroNFT prefabScreenDetailHeroNft;
 
-        protected async override void OnSelectItem(HeroNftItem data)
+        protected async override void OnClickItem(HeroNftItem data)
         {
             var instance = await _screenContainer.PushScreen(prefabScreenDetailHeroNft) as ScreenDetailHeroNFT;
             

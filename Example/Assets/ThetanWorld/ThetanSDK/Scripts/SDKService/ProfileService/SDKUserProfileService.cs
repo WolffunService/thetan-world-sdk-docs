@@ -27,7 +27,9 @@ namespace ThetanSDK.SDKServices.Profile
         /// User profile data
         /// </summary>
         private SDKUserProfileModel _profileData;
-        
+
+        internal Action<SDKUserProfileModel> OnChangeProfileDataCallback;
+
         /// <summary>
         /// Previous network client state
         /// </summary>
@@ -59,6 +61,7 @@ namespace ThetanSDK.SDKServices.Profile
             authenProcessContainer.WFIDAuthenProcess.RegisterPostAuthenProcessor(this);
             authenProcessContainer.ThetanAppAuthenProcess.RegisterPostAuthenProcessor(this);
             _networkClient.SubcribeOnChangeNetworkClientState(HandleOnChangeNetworkClientState);
+            _networkClient.SubcribeOnReAuthenCallback(HandleOnReAuthen);
             _prevNetworkClientState = _networkClient.NetworkClientState;
             
             if (_networkClient.NetworkClientState != ThetanNetworkClientState.LoggedIn)
@@ -107,6 +110,12 @@ namespace ThetanSDK.SDKServices.Profile
             _prevNetworkClientState = newState;
         }
 
+        private void HandleOnReAuthen()
+        {
+            OnUserLogOut();
+            CallGetUserProfile(null, null);
+        }
+
         private void OnDestroy()
         {
             if (ThetanSDKManager.IsAlive)
@@ -126,6 +135,7 @@ namespace ThetanSDK.SDKServices.Profile
         {
             _profileData = _profileData.SetDefault();
             _localDataLoadSaver.SaveDataLocal(new SDKUserProfileModel().SetDefault(), SAVE_FILE_NAME);
+            ClearDataService();
         }
 
         /// <summary>
@@ -161,6 +171,7 @@ namespace ThetanSDK.SDKServices.Profile
             {
                 _profileData = userProfile;
                 _localDataLoadSaver.SaveDataLocal(_profileData, SAVE_FILE_NAME);
+                OnChangeProfileDataCallback?.Invoke(_profileData);
                 onSuccessCallback?.Invoke(userProfile);
             }, onErrorCallback, AuthType.TOKEN);
         }

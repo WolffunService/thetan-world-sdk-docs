@@ -5,6 +5,7 @@ using UnityEngine;
 using Wolffun.Log;
 using Wolffun.RestAPI;
 using Wolffun.RestAPI.ThetanAuth;
+//using QRCoder;
 
 namespace ThetanSDK.UI.Authen.UIProcess
 {
@@ -20,21 +21,27 @@ namespace ThetanSDK.UI.Authen.UIProcess
             base.InitializeProcess(screenContainer, uiHelperContainer, networkClient, authenProcessContainer, onChangeProcessStepIndex, onAuthenSuccess, onCancelProcess);
 
             _thetanAppAuthenProcess = authenProcessContainer.ThetanAppAuthenProcess;
+            
         }
 
         public void SetUpContentUILoginWithThetanApp(ContentUILoginWithThetanApp uiLoginWithThetanApp)
         {
+            /*
             _uiLoginWithThetanApp = uiLoginWithThetanApp;
             _uiLoginWithThetanApp.ShowQRPlaceHolder();
             _uiLoginWithThetanApp.OnUserClickOpenThetanAppCallback -= StartLoginUsingThetanApp;
             _uiLoginWithThetanApp.OnUserClickOpenThetanAppCallback += StartLoginUsingThetanApp;
-
+            if (string.IsNullOrEmpty(_networkClient.NetworkConfig.DeepLinkUrl))
+            {
+                _uiLoginWithThetanApp.DisableTapOnThetanApp();
+            }
             PrepareQRCode();
+            */
         }
 
         private void PrepareQRCode()
         {
-            /* Bring back QRCode later
+            /*
             _thetanAppAuthenProcess.PrepareForLoginWithQRCode(_networkClient, ShowQRCode, error =>
                 {
                     QRCodeGenerator qrGenerator = new QRCodeGenerator();
@@ -110,8 +117,7 @@ namespace ThetanSDK.UI.Authen.UIProcess
 
         public void ClearCacheData()
         {
-            // Todo: uncomment me later
-            //_thetanAppAuthenProcess.ClearCache();
+            _thetanAppAuthenProcess.ClearCache();
             
             if(_uiLoginWithThetanApp != null)
                 _uiLoginWithThetanApp.OnUserClickOpenThetanAppCallback -= StartLoginUsingThetanApp;

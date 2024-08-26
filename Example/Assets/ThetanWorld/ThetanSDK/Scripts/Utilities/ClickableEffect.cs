@@ -1,9 +1,9 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
-using DG.Tweening;
 using UnityEngine.UI;
 using Cysharp.Threading.Tasks;
 using Wolffun.Log;
+using Wolffun.Tweening;
 
 namespace ThetanSDK.Utilities
 {

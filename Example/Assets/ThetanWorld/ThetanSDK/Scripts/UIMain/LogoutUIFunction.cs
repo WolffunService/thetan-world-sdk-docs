@@ -17,10 +17,10 @@ public class LogoutUIFunction : MonoBehaviour
         _btnLogout.onClick.AddListener(OnClickLogOut);
     }
 
-    public void Initialize(UIHelperContainer uiHelperContainer, Action onLogOutCallback)
+    public void Initialize(UIHelperContainer uiHelperContainer, Action onConfirmLogOutCallback)
     {
         _uiHelperContainer = uiHelperContainer;
-        _onLogOutCallback = onLogOutCallback;
+        _onLogOutCallback = onConfirmLogOutCallback;
     }
 
     private async void OnClickLogOut()

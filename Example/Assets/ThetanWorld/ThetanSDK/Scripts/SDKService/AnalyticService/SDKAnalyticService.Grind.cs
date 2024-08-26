@@ -1,4 +1,5 @@
 ﻿using System;
+using ThetanSDK.SDKServices.NFTItem;
 
 namespace ThetanSDK.SDKServices.Analytic
 {
@@ -16,7 +17,8 @@ namespace ThetanSDK.SDKServices.Analytic
         /// Log analytic grinding flow for SDK
         /// </summary>
         /// <param name="timeBattle">only available when step is EndBattle</param>
-        public async void LogBattleFlow(string grindingHeroNftId, string grindingSessionId, BattleFlowStep step, int timeBattle = -1)
+        public async void LogBattleFlow(string grindingHeroNftId, string grindingSessionId, BattleFlowStep step, int timeBattle = -1,
+            MatchResult matchResult = MatchResult.Draw)
         {
             try
             {
@@ -40,6 +42,7 @@ namespace ThetanSDK.SDKServices.Analytic
                 _dataLog["game_version"] = ThetanSDKManager.Instance.Version;
                 _dataLog["time_battle"] = timeBattle.ToString();
                 _dataLog["trigger_at"] = step.ToString();
+                _dataLog["battle_result"] = ((int)matchResult).ToString();
 
                 LogEvent("tw_sdk_battle_flow", _dataLog);
             }

@@ -1,4 +1,5 @@
 using ThetanSDK;
+using ThetanSDK.SDKServices.NFTItem;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -22,8 +23,11 @@ public class IngameController : MonoBehaviour
         if (ThetanSDKManager.Instance.IsGrindingAnyHeroNftItem)
         {
             Debug.Log("Stop Grind");
-            ThetanSDKManager.Instance.StopGrindingHeroItem();
-            ThetanSDKManager.Instance.UnlockButtonMain();
+            ThetanSDKManager.Instance.StopGrindingHeroItem(new EndMatchInfo()
+            {
+                matchResult = MatchResult.Win,
+                gameLevel = 1
+            });
         }
     }
 }

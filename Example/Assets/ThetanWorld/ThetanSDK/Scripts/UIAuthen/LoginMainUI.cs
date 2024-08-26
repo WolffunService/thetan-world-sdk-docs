@@ -37,7 +37,7 @@ namespace ThetanSDK.UI
             if(_screenContainer != null)
                 _screenContainer.PopAllScreen();
             
-            _thetanAppAuthenUIProcess.ClearCacheData();
+            //_thetanAppAuthenUIProcess.ClearCacheData();
             
             _onCancelCallback?.Invoke();
         }
@@ -49,7 +49,6 @@ namespace ThetanSDK.UI
             _wfidUIProcess.InitializeProcess(this._screenContainer, _uiHelperContainer, networkClient, authenProcessContainer,
                 OnChangeProgressStepIndex, OnAuthenSuccess, OnProcessCancel);
             
-            // Todo: uncomment me later
             //_thetanAppAuthenUIProcess.InitializeProcess(_screenContainer, _uiHelperContainer, networkClient, authenProcessContainer,
             //    OnChangeProgressStepIndex, OnAuthenSuccess, OnProcessCancel);
             
@@ -65,9 +64,8 @@ namespace ThetanSDK.UI
 
             var screenLoginMethod = await _screenContainer.PushScreen(_prefabScreenSelectLoginMethod) as ScreenSelectLoginMethod;
             
-            screenLoginMethod.Initialize(OnClickLoginMethod, OnClickRegisterMethod);
+            screenLoginMethod.Initialize(OnClickLoginMethod, OnClickRegisterMethod, OnClickPlayAsGuest);
             
-            // Todo: uncomment me later
             //_thetanAppAuthenUIProcess.SetUpContentUILoginWithThetanApp(screenLoginMethod.UILoginWithThetanApp);
             
             OnAfterPushScreen();
@@ -103,13 +101,17 @@ namespace ThetanSDK.UI
 
             OnStartProgress(processInfo);
         }
+        
+        private async void OnClickPlayAsGuest()
+        {
+            _wfidUIProcess.StartPlayAsGuestProcess();
+        }
 
         private void OnAuthenSuccess(AuthenResultData result)
         {
-            Debug.Log("OnAuthenSuccess");
             _onAuthenSuccess?.Invoke(result);
             
-            _thetanAppAuthenUIProcess.ClearCacheData();
+            //_thetanAppAuthenUIProcess.ClearCacheData();
         }
 
         private void OnStartProgress(AuthenProcessInfo progressInfo)

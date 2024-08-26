@@ -31,6 +31,8 @@
 
         GameMaintainServer = 18,
         
+        DoNotHavePermission = 403,
+        
         ServerMaintenance = 503,
 
         //wolffunId ERROR_CODE 2001 -> 3000:

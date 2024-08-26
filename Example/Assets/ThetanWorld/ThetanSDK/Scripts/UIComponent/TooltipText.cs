@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
-using DG.Tweening;
+using Wolffun.Tweening;
 using TMPro;
 using UnityEditor;
 using UnityEngine;
@@ -223,7 +223,7 @@ namespace ThetanSDK.UI
                 secondAlignmentSize = contentSize.y;
                 secondAlignmentMax = viewPortSize.y;
             }
-            else if (mainAlignment == MainAlignment.Top)
+            else if (mainAlignment == MainAlignment.Bottom)
             {
                 if (localPosition.y + contentSize.y > viewPortSize.y)
                     mainAlignment = FlipMainAlignment(mainAlignment);
@@ -232,7 +232,7 @@ namespace ThetanSDK.UI
                 secondAlignmentSize = contentSize.x;
                 secondAlignmentMax = viewPortSize.x;
             }
-            else if (mainAlignment == MainAlignment.Bottom)
+            else if (mainAlignment == MainAlignment.Top)
             {
                 if (localPosition.y - contentSize.y < 0)
                     mainAlignment = FlipMainAlignment(mainAlignment);
@@ -269,7 +269,7 @@ namespace ThetanSDK.UI
 
         private MainAlignment FlipMainAlignment(MainAlignment alignment)
         {
-            return (MainAlignment)(4 - (int)alignment);
+            return (MainAlignment)(3 - (int)alignment);
         }
     }
 }

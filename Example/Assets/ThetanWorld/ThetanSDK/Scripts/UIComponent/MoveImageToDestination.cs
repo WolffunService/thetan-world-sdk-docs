@@ -1,10 +1,11 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using DG.Tweening;
 using ThetanSDK.Utilities;
 using UnityEngine;
 using UnityEngine.UI;
+using Wolffun.Tweening;
+using Ease = Wolffun.Tweening.Ease;
 
 namespace ThetanSDK.UI
 {
@@ -22,22 +23,23 @@ namespace ThetanSDK.UI
         [SerializeField] private float _fadeOutDuration;
         [SerializeField] private Ease _fadeOutEase;
 
-        private Sequence _curSequence;
+        private TweenSequence _curSequence;
 
         private void Awake()
         {
             _imgItem.SetAlphaImg(0);
         }
 
+        [ContextMenu("PlayAnim")]
         public void PlayAnim()
         {
-            if(_curSequence != null && !_curSequence.IsComplete())
+            if(_curSequence != null && !_curSequence.IsComplete)
                 _curSequence.Complete();
 
             _imgItem.transform.position = _startPosition.position;
             _imgItem.SetAlphaImg(0);
 
-            _curSequence = DOTween.Sequence();
+            _curSequence = WolfTween.GetSequence();
 
             _curSequence.Append(_imgItem.DOFade(1, _fadeInDuration)
                 .SetEase(_fadeInEase)
@@ -50,7 +52,6 @@ namespace ThetanSDK.UI
                 .SetEase(_fadeOutEase)
                 .SetUpdate(true));
             _curSequence.SetUpdate(true);
-            _curSequence.Play();
         }
     }
 }

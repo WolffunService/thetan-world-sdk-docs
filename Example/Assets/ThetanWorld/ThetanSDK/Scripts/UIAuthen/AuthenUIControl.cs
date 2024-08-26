@@ -11,19 +11,19 @@ namespace ThetanSDK.UI
     {
         private LoginMainUI _instanceLoginUI;
 
-        public void ShowUISelectLoginMethodWithCloseButton(bool isFullscreen, NetworkClient networkClient,
+        public void ShowUISelectLoginMethodWithCloseButton(NetworkClient networkClient,
             AuthenProcessContainer authenProcessContainer,
             Action<AuthenResultData> onAuthenSuccess, Action onCancelCallback)
         {
-            _instanceLoginUI = Instantiate(GetPrefabLoginUI(isFullscreen), this.transform).GetComponent<LoginMainUI>();
+            _instanceLoginUI = Instantiate(GetPrefabLoginUI(false), this.transform).GetComponent<LoginMainUI>();
             _instanceLoginUI.InitializeUI(networkClient, authenProcessContainer);
             _instanceLoginUI.ShowScreenSelectLoginMethod(onAuthenSuccess, onCancelCallback);
         }
 
-        public void ShowUILinkAccount(bool isFullscreen, NetworkClient networkClient, AuthenProcessContainer authenProcessContainer,
+        public void ShowUILinkAccount(NetworkClient networkClient, AuthenProcessContainer authenProcessContainer,
             Action<AuthenResultData> onLinkAccountSuccess, Action onCancelCallback)
         {
-            _instanceLoginUI = Instantiate(GetPrefabLoginUI(isFullscreen), this.transform).GetComponent<LoginMainUI>();
+            _instanceLoginUI = Instantiate(GetPrefabLoginUI(false), this.transform).GetComponent<LoginMainUI>();
             _instanceLoginUI.InitializeUI(networkClient, authenProcessContainer);
             _instanceLoginUI.ShowScreenLinkAccount(onLinkAccountSuccess, onCancelCallback);
         }

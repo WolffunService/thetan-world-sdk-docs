@@ -17,6 +17,8 @@ namespace ThetanSDK.UI
         [SerializeField] private Image _imgPlaceHolder;
         [SerializeField] private Image _imgRarityBackground;
         [SerializeField] private NFTRarityAvatarBackgroundConfig _nftRarityConfig;
+
+        private SpriteCacheManager _spriteCacheManager;
         
         private uint _loadImgId = 0;
         private string _curImgUrl;
@@ -43,6 +45,11 @@ namespace ThetanSDK.UI
             }
         }
 
+        public void SetSpriteCacheManager(SpriteCacheManager spriteCacheManager)
+        {
+            _spriteCacheManager = spriteCacheManager;
+        }
+        
         public async void ShowUI(NftIngameInfo ingameInfo)
         {
             if (_imgRarityBackground)
@@ -79,10 +86,12 @@ namespace ThetanSDK.UI
 #if UNITY_2021_3_OR_NEWER
             imgTexture.ignoreMipmapLimit = true;
 #endif
-            var heroSpr = ThetanSDKUtilities.CreateSpriteFromTexture2D(imgTexture);
-
-            _imgAvatar.sprite = heroSpr;
             
+            if (_spriteCacheManager != null)
+                _imgAvatar.sprite = _spriteCacheManager.CreateAndCacheSprite(imgUrl, imgTexture);
+            else
+                _imgAvatar.sprite = ThetanSDKUtilities.CreateSpriteFromTexture2D(imgTexture);
+
             if(_imgPlaceHolder)
                 _imgPlaceHolder.enabled = false;
             _imgAvatar.enabled = true;

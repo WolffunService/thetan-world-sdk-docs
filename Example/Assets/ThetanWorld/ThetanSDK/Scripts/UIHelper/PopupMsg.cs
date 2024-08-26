@@ -1,11 +1,11 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using DG.Tweening;
 using JetBrains.Annotations;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Wolffun.Tweening;
 
 public class PopupMsg : Popup
 {
@@ -145,9 +145,10 @@ public class PopupMsg : Popup
                 _canvasGroupPopup.blocksRaycasts = false;
                 _canvasGroupPopup.interactable = false;
 
-                _popupContent.localScale = Vector3.zero;
+                if(_popupContent != null)
+                    _popupContent.localScale = Vector3.zero;
                 
-                if(_popupContainer.CurrentPopup == this)
+                if (_popupContainer != null && _popupContainer.CurrentPopup == this)
                     _popupContainer.Pop();
             });
     }

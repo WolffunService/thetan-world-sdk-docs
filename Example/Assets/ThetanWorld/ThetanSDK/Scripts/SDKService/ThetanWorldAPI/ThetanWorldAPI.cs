@@ -3,11 +3,13 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
+using ThetanSDK.SDKServices.NFTItem;
 
 namespace Wolffun.RestAPI.ThetanWorld
 {
     public static class ThetanWorldAPI
     {
+        
         public static void FetchListNFT(List<NFTSortType> listSort, int limit, int page, Action<ListHeroNftItems> result,
             Action<WolffunResponseError> error)
         {
@@ -100,14 +102,24 @@ namespace Wolffun.RestAPI.ThetanWorld
         public static void StartGrindingHeroNftItem(string nftId, int timeOutGrind, Action<string> successCallback,
             Action<WolffunResponseError> errorCallback)
         {
+            if (timeOutGrind == 0)
+                timeOutGrind = 15 * 60; // default is 15 minutes
+            
             WolffunRequestCommon reqCommon = WolffunRequestCommon
                 .Create(WolffunUnityHttp.Settings.ThetanWorldURL + $"/nfts/{nftId}/grind/prepare")
                 .Post(WolffunRequestBody.From(new
                 {
                     timeOutGrind = timeOutGrind,
                 }));
-            
-            WolffunUnityHttp.Instance.MakeAPI(reqCommon, successCallback, errorCallback, AuthType.TOKEN_AND_CLIENT_SECRET);
+            GetFirebaseAppCheckToken(token =>
+            {
+                if(!string.IsNullOrEmpty(token))
+                    reqCommon.AddHeader("X-Firebase-AppCheck", token);
+                WolffunUnityHttp.Instance.MakeAPI(reqCommon, successCallback, errorCallback, AuthType.TOKEN_AND_CLIENT_SECRET);
+            }, () =>
+            {
+                WolffunUnityHttp.Instance.MakeAPI(reqCommon, successCallback, errorCallback, AuthType.TOKEN_AND_CLIENT_SECRET);
+            });
         }
 
         public static void PingGrindingServer(string nftId, int grindTimeIncrease, Action<object> successCallback,
@@ -119,20 +131,38 @@ namespace Wolffun.RestAPI.ThetanWorld
                 {
                     grindTimeInc = grindTimeIncrease
                 }));
-            
-            WolffunUnityHttp.Instance.MakeAPI(reqCommon, successCallback, errorCallback, AuthType.TOKEN_AND_CLIENT_SECRET);
+            GetFirebaseAppCheckToken(token =>
+            {
+                if(!string.IsNullOrEmpty(token))
+                    reqCommon.AddHeader("X-Firebase-AppCheck", token);
+                WolffunUnityHttp.Instance.MakeAPI(reqCommon, successCallback, errorCallback, AuthType.TOKEN_AND_CLIENT_SECRET);
+            }, () =>
+            {
+                WolffunUnityHttp.Instance.MakeAPI(reqCommon, successCallback, errorCallback, AuthType.TOKEN_AND_CLIENT_SECRET);
+            });
         }
 
-        public static void StopGrindingHeroNftItem(string nftId, Action<object> successCallback,
+        public static void StopGrindingHeroNftItem(string nftId, EndMatchInfo endMatchInfo, Action<object> successCallback,
             Action<WolffunResponseError> errorCallback)
         {
             WolffunRequestCommon reqCommon = WolffunRequestCommon
                 .Create(WolffunUnityHttp.Settings.ThetanWorldURL + $"/nfts/{nftId}/grind/end")
-                .Post(WolffunRequestBody.From(new
-                {
-                }));
-            
-            WolffunUnityHttp.Instance.MakeAPI(reqCommon, successCallback, errorCallback, AuthType.TOKEN_AND_CLIENT_SECRET);
+                .Post(WolffunRequestBody.From(endMatchInfo));
+
+            GetFirebaseAppCheckToken(token =>
+            {
+                if(!string.IsNullOrEmpty(token))
+                    reqCommon.AddHeader("X-Firebase-AppCheck", token);
+                WolffunUnityHttp.Instance.MakeAPI(reqCommon, successCallback, errorCallback, AuthType.TOKEN_AND_CLIENT_SECRET);
+            }, () =>
+            {
+                WolffunUnityHttp.Instance.MakeAPI(reqCommon, successCallback, errorCallback, AuthType.TOKEN_AND_CLIENT_SECRET);
+            });
+        }
+
+        private static void GetFirebaseAppCheckToken(Action<string> successCallback, Action failCallback)
+        {
+            successCallback?.Invoke("skip");
         }
 
         public static void GetDailySummaryNFTItem(Action<NFTItemDailySummaryDataReponse> resultCallback,
@@ -154,6 +184,34 @@ namespace Wolffun.RestAPI.ThetanWorld
                 .Create(WolffunUnityHttp.Settings.ThetanWorldURL + $"/user/statistic")
                 .Get();
             
+            WolffunUnityHttp.Instance.MakeAPI(reqCommon, resultCallback, errorCallback, AuthType.TOKEN);
+        }
+
+        public static void FetchFreeNFTInfo(Action<FreeNFTInfo> resultCallback,
+            Action<WolffunResponseError> errorCallback)
+        {
+            WolffunRequestCommon reqCommon = WolffunRequestCommon
+                .Create(WolffunUnityHttp.Settings.ThetanWorldURL + $"/user/free-nft")
+                .Get();
+            
+            WolffunUnityHttp.Instance.MakeAPI(reqCommon, resultCallback, errorCallback, AuthType.TOKEN);
+        }
+
+        public static void ClaimFreeNFT(Action<HeroNftItem> resultCallback, Action<WolffunResponseError> errorCallback)
+        {
+            WolffunRequestCommon reqCommon = WolffunRequestCommon
+                .Create(WolffunUnityHttp.Settings.ThetanWorldURL + $"/user/free-nft/claim")
+                .Post(WolffunRequestBody.From(new {}));
+            
+            WolffunUnityHttp.Instance.MakeAPI(reqCommon, resultCallback, errorCallback, AuthType.TOKEN);
+        }
+
+        public static void GetFreeNFTConfig(Action<FreeNFTConfig> resultCallback, Action<WolffunResponseError> errorCallback)
+        {
+            WolffunRequestCommon reqCommon = WolffunRequestCommon
+                .Create(WolffunUnityHttp.Settings.ThetanWorldURL + $"/user/free-nft/config")
+                .Get();
+
             WolffunUnityHttp.Instance.MakeAPI(reqCommon, resultCallback, errorCallback, AuthType.TOKEN);
         }
     }
