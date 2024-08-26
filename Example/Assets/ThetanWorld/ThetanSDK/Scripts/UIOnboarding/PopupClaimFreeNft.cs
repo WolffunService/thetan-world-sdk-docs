@@ -38,7 +38,7 @@ public class PopupClaimFreeNft : Popup
         var freeNFTConfig = nftItemService.FreeNFTConfig;
         _avatarImg.ShowUI(freeNFTConfig.freeHero);
         _nameTxt.SetText(freeNFTConfig.freeHero.name);
-        _rewardTxt.SetText($"{(int)freeNFTConfig.avgFreeEarnHourlyMin} - {(int)freeNFTConfig.avgFreeEarnHourlyMax}/h");
+        _rewardTxt.SetText($"{(int)(freeNFTConfig.avgFreeEarnHourlyMin/freeNFTConfig.thgRate)} - {(int)freeNFTConfig.avgFreeEarnHourlyMax/freeNFTConfig.thgRate}/h");
     }
 
     private void ClaimFreeNFT()

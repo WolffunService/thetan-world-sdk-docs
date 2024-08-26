@@ -1239,7 +1239,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 1269010540, guid: 65d5beb00eee47545aa8414fa303e355, type: 3}
+  m_Sprite: {fileID: 21300000, guid: fc007d53e2150344cb7852336db30092, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -3495,7 +3495,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: -2049052775, guid: e98e48152d02a2a439a00437037eaf0f, type: 3}
+  m_Sprite: {fileID: 21300000, guid: e98e48152d02a2a439a00437037eaf0f, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -5760,7 +5760,7 @@ PrefabInstance:
     - target: {fileID: 970428975884952838, guid: 4022440b326405345b5a62caec7a6355, type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: -2049052775, guid: e98e48152d02a2a439a00437037eaf0f, type: 3}
+      objectReference: {fileID: 21300000, guid: e98e48152d02a2a439a00437037eaf0f, type: 3}
     - target: {fileID: 970428975884952838, guid: 4022440b326405345b5a62caec7a6355, type: 3}
       propertyPath: m_Maskable
       value: 0
@@ -6025,7 +6025,7 @@ PrefabInstance:
     - target: {fileID: 970428975884952838, guid: 4022440b326405345b5a62caec7a6355, type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: -2049052775, guid: e98e48152d02a2a439a00437037eaf0f, type: 3}
+      objectReference: {fileID: 21300000, guid: e98e48152d02a2a439a00437037eaf0f, type: 3}
     - target: {fileID: 970428975884952838, guid: 4022440b326405345b5a62caec7a6355, type: 3}
       propertyPath: m_Maskable
       value: 0
@@ -6720,7 +6720,7 @@ PrefabInstance:
     - target: {fileID: 970428975884952838, guid: 4022440b326405345b5a62caec7a6355, type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: -2049052775, guid: e98e48152d02a2a439a00437037eaf0f, type: 3}
+      objectReference: {fileID: 21300000, guid: e98e48152d02a2a439a00437037eaf0f, type: 3}
     - target: {fileID: 970428975884952838, guid: 4022440b326405345b5a62caec7a6355, type: 3}
       propertyPath: m_Color.b
       value: 1
