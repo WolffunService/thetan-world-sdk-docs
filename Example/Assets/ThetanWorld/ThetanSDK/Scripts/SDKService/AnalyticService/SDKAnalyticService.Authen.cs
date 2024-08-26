@@ -44,6 +44,8 @@ namespace ThetanSDK.SDKServices.Analytic
                 _dataLog["wallet_provider"] = profileService.WalletProvider;
                 _dataLog["nft_hero_balance"] = countNFTHero.ToString();
                 _dataLog["gthg_balance"] = walletInfo.gTHG.ToString();
+                _dataLog["gthw_balance"] = walletInfo.gTHW.ToString();
+                _dataLog["gusdt_balance"] = walletInfo.gUSDT.ToString();
                 
                 LogEvent("tw_sdk_login_success", _dataLog);
             }
@@ -66,6 +68,8 @@ namespace ThetanSDK.SDKServices.Analytic
         private struct UserWalletInfo
         {
             public long gTHG;
+            public long gTHW;
+            public long gUSDT;
         }
     }
 }

@@ -8,7 +8,6 @@ Grind process with be splitted into phases that depend on your game to decide wh
 - **Start Grind**: This phase is called by your game to start grind for NFT. Grinding will be count every 5 second tick.
 - **Pause Grind**: This phase is optional, you can call this phase when your game mechanic support pause game when playing or something similar to that. You can resume grinding by calling Start Grind again.
 - **End Grind**: This phase is called by your game to end grinding session and unlock selected NFT.
-- **Unlock UI Thetan World**: This phase is called by your game to unlock Thetan World UI interaction after grinding session is completed.
 
 ## Table of Contents
 
@@ -38,7 +37,6 @@ Grind process with be splitted into phases that depend on your game to decide wh
 
 ### **Step 2**: Import SDK
 Download [ThetanWorldSDK.unitypackage](https://github.com/WolffunService/thetan-world-sdk-docs/blob/main/ThetanWorldSDK.unitypackage) and import it into your project
->Note: Incase your project already have Dotween Package and you receive compile error message about some Dotween function cannot be found. That because SDK depend on Dotween/Modules and the one in SDK is not imported due to one has already existed in your project. You can add your Dotween assembly into ThetanWorld/ThetanSDK/ThetanSDK.asmdef. If your Dotween folder does not have assembly, you can create one at Dotween folder and add to ThetanSDK.asmdef.
 
 ### **Step 3:** CreateNetworkConfig
 On menu bar, select Tools -> Wolffun -> CreateNetworkConfig
@@ -69,7 +67,7 @@ If your project does not depend on these packages, please delete them from your 
 ]
 ```
 
-And also please upgrade package "com.wolffun.download-from-storage" to version 1.0.17
+And also upgrade package "com.wolffun.download-from-storage" to version 1.0.17
 ```json
 [
     "com.wolffun.download-from-storage": "https://github.com/WolffunService/DownloadFromStorage.git#1.0.17"
@@ -90,7 +88,7 @@ Instantiate prefab "ThetanSDK - Partner" in the package folder. After you instan
 To show button Thetan World, you can call [``ThetanSDKManager.Instance.ShowButtonMainAction``](#showbuttonmainaction). you can call [``ThetanSDKManager.Instance.HideButtonMainAction``](#hidebuttonmainaction) to hide button Thetan World.
 
 ### **Step 3:** Prepare to start match
-Before you start the match, you should check if user is selecting any nft hero for grinding by calling ``ThetanSDKManager.Instance.IsSelectedAnyHeroNftItem``. If user select any nft hero for grinding, you can call [``ThetanSDKManager.Instance.PrepareMatchForSelectedNFT``](#preparematchforselectednft) to lock nft and prepare that nft for grinding. After [``PrepareMatchForSelectedNFT``](#preparematchforselectednft) return success, main button will become non-interactable, user can only drag them around. If you desired to turn off completely the button when user play game, you can call [``ThetanSDKManager.Instance.HideButtonMainAction``](#hidebuttonmainaction).
+Before you start the match, you should check if user is selecting any nft hero for grinding by calling ``ThetanSDKManager.Instance.IsSelectedAnyHeroNftItem``. If user select any nft hero for grinding, you can call [``ThetanSDKManager.Instance.PrepareMatchForSelectedNFT``](#preparematchforselectednft) to lock nft and prepare that nft for grinding. After [``PrepareMatchForSelectedNFT``](#preparematchforselectednft) return success, main button will become non-interactable, user can only drag them around. If you want to turn off completely the button when user play game, you can call [``ThetanSDKManager.Instance.HideButtonMainAction``](#hidebuttonmainaction).
 
 ### **Step 4:** Start Grinding
 After you load into the game success after [``PrepareMatchForSelectedNFT``](#preparematchforselectednft), you should call [``ThetanSDKManager.Instance.StartGrindingHeroItem``](#startgrindingheroitem) to start grinding user's selected nft
@@ -100,14 +98,12 @@ After you load into the game success after [``PrepareMatchForSelectedNFT``](#pre
 >**Step 4.1 (Optional):** If your game have pause match behaviour, you can call [``ThetanSDKManager.Instance.PauseGrindingHeroItem``](#pausegrindingheroitem) to pause grinding user's nft. After that, you can call [``ThetanSDKManager.Instance.StartGrindingHeroItem``](#startgrindingheroitem) to resume grinding again.
 
 ### **Step 5:** Stop Grinding
-After the match end, you should call [``ThetanSDKManager.Instance.StopGrindingHeroItem``](#stopgrindingheroitem) to end grinding session and unlock selected NFT.
-
-### **Step 6:** Unlock Main Button
-After [``ThetanSDKManager.Instance.StopGrindingHeroItem``](#stopgrindingheroitem), you can call [``ThetanSDKManager.Instance.UnlockButtonMain``](#unlockbuttonmain) to unlock interaction with Thetan World UI again.
->Notice: this step is REQUIRED for user to start interaction with ui thetan world after grinding session.
+After the match end, you should call [``ThetanSDKManager.Instance.StopGrindingHeroItem``](#stopgrindingheroitem) to end grinding session and unlock selected NFT. This function required you to pass [``EndMatchInfo``](#endmatchinfo) as parameter, our system use this info to calculate user's rewards.
+- [``EndMatchInfo``](#endmatchinfo) **REQUIRE** field ``matchResult``, this field indicate the result of grinding match is win, lose or draw.
+- The optional field ``gameLevel`` indicate the level of grinding match, it only used when your game is level-based mechanism (example: Candy Crush, Puzzle games, ...)
 
 ## Testing
-First, you need add script define: **STAGING**
+First, you need add script define: **STAGING** 
 
 After that, login and use SDK. You have 2 options for Thetan ID account:
 
@@ -115,7 +111,8 @@ After that, login and use SDK. You have 2 options for Thetan ID account:
 
 - Option2: Login with Thetan ID by email: thetanarenatest@gmail.com and use verify code is  **111111**.
 
->Notice: The STAGING environment only whitelist some IP addresses, for security purposes. So you need to provide your company's IP addresses that we can add it to the whitelist.
+> [!IMPORTANT]
+> Notice: The STAGING environment only whitelist some IP addresses, for security purposes. So you need to provide your company's IP addresses that we can add it to the whitelist.
 
 # API
 ## ThetanSDKManager
@@ -233,9 +230,9 @@ Initialize SDK before client can start using any SDK function
 ### StopGrindingHeroItem
 
 **Declaration**
-``public void StopGrindingHeroItem()``
+``public void StopGrindingHeroItem(EndMatchInfo endMatchInfo)``
 
-**Description:** End grinding session and unlock selected NFT. You have to call this at the end of the game to unlock NFT and stop grinding session. Otherwise, user cannot select and grind other NFT.
+**Description:** End grinding session and unlock selected NFT. You have to call this at the end of the game to unlock NFT and stop grinding session. Otherwise, user cannot select and grind other NFT. This function required [``EndMatchInfo``](#endmatchinfo) parameter to calculate user's rewards.
 
 
 ---
@@ -246,7 +243,7 @@ Initialize SDK before client can start using any SDK function
 **Declaration**
 ``public void UnlockButtonMain()``
 
-**Description:** Unlock Interaction for UI Thetan World. You may call this right after [StopGrindingHeroItem](#stopgrindingheroitem) or anytime that suit your game flow but it must be called after `StopGrindingHeroItem`. Otherwise, user cannot interact with UI Thetan World.
+**Description:** **This function is only needed when you enable LockButtonMainAfterGrinding in SDKOption**. Unlock Interaction for UI Thetan World. . You may call this right after [StopGrindingHeroItem](#stopgrindingheroitem) or anytime that suit your game flow but it must be called after `StopGrindingHeroItem`. Otherwise, user cannot interact with UI Thetan World.
 
 
 ---
@@ -386,7 +383,7 @@ SDK option for configure SDK behavior. This option is passed into SDK when initi
 | Properties | Description |
 | ---      | ----------------- |
 | AutoShowPopupWhenLostConnection | Allow SDK auto show popup lost connection when user is not connected to network|
-| UseFullscreenLogin | Make SDK use full screen or popup login UI|
+| LockButtonMainAfterGrinding | Indicate if developer required to manual call [``UnlockButtonMain``](#unlockbuttonmain) to unlock main button after [``StopGrindingHeroItem``](#stopgrindingheroitem). We **recommend** you leave this field as ``False``, unless you have special need to manual unlock main button.|
 
 
 ---
@@ -404,6 +401,31 @@ An enum descript current client state, can use this to determine whether is user
 | LoggedIn | User is logged in|
 | LoggedInNoNetwork | User is logged in but temporary not connected to network|
 | Banned | User is banned|
+
+
+---
+
+
+### EndMatchInfo
+**Description:**
+Struct store info about current grinding match, used by [``StopGrindingHeroItem``](#stopgrindingheroitem) to calculate reward for user.
+| Properties | Description |
+| ---      | ----------------- |
+| [``matchResult``](#matchresult) (Required) | Enum define the result of grinding match (Win, Draw, Lose) |
+| gameLevel (Optional) | (Optional) This field is level of grinding match. This field only used when your game is level-based mechanism (example: Candy Crush, Puzzle games, ...).|
+
+
+---
+
+
+### MatchResult
+**Description**
+Enum define result of grinding match
+| Properties | Description |
+| ---      | ----------------- |
+| Lose | -1 |
+| Draw |  0 |
+| Win  |  1 |
 
 
 ---

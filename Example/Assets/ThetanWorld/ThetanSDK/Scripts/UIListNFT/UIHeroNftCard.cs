@@ -11,20 +11,24 @@ namespace ThetanSDK.UI
 {
     public class UIHeroNftCard : MonoBehaviour
     {
-        [SerializeField] private NFTHeroImg nftHeroImg;
-        [SerializeField] private TextMeshProUGUI _txtGrindSpeed;
-        [SerializeField] private TextMeshProUGUI _txtGrindAbility;
+        [SerializeField] private CommonHeroNFTCardInfo _commonHeroNftCardInfo;
         [SerializeField] private Button _btnSelect;
-        [SerializeField] private Image _imgSelected;
+        [SerializeField] private GameObject _imgSelected;
+        [SerializeField] private GameObject _contentSpecialNFT;
 
         [SerializeField] private GameObject _contentMaxGrindTime;
         [SerializeField] private TextMeshProUGUI _txtResetIn;
         [SerializeField] private GameObject _contentMaxLifeTime;
-        [SerializeField] private Image _imgBgBottom;
-        [SerializeField] private Color _colorImgBottomNormal;
-        [SerializeField] private Color _colorImgBottomMaxTime;
+        [SerializeField] private GameObject _contentSelectNft;
+        [SerializeField] private Button _btnSelectNFT;
+
+        [SerializeField] private TextMeshProUGUI _txtTitleGrindLimit;
+
+        private const string TITLE_GRIND_LIMIT_NORMAL_NFT = "Reached Daily Grind Limit";
+        private const string TITLE_GRIND_LIMIT_FREE_NFT = "Time out. Wait for the reset to start again.";
 
 
+        private Action _onClick;
         private Action _onSelect;
         private Action _onNeedRefreshDataCallback;
 
@@ -38,12 +42,13 @@ namespace ThetanSDK.UI
         
         private void Awake()
         {
-            _btnSelect.onClick.AddListener(OnClickSelect);
+            _btnSelect.onClick.AddListener(OnClickNFTItem);
+            _btnSelectNFT.onClick.AddListener(OnClickSelectItem);
         }
 
         public void SetSpriteCacheManager(SpriteCacheManager _spriteCacheManager)
         {
-            nftHeroImg.SetSpriteCacheManager(_spriteCacheManager);
+            _commonHeroNftCardInfo.SetSpriteCacheManager(_spriteCacheManager);
         }
 
         private void Update()
@@ -63,10 +68,24 @@ namespace ThetanSDK.UI
             }
             
             _countTime = 1;
-            SetTextNextReset();
+            
+            var grindTime = _data.grindInfo.grindTime;
+            var maxGrindTime = _data.grindInfo.maxGrindTime;
+            
+            if (_data.nftType == NFTType.FreeNFT)
+            {
+                var freeNFTGrindTimeInfo = ThetanSDKUtilities.ConvertFreeNFTInfoToGrindTimeInfo(
+                    ThetanSDKManager.Instance.NftItemService.FreeNftInfo, _data);
+                grindTime = freeNFTGrindTimeInfo.grindTime;
+                maxGrindTime = freeNFTGrindTimeInfo.maxTime;
+            }
+            
+            if(grindTime >= maxGrindTime)
+                SetTextNextReset();
 
             if(_onNeedRefreshDataCallback != null && 
-               (_nextResetData - DateTime.UtcNow).TotalSeconds <= 0)
+               (_nextResetData - DateTime.UtcNow).TotalSeconds <= 0 && 
+               _data.nftType == NFTType.NormalNFT)
             {
                 _onNeedRefreshDataCallback?.Invoke();
 
@@ -74,19 +93,30 @@ namespace ThetanSDK.UI
                 _countTime = 10;
             }
         }
-
-        private void OnClickSelect()
+        
+        private void OnClickSelectItem()
         {
             _onSelect?.Invoke();
         }
-
-        public void SetData(HeroNftItem data, bool isSelected, Action onSelect, Action onNeedRefreshDataCallback = null)
+        
+        private void OnClickNFTItem()
         {
+            _onClick?.Invoke();
+        }
+
+        public void SetData(HeroNftItem data, bool isSelected, Action onClick, Action onSelect, Action onNeedRefreshDataCallback = null)
+        {
+            _onClick = onClick;
             _onSelect = onSelect;
             _onNeedRefreshDataCallback = onNeedRefreshDataCallback;
             _data = data;
+
+            _txtTitleGrindLimit.text = data.nftType == NFTType.NormalNFT
+                ? TITLE_GRIND_LIMIT_NORMAL_NFT
+                : TITLE_GRIND_LIMIT_FREE_NFT;
             
-            nftHeroImg.ShowUI(data.ingameInfo);
+            _contentSpecialNFT.SetActive(data.nftType == NFTType.FreeNFT);
+            _commonHeroNftCardInfo.SetData(data);
             
             // if (data.grindInfo == null)
             // {
@@ -101,55 +131,59 @@ namespace ThetanSDK.UI
             //     
             //     return;
             // }
+            var grindTime = data.grindInfo.grindTime;
+            var maxGrindTime = data.grindInfo.maxGrindTime;
+
+            if (data.nftType == NFTType.FreeNFT)
+            {
+                var freeNFTGrindTimeInfo = ThetanSDKUtilities.ConvertFreeNFTInfoToGrindTimeInfo(
+                    ThetanSDKManager.Instance.NftItemService.FreeNftInfo, data);
+                grindTime = freeNFTGrindTimeInfo.grindTime;
+                maxGrindTime = freeNFTGrindTimeInfo.maxTime;
+            }
             
-            if(_txtGrindSpeed) // Convert THG/s -> THG/h
-                _txtGrindSpeed.text = $"{(data.grindInfo.currentGrindSpeed * 3600).FormatUnitCurrency()}/h"; 
-
-            if (_txtGrindAbility)
-                _txtGrindAbility.text = $"{(data.grindInfo.grindAbility * 100).FormatUnitPercent()}%";
-
             if (data.grindInfo.IsMaxLifeTime())
             {
                 _contentMaxGrindTime.SetActive(false);
                 _contentMaxLifeTime.SetActive(true);
-                if(_imgBgBottom)
-                    _imgBgBottom.color = _colorImgBottomMaxTime;
+                _contentSelectNft.SetActive(false);
             }
-            else if (data.grindInfo.grindTime >= data.grindInfo.maxGrindTime &&
-                data.grindInfo.maxGrindTime != 0)
+            else if (grindTime >= maxGrindTime &&
+                     maxGrindTime != 0)
             {
                 _contentMaxGrindTime.SetActive(true);
                 _contentMaxLifeTime.SetActive(false);
+                _contentSelectNft.SetActive(false);
 
-                if(_imgBgBottom)
-                    _imgBgBottom.color = _colorImgBottomMaxTime;
-
-                _nextResetData = data.grindInfo.nextReset;
-
+                if(data.nftType == NFTType.NormalNFT)
+                    _nextResetData = data.grindInfo.nextReset;
+                else if (data.nftType == NFTType.FreeNFT)
+                    _nextResetData = ThetanSDKManager.Instance.NftItemService.FreeNftInfo.nextResetGrindEarn;
+                
                 _countTime = 1;
                 
                 SetTextNextReset();
             }
             else
             {
-                if(_imgBgBottom)
-                    _imgBgBottom.color = _colorImgBottomNormal;
                 _contentMaxGrindTime.SetActive(false);
                 _contentMaxLifeTime.SetActive(false);
+                
+                _contentSelectNft.SetActive(!isSelected);
             }
             
-            _imgSelected.enabled = isSelected;
+            _imgSelected.gameObject.SetActive(isSelected);
         }
 
         private void SetTextNextReset()
         {
             _txtResetIn.text =
-                $"Reset in: <color=#53EDFE>{ThetanSDKUtilities.ToStringTimeShort(_nextResetData - DateTime.UtcNow)}</color>";
+                $"Reset in: <color=#4845F5>{ThetanSDKUtilities.ToStringTimeShort(_nextResetData - DateTime.UtcNow)}</color>";
         }
 
         public void ChangeIsSelected(bool isSelected)
         {
-            _imgSelected.enabled = isSelected;
+            _imgSelected.gameObject.SetActive(isSelected);
         }
     }
 }

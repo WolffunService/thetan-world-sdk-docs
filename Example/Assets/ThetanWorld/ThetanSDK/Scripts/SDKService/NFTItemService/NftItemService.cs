@@ -2,9 +2,11 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
+using Newtonsoft.Json;
 using ThetanSDK.SDKService;
 using ThetanSDK.SDKServices.Analytic;
 using UnityEngine;
+using Wolffun.Log;
 using Wolffun.RestAPI;
 using Wolffun.RestAPI.ThetanWorld;
 using Random = System.Random;
@@ -21,18 +23,20 @@ namespace ThetanSDK.SDKServices.NFTItem
         /// How many items service should fetch for each page
         /// </summary>
         private const int NUMBER_ITEM_PER_PAGE = 150;
-        
+
         /// <summary>
         /// Interval (in second) for service to send grind signal for server
         /// </summary>
         private const int PING_GRINDING_SERVER_INTERVAL = 5;
-        
+
         /// <summary>
         /// Interval (in second) for service refresh data of grinding item when service is in pausing grind state
         /// </summary>
         private const int REFRESH_DATA_WHEN_PAUSE_GRIND_INTERVAL = 20;
+
+        private const string SAVE_DATA_LOCAL_NFT_SERVICE_NAME = "DataLocalNFTService";
         #endregion
-        
+
         /// <summary>
         /// All supported sort type when fetch list NFT.
         /// Each sort type contain one or many sort criteria, priority as they appeared in list
@@ -77,7 +81,7 @@ namespace ThetanSDK.SDKServices.NFTItem
         /// Network client of ThetanSDK
         /// </summary>
         private NetworkClient _networkClient;
-        
+
         /// <summary>
         /// List HeroNFTItem that has been fetched and cache locally
         /// </summary>
@@ -95,7 +99,8 @@ namespace ThetanSDK.SDKServices.NFTItem
         /// Dictionaty convert HeroNFTId to index in _listHeroNftItems, this use to speed up search
         /// </summary>
         private Dictionary<string, int> _dicHeroNftIdToListIndex;
-        
+        public Dictionary<string, int> DicHeroNftIdToListIndex => _dicHeroNftIdToListIndex;
+
         /// <summary>
         /// Dictionaty convert IngameHeroId to index in _listHeroNftItems, this use to speed up search
         /// </summary>
@@ -121,29 +126,66 @@ namespace ThetanSDK.SDKServices.NFTItem
         /// </summary>
         private string _grindSessionId;
         public string GrindSessionId => _grindSessionId;
+
+        /// <summary>
+        /// Info about free NFT
+        /// </summary>
+        private FreeNFTConfig _freeNFTConfig;
+        public FreeNFTConfig FreeNFTConfig => _freeNFTConfig;
         
+        /// <summary>
+        /// Info about free NFT section earned
+        /// </summary>
+        private FreeNFTInfo _freeNFtInfo;
+        public FreeNFTInfo FreeNftInfo => _freeNFtInfo;
+
+        /// <summary>
+        /// Detect when player has started new free nft play section
+        /// </summary>
+        private bool _isInFreeNftPlaySection;
+
+        /// <summary>
+        /// Check if is fetching free nft info
+        /// </summary>
+        private bool _isFetchingFreeNFTInfo;
+
+        /// <summary>
+        /// Called when new data of list nft is fetched from server. This can be when refetch list nft or fetch new nft page
+        /// </summary>
+        internal Action _onListNFTFetchSuccessCallback;
+
         /// <summary>
         /// Callback when user select new NFT or unselect a NFT.
         /// When unselect NFT, callback will be trigger with null or empty
         /// </summary>
         private Action<string> _onChangeSelectedHeroNftItemCallback;
-        
+
         /// <summary>
         /// Callback when HeroNFTItem change its data.
         /// It occured when ending grinding session or refresh data of NFT
         /// </summary>
         private Action<HeroNftItem> _onChangeHeroNftDataCallback;
-        
+
         /// <summary>
         /// Callback when change grinding status from grinding to not grinding and vice versa.
         /// The bool in callback is Grinding or not
         /// </summary>
         public Action<bool> _onChangeGrindingStatus;
-        
+
+        /// <summary>
+        /// Callback when user have a victory match
+        /// </summary>
+        public Action _onReceiveVictoryMatch;
+
         /// <summary>
         /// Callback when service send grinding signal to server succeed
         /// </summary>
         public Action _onPingGrindSuccess;
+
+        /// <summary>
+        /// Called whe free nft is refreshed data
+        /// </summary>
+        public Action<FreeNFTInfo> _onRefreshFreeNFTInfo;
 
         /// <summary>
         /// NFT statistic data that has been fetch and cache locally
@@ -156,7 +198,7 @@ namespace ThetanSDK.SDKServices.NFTItem
         /// </summary>
         private List<NFTItemDailySummaryData> _listItemNFTSummaryCached;
         public List<NFTItemDailySummaryData> ListItemNFTSummaryCached => _listItemNFTSummaryCached;
-        
+
         /// <summary>
         /// Summary data of grinding in each game that has been fetch and cache locally
         /// </summary>
@@ -173,7 +215,7 @@ namespace ThetanSDK.SDKServices.NFTItem
         /// Is there no more unfetched page of _listHeroNftItems
         /// </summary>
         private bool _isNoMoreHeroItems;
-        
+
         /// <summary>
         /// Is fetching _listHeroNftItems in progress
         /// </summary>
@@ -184,7 +226,7 @@ namespace ThetanSDK.SDKServices.NFTItem
         /// </summary>
         private bool _isAllowPingGrindingServer;
         internal bool IsAllowPingGrindingServer => _isAllowPingGrindingServer;
-        
+
         private float _countTimePingGrindingServer;
 
         private float _countTimeRefreshDataWhenPauseGrind;
@@ -201,9 +243,22 @@ namespace ThetanSDK.SDKServices.NFTItem
         private bool _isPendingEndMatch;
 
         /// <summary>
+        /// When end match is called but due to some reason (ex: temporally not connected to network)
+        /// the end match info is cached for later used at Update function when it try to end pending match
+        /// </summary>
+        private EndMatchInfo _pendingEndMatchInfo;
+
+        /// <summary>
         /// Count total seconds that has grind success at local machine, use for analytic only
         /// </summary>
         private float _countTimeGrindSuccess;
+
+        /// <summary>
+        /// Data local save in machine local files system contain service cached
+        /// </summary>
+        private DataLocalNftItemService _dataLocalNftItemService;
+
+        private float _countTimeUpdateFreeNftData;
 
         /// <summary>
         /// Return if user is selecting any hero NFT
@@ -214,7 +269,7 @@ namespace ThetanSDK.SDKServices.NFTItem
         /// Check if user is in grinding session
         /// </summary>
         public bool IsGrinding() => !string.IsNullOrEmpty(_grindSessionId);
-        
+
         /// <summary>
         /// Check if user is selecting hero NFT that has nftId
         /// </summary>
@@ -241,9 +296,21 @@ namespace ThetanSDK.SDKServices.NFTItem
         {
             _networkClient = networkClient;
             _grindingHeroNftId = string.Empty;
-            
+
+            if (PlayerPrefs.HasKey(SAVE_DATA_LOCAL_NFT_SERVICE_NAME))
+            {
+                var saveData = PlayerPrefs.GetString(SAVE_DATA_LOCAL_NFT_SERVICE_NAME);
+
+                _dataLocalNftItemService = JsonConvert.DeserializeObject<DataLocalNftItemService>(saveData);
+            }
+            else
+            {
+                _dataLocalNftItemService = new DataLocalNftItemService();
+            }
+
             _networkClient.SubcribeOnChangeNetworkClientState(OnChangeNetworkClientState);
-            
+            _networkClient.SubcribeOnReAuthenCallback(HandleReAuthen);
+
             if (ThetanSDKManager.Instance.NetworkClientState != ThetanNetworkClientState.LoggedIn)
             {
                 _selectedHeroNftId = string.Empty;
@@ -251,9 +318,9 @@ namespace ThetanSDK.SDKServices.NFTItem
             }
 
             _countTotalNFT = -1;
-            
+
             UniTaskCompletionSource getSelectedHeroNftCompleteSource = new UniTaskCompletionSource();
-            
+
             RefetchListHeroNFT(null, null);
             GetSelectedHeroNft(() =>
             {
@@ -268,8 +335,44 @@ namespace ThetanSDK.SDKServices.NFTItem
                     getSelectedHeroNftCompleteSource.TrySetResult();
                 });
             });
-            
+
             await getSelectedHeroNftCompleteSource.Task;
+
+            UniTaskCompletionSource freeNFTInfoCompleteSource = new UniTaskCompletionSource();
+            FetchFreeNFTInfo((freeNftInfo) =>
+            {
+                try
+                {
+                    if (!_dataLocalNftItemService.hasCheckUnselectNftWhenNotClaimFreeNft &&
+                        string.IsNullOrEmpty(freeNftInfo.nftId) &&
+                        !string.IsNullOrEmpty(_selectedHeroNftId))
+                    {
+                        if (_dicHeroNftIdToListIndex.TryGetValue(_selectedHeroNftId, out var index))
+                        {
+                            if (index >= 0 && index < _listHeroNftItems.Count)
+                            {
+                                DeselectHeroNft(_listHeroNftItems[index], null, null);
+                            }
+                        }
+
+                        _dataLocalNftItemService.hasCheckUnselectNftWhenNotClaimFreeNft = true;
+                        SaveDataLocal();
+                    }
+                }
+                catch (Exception e)
+                {
+                    CommonLog.LogError($"Handle after fetch free nft info catch exception {e.Message}");
+                }
+
+                freeNFTInfoCompleteSource.TrySetResult();
+            }, error =>
+            {
+                _freeNFtInfo = new FreeNFTInfo();
+                freeNFTInfoCompleteSource.TrySetResult();
+            });
+            FetchFreeNFTConfig(null, null);
+
+            await freeNFTInfoCompleteSource.Task;
         }
 
         /// <summary>
@@ -281,7 +384,33 @@ namespace ThetanSDK.SDKServices.NFTItem
             {
                 GetSelectedHeroNft(null, null);
                 RefetchListHeroNFT(null, null);
+                FetchFreeNFTInfo(null, null);
+                FetchFreeNFTConfig(null, null);
             }
+            else if (newState == ThetanNetworkClientState.NotLoggedIn ||
+                     newState == ThetanNetworkClientState.NotLoggedInNoNetwork)
+            {
+                ClearDataService();
+            }
+        }
+
+        private async void HandleReAuthen()
+        {
+            ClearDataService();
+
+            RefetchListHeroNFT(null, null);
+            GetSelectedHeroNft(() =>
+            {
+            }, error =>
+            {
+                GetSelectedHeroNft(() =>
+                {
+                }, (error) =>
+                {
+                });
+            });
+            FetchFreeNFTInfo(null, null);
+            FetchFreeNFTConfig(null, null);
         }
 
         /// <summary>
@@ -306,40 +435,52 @@ namespace ThetanSDK.SDKServices.NFTItem
 
             _selectedHeroNftId = string.Empty;
             _cacheNFTStatisticData = new GrindNFTStatisticData();
-            
-            if(_listGameDailySummaryCached != null) 
+
+            if (_listGameDailySummaryCached != null)
                 _listGameDailySummaryCached.Clear();
-            
-            if(_listItemNFTSummaryCached != null)
+
+            if (_listItemNFTSummaryCached != null)
                 _listHeroNftItems.Clear();
-            
-            if(_networkClient)
-                _networkClient.SubcribeOnChangeNetworkClientState(OnChangeNetworkClientState);
+
+            _freeNFtInfo = new FreeNFTInfo();
         }
 
         private void Update()
         {
             /* Check is there any pending end match and available to call end match. If there is, call EndMatch */
+            UpdatePendingEndMatch();
+
+            UpdatePingGrinding();
+
+            // When end play section of free nft, refresh data
+            UpdateFreeNFT();
+        }
+
+        private void UpdatePendingEndMatch()
+        {
             if (_isPendingEndMatch)
             {
                 if (_networkClient.NetworkClientState == ThetanNetworkClientState.LoggedIn)
                 {
                     _isPendingEndMatch = false;
-                    EndMatch(null, null);
+                    EndMatch(_pendingEndMatchInfo, null, null);
                 }
                 else if (_networkClient.NetworkClientState != ThetanNetworkClientState.LoggedInNoNetwork)
                 {
                     _isPendingEndMatch = false;
                 }
             }
-            
+        }
+
+        private void UpdatePingGrinding()
+        {
             if (string.IsNullOrEmpty(_grindingHeroNftId))
             {
                 return;
             }
-            
+
             /* If not connected no network, temporary pause grinding */
-            if(_networkClient.NetworkClientState == ThetanNetworkClientState.LoggedInNoNetwork)
+            if (_networkClient.NetworkClientState == ThetanNetworkClientState.LoggedInNoNetwork)
                 return;
 
             /* If pausing grind, count time and refresh data selected NFT Id, grinding session Id, grinding NFT id */
@@ -355,13 +496,73 @@ namespace ThetanSDK.SDKServices.NFTItem
                 return;
             }
 
+            
+
             /* Count time and send grinding signal every interval */
             _countTimePingGrindingServer += Time.unscaledDeltaTime;
             if (_countTimePingGrindingServer >= PING_GRINDING_SERVER_INTERVAL)
             {
                 _countTimePingGrindingServer = 0;
+                
+                if (_dicHeroNftIdToListIndex.TryGetValue(_grindingHeroNftId, out var heroIndex) &&
+                    heroIndex >= 0 && heroIndex < _listHeroNftItems.Count &&
+                    _listHeroNftItems[heroIndex].id == _grindingHeroNftId)
+                {
+                    var heroInfo = _listHeroNftItems[heroIndex];
+                    if (heroInfo.nftType == NFTType.NormalNFT)
+                    {
+                        if(heroInfo.grindInfo.grindTime >= heroInfo.grindInfo.maxGrindTime)
+                        {
+                            StopGrind();
+                            return;
+                        }
+                    }
+                    else if (heroInfo.nftType == NFTType.FreeNFT)
+                    {
+                        var curTime = DateTime.UtcNow;
+
+                        if (curTime >= _freeNFtInfo.startSectionRest && curTime < _freeNFtInfo.nextResetGrindEarn)
+                        {
+                            StopGrind();
+                            return;
+                        }
+                    }
+                }
+                
                 PingServerGrinding();
             }
+        }
+
+        private void UpdateFreeNFT()
+        {
+            if (string.IsNullOrEmpty(_freeNFtInfo.nftId)) // Not claim free nft yet
+                return;
+
+            if (_isFetchingFreeNFTInfo)
+                return;
+
+            _countTimeUpdateFreeNftData += Time.unscaledDeltaTime;
+
+            if (_countTimeUpdateFreeNftData >= 1)
+            {
+                _countTimeUpdateFreeNftData = 0;
+
+                var currentTime = DateTime.UtcNow;
+
+                if (_isInFreeNftPlaySection &&
+                    currentTime >= _freeNFtInfo.nextResetGrindEarn)
+                {
+                    FetchFreeNFTInfo(null, null);
+                    RefreshDataHeroNft(_freeNFtInfo.nftId, null, null);
+                }
+            }
+
+        }
+
+        private void SaveDataLocal()
+        {
+            PlayerPrefs.SetString(SAVE_DATA_LOCAL_NFT_SERVICE_NAME, JsonConvert.SerializeObject(_dataLocalNftItemService));
+            PlayerPrefs.Save();
         }
 
         #region PUBLIC API
@@ -385,7 +586,7 @@ namespace ThetanSDK.SDKServices.NFTItem
 
             return new HeroNftItem().SetDefault();
         }
-        
+
         /// <summary>
         /// Fetch _selectedHeroNftId, _grindSessionId, _grindingHeroNftId
         /// </summary>
@@ -402,8 +603,8 @@ namespace ThetanSDK.SDKServices.NFTItem
                 // }
                 _grindSessionId = selectedNftResponseModel.grindId;
                 _grindingHeroNftId = selectedNftResponseModel.nftGrind;
-                                
-                if(prevSelectedHeroNftId != _selectedHeroNftId)
+
+                if (prevSelectedHeroNftId != _selectedHeroNftId)
                     _onChangeSelectedHeroNftItemCallback?.Invoke(_selectedHeroNftId);
 
                 onSuccessCallback?.Invoke();
@@ -414,7 +615,36 @@ namespace ThetanSDK.SDKServices.NFTItem
                 onErrorCallback?.Invoke(error);
             });
         }
-        
+
+        public void FetchFreeNFTInfo(Action<FreeNFTInfo> onSuccessCallback,
+            Action<WolffunResponseError> onErrorCallback)
+        {
+            _isFetchingFreeNFTInfo = true;
+            ThetanWorldAPI.FetchFreeNFTInfo(data =>
+            {
+                _freeNFtInfo = data;
+
+                var currentTime = DateTime.UtcNow;
+
+                if (currentTime <= _freeNFtInfo.nextResetGrindEarn)
+                {
+                    _isInFreeNftPlaySection = true;
+                }
+                else
+                {
+                    _isInFreeNftPlaySection = false;
+                }
+
+                _onRefreshFreeNFTInfo?.Invoke(_freeNFtInfo);
+                onSuccessCallback?.Invoke(_freeNFtInfo);
+                _isFetchingFreeNFTInfo = false;
+            }, error =>
+            {
+                _isFetchingFreeNFTInfo = false;
+                onErrorCallback?.Invoke(error);
+            });
+        }
+
         /// <summary>
         /// Register when selected nft hero changed
         /// </summary>
@@ -430,7 +660,7 @@ namespace ThetanSDK.SDKServices.NFTItem
         {
             _onChangeSelectedHeroNftItemCallback -= callback;
         }
-        
+
         /// <summary>
         /// Register when hero nft change its data
         /// </summary>
@@ -460,7 +690,7 @@ namespace ThetanSDK.SDKServices.NFTItem
 
             if (_dicHeroNftIdToListIndex == null)
                 _dicHeroNftIdToListIndex = new Dictionary<string, int>();
-            else 
+            else
                 _dicHeroNftIdToListIndex.Clear();
 
 
@@ -487,7 +717,7 @@ namespace ThetanSDK.SDKServices.NFTItem
             }, error);
 
         }
-        
+
         /// <summary>
         /// Fetch next page of _listHeroNftItems.
         /// Return data of next page and if there is any unfetched page
@@ -495,7 +725,7 @@ namespace ThetanSDK.SDKServices.NFTItem
         public void FetchNextPageListHeroNft(Action<FetchListNftItemResponse> onSuccessCallback,
             Action<WolffunResponseError> onErrorCallback)
         {
-            if(_isNoMoreHeroItems)
+            if (_isNoMoreHeroItems)
             {
                 onSuccessCallback?.Invoke(new FetchListNftItemResponse()
                 {
@@ -532,7 +762,7 @@ namespace ThetanSDK.SDKServices.NFTItem
                 });
                 return;
             }
-            
+
             ThetanWorldAPI.GetHeroNftInfo(herNftId, newData =>
             {
                 for (int i = 0; i < _listHeroNftItems.Count; i++)
@@ -542,7 +772,7 @@ namespace ThetanSDK.SDKServices.NFTItem
                         _listHeroNftItems[i] = newData;
                     }
                 }
-                
+
                 _onChangeHeroNftDataCallback?.Invoke(newData);
                 onSuccessCallback?.Invoke(newData);
             }, onErrorCallback);
@@ -563,10 +793,10 @@ namespace ThetanSDK.SDKServices.NFTItem
                 });
                 return;
             }
-            
+
             ThetanWorldAPI.GetHeroNftInfo(heroNftId, onSuccessCallback, onErrorCallback);
         }
-        
+
         /// <summary>
         /// Call to select an HeroNFTItem. Will trigger OnChangeSelectedHeroNftItemCallback if succeed
         /// </summary>
@@ -582,7 +812,7 @@ namespace ThetanSDK.SDKServices.NFTItem
                 });
                 return;
             }
-            
+
             if (ThetanSDKManager.Instance.NetworkClientState != ThetanNetworkClientState.LoggedIn)
             {
                 onErrorCallback?.Invoke(new WolffunResponseError()
@@ -592,17 +822,17 @@ namespace ThetanSDK.SDKServices.NFTItem
                 });
                 return;
             }
-            
+
             ThetanWorldAPI.SelectHeroNFT(heroNftItem.id, _ =>
             {
                 var prevSelectedHeroId = _selectedHeroNftId;
-                
+
                 _selectedHeroNftId = heroNftItem.id;
                 _onChangeSelectedHeroNftItemCallback?.Invoke(_selectedHeroNftId);
                 onSuccessCallback?.Invoke(heroNftItem);
             }, onErrorCallback);
         }
-        
+
         /// <summary>
         /// Call to unselect an HeroNFTItem. Will trigger OnChangeSelectedHeroNftItemCallback if succeed
         /// </summary>
@@ -617,7 +847,7 @@ namespace ThetanSDK.SDKServices.NFTItem
                 });
                 return;
             }
-            
+
             if (ThetanSDKManager.Instance.NetworkClientState != ThetanNetworkClientState.LoggedIn)
             {
                 onErrorCallback?.Invoke(new WolffunResponseError()
@@ -637,16 +867,16 @@ namespace ThetanSDK.SDKServices.NFTItem
                 });
                 return;
             }
-            
+
             ThetanWorldAPI.DeSelectHeroNFT(heroNft.id, _ =>
             {
                 _selectedHeroNftId = string.Empty;
                 _onChangeSelectedHeroNftItemCallback?.Invoke(string.Empty);
-                
+
                 onSuccessCallback?.Invoke(heroNft);
             }, onErrorCallback);
         }
-        
+
         /// <summary>
         /// Get detail grind info of heroNftItem. Will trigger OnChangeHeroNftDataCallback if heroNftItem is in cached data
         /// </summary>
@@ -662,7 +892,7 @@ namespace ThetanSDK.SDKServices.NFTItem
                 });
                 return;
             }
-            
+
             if (ThetanSDKManager.Instance.NetworkClientState != ThetanNetworkClientState.LoggedIn)
             {
                 onErrorCallback?.Invoke(new WolffunResponseError()
@@ -672,7 +902,7 @@ namespace ThetanSDK.SDKServices.NFTItem
                 });
                 return;
             }
-            
+
             ThetanWorldAPI.GetHeroDetailGrindInfo(heroNftItem.id, detailHeroGrindInfo =>
             {
                 for (int i = 0; i < _listHeroNftItems.Count; i++)
@@ -685,12 +915,12 @@ namespace ThetanSDK.SDKServices.NFTItem
                         heroNftInList.grindInfo.grindPoint = detailHeroGrindInfo.grindPoint;
                         heroNftInList.grindInfo.maxGrindSpeed = detailHeroGrindInfo.maxGrindSpeed;
                         _listHeroNftItems[i] = heroNftInList;
-                        
+
                         _onChangeHeroNftDataCallback?.Invoke(heroNftInList);
                         break;
                     }
                 }
-                
+
                 onSuccessCallback?.Invoke(detailHeroGrindInfo);
             }, onErrorCallback);
         }
@@ -705,31 +935,47 @@ namespace ThetanSDK.SDKServices.NFTItem
                 onErrorCallback?.Invoke(new WolffunResponseError()
                 {
                     Code = (int)NftItemServiceErrorCode.NETWORK_ERROR,
-                    Message = "Client is not connected to network",
+                    Message = "Client is not connected to network.",
                 });
                 return;
             }
-            
+
             if (ThetanSDKManager.Instance.NetworkClientState != ThetanNetworkClientState.LoggedIn)
             {
                 onErrorCallback?.Invoke(new WolffunResponseError()
                 {
                     Code = (int)NftItemServiceErrorCode.NOT_LOGGED_IN,
-                    Message = "Client is not in logged in state",
+                    Message = "Client is not in logged in state.",
                 });
                 return;
             }
-            
+
             if (string.IsNullOrEmpty(_selectedHeroNftId))
             {
                 onErrorCallback?.Invoke(new WolffunResponseError()
                 {
                     Code = (int)NftItemServiceErrorCode.NOT_SELECTED_NFT_HERO,
-                    Message = "Please select any nft hero before call start grind"
+                    Message = "Please select any nft hero before call start grind."
                 });
                 return;
             }
-            
+
+            if (_freeNFtInfo.nftId == _selectedHeroNftId)
+            {
+                var currentTime = DateTime.UtcNow;
+                if(currentTime >= _freeNFtInfo.startSectionEarn &&
+                   currentTime >= _freeNFtInfo.startSectionRest &&
+                   currentTime <= _freeNFtInfo.nextResetGrindEarn)
+                {
+                    onErrorCallback?.Invoke(new WolffunResponseError()
+                    {
+                        Code = (int)NftItemServiceErrorCode.FREE_HERO_IN_REST_SESSION,
+                        Message = "Free hero is in rest section, please select other hero."
+                    });
+                    return;
+                }
+            }
+
             ThetanWorldAPI.StartGrindingHeroNftItem(_selectedHeroNftId, matchMaxDuration, grindSessionId =>
             {
                 _grindingHeroNftId = _selectedHeroNftId;
@@ -741,7 +987,12 @@ namespace ThetanSDK.SDKServices.NFTItem
 
                 ThetanSDKManager.Instance.AnalyticService.LogBattleFlow(_grindingHeroNftId, _grindSessionId,
                     SDKAnalyticService.BattleFlowStep.PrepareBattle);
-                
+
+                if (_selectedHeroNftId == _freeNFtInfo.nftId)
+                {
+                    FetchFreeNFTInfo(null, null);
+                }
+
                 successCallback?.Invoke(grindSessionId);
                 _onChangeGrindingStatus?.Invoke(true);
             }, onErrorCallback);
@@ -760,7 +1011,7 @@ namespace ThetanSDK.SDKServices.NFTItem
                 ThetanSDKManager.Instance.AnalyticService.LogBattleFlow(_grindingHeroNftId, _grindSessionId,
                     SDKAnalyticService.BattleFlowStep.StartGrind);
             }
-            
+
             _isAllowPingGrindingServer = true;
         }
 
@@ -770,21 +1021,21 @@ namespace ThetanSDK.SDKServices.NFTItem
         public void StopGrind()
         {
             _countTimeRefreshDataWhenPauseGrind = 0;
-            
-            if (_isAllowPingGrindingServer && 
+
+            if (_isAllowPingGrindingServer &&
                 !string.IsNullOrEmpty(_grindingHeroNftId))
             {
                 ThetanSDKManager.Instance.AnalyticService.LogBattleFlow(_grindingHeroNftId, _grindSessionId,
                     SDKAnalyticService.BattleFlowStep.PauseGrind);
             }
-            
+
             _isAllowPingGrindingServer = false;
         }
 
         /// <summary>
         /// Call to end grinding session and unlock NFT
         /// </summary>
-        public void EndMatch(Action onSuccessCallback, Action<WolffunResponseError> onErrorCallback)
+        public void EndMatch(EndMatchInfo endMatchInfo, Action onSuccessCallback, Action<WolffunResponseError> onErrorCallback)
         {
             _isAllowPingGrindingServer = false;
 
@@ -792,9 +1043,10 @@ namespace ThetanSDK.SDKServices.NFTItem
             {
                 onSuccessCallback?.Invoke();
                 _isPendingEndMatch = true;
+                _pendingEndMatchInfo = endMatchInfo;
                 return;
             }
-            
+
             if (ThetanSDKManager.Instance.NetworkClientState != ThetanNetworkClientState.LoggedIn)
             {
                 onErrorCallback?.Invoke(new WolffunResponseError()
@@ -810,13 +1062,20 @@ namespace ThetanSDK.SDKServices.NFTItem
                 onSuccessCallback?.Invoke();
                 return;
             }
-            
-            ThetanWorldAPI.StopGrindingHeroNftItem(_grindingHeroNftId, _ =>
+
+            ThetanWorldAPI.StopGrindingHeroNftItem(_grindingHeroNftId, endMatchInfo, _ =>
             {
+                if (endMatchInfo.matchResult == MatchResult.Win)
+                {
+                    _onReceiveVictoryMatch?.Invoke();    
+                }
+                
                 RefreshDataHeroNft(_grindingHeroNftId, null, null);
+                FetchFreeNFTInfo(null, null);
                 
                 ThetanSDKManager.Instance.AnalyticService.LogBattleFlow(_grindingHeroNftId, _grindSessionId,
-                    SDKAnalyticService.BattleFlowStep.EndBattle, (int)_countTimeGrindSuccess);
+                    SDKAnalyticService.BattleFlowStep.EndBattle, (int)_countTimeGrindSuccess, endMatchInfo.matchResult);
+                ThetanSDKManager.Instance.UserStatisticService.FetchUserLeaderboardData(null, null);
 
                 _countTimeGrindSuccess = 0;
                 _grindingHeroNftId = string.Empty;
@@ -831,17 +1090,17 @@ namespace ThetanSDK.SDKServices.NFTItem
                         nftHero.grindInfo.status = null;
 
                         _listHeroNftItems[nftIndex] = nftHero;
-                        
+
                         _onChangeHeroNftDataCallback?.Invoke(nftHero);
                     }
                 }
-                
+
                 onSuccessCallback?.Invoke();
                 _onChangeGrindingStatus?.Invoke(false);
             }, error =>
             {
-                ThetanSDKManager.Instance.AnalyticService.LogErrorOccured("End Battle", "End Grind NFT", 
-                    false, 
+                ThetanSDKManager.Instance.AnalyticService.LogErrorOccured("End Battle", "End Grind NFT",
+                    false,
                     (NftItemServiceErrorCode)error.Code == NftItemServiceErrorCode.UNKNOWN ? error.DevDebugMessage : error.Message);
                 _grindingHeroNftId = string.Empty;
                 _grindSessionId = string.Empty;
@@ -862,7 +1121,39 @@ namespace ThetanSDK.SDKServices.NFTItem
                 onSuccessCallback?.Invoke(_cacheNFTStatisticData);
             }, onErrorCallback);
         }
-        
+
+        public void ClaimFreeNFT(Action<HeroNftItem> onSuccessCallback, Action<WolffunResponseError> onErrorCallback)
+        {
+            ThetanWorldAPI.ClaimFreeNFT(freeNft =>
+            {
+                RefetchListHeroNFT(_ =>
+                {
+                    SelectHeroNft(freeNft, null, null);
+                }, null);
+                
+                _freeNFtInfo.nftId = freeNft.id;
+                onSuccessCallback?.Invoke(freeNft);
+            }, error =>
+            {
+                if ((NftItemServiceErrorCode)error.Code == NftItemServiceErrorCode.FREE_NFT_CLAIMED)
+                {
+                    RefetchListHeroNFT(null, null);
+                    FetchFreeNFTInfo(null, null);
+                }
+
+                onErrorCallback?.Invoke(error);
+            });
+        }
+
+        public void FetchFreeNFTConfig(Action<FreeNFTConfig> onSuccessCallback, Action<WolffunResponseError> onErrorCallback)
+        {
+            ThetanWorldAPI.GetFreeNFTConfig(freeNft =>
+                {
+                    _freeNFTConfig = freeNft;
+                    onSuccessCallback?.Invoke(freeNft);
+                },
+                error => onErrorCallback?.Invoke(error));
+        }
         #endregion
 
         #region Internal API Functions
@@ -878,9 +1169,9 @@ namespace ThetanSDK.SDKServices.NFTItem
                     _listItemNFTSummaryCached = new List<NFTItemDailySummaryData>();
                 else
                     _listItemNFTSummaryCached = reponse.data;
-                
+
                 onSuccessCallback?.Invoke(reponse);
-            },  onErrorCallback);
+            }, onErrorCallback);
         }
 
         /// <summary>
@@ -895,11 +1186,11 @@ namespace ThetanSDK.SDKServices.NFTItem
                     _listGameDailySummaryCached = new List<GameDailySummaryData>();
                 else
                     _listGameDailySummaryCached = reponse.data;
-                
+
                 onSuccessCallback?.Invoke(reponse);
-            },  onErrorCallback);
+            }, onErrorCallback);
         }
-        
+
         /// <summary>
         /// Send grinding signal to server
         /// </summary>
@@ -908,6 +1199,22 @@ namespace ThetanSDK.SDKServices.NFTItem
             ThetanWorldAPI.PingGrindingServer(_grindingHeroNftId, PING_GRINDING_SERVER_INTERVAL, _ =>
             {
                 _countTimeGrindSuccess += PING_GRINDING_SERVER_INTERVAL;
+
+                if (_dicHeroNftIdToListIndex.TryGetValue(_grindingHeroNftId, out var itemIndex) &&
+                    itemIndex >= 0 && itemIndex < _listHeroNftItems.Count &&
+                    _listHeroNftItems[itemIndex].id == _grindingHeroNftId)
+                {
+                    // We temporary update data local to serve UI grinding progress.
+                    // We will sync data with server when end grind. So this temporary data only affect UI during grind time
+                    var nftItem = _listHeroNftItems[itemIndex];
+                    nftItem.grindInfo.grindTime += PING_GRINDING_SERVER_INTERVAL;
+
+                    nftItem.grindInfo.grindTime =
+                        Mathf.Clamp(nftItem.grindInfo.grindTime, 0, nftItem.grindInfo.maxGrindTime);
+
+                    _listHeroNftItems[itemIndex] = nftItem;
+                }
+                
                 _onPingGrindSuccess?.Invoke();
             }, HandlePingServerGrindingError);
         }
@@ -919,7 +1226,7 @@ namespace ThetanSDK.SDKServices.NFTItem
         {
             ThetanSDKManager.Instance.AnalyticService.LogErrorOccured("Ingame", "Ping Grind NFT", false,
                 (NftItemServiceErrorCode)error.Code == NftItemServiceErrorCode.UNKNOWN ? error.DevDebugMessage : error.Message);
-            
+
             _countErrorPingGrindingServer++;
 
             /* Accept 3 consecutive signal error */
@@ -928,29 +1235,29 @@ namespace ThetanSDK.SDKServices.NFTItem
                 // Do nothing
                 return;
             }
-            
+
             NftItemServiceErrorCode errorCode = (NftItemServiceErrorCode)error.Code;
             switch (errorCode)
             {
                 case NftItemServiceErrorCode.HERO_NOT_GRINDING:
-                {
-                    /* User is not in grinding session anymore, call fetch _grindSessionId and _grindingHeroNftId again */
-                    _isAllowPingGrindingServer = false;
-                    GetSelectedHeroNft(() =>
                     {
-                        if (!string.IsNullOrEmpty(_grindingHeroNftId))
+                        /* User is not in grinding session anymore, call fetch _grindSessionId and _grindingHeroNftId again */
+                        _isAllowPingGrindingServer = false;
+                        GetSelectedHeroNft(() =>
                         {
-                            _isAllowPingGrindingServer = true;
-                        }
-                    }, null);
-                    break;
-                }
+                            if (!string.IsNullOrEmpty(_grindingHeroNftId))
+                            {
+                                _isAllowPingGrindingServer = true;
+                            }
+                        }, null);
+                        break;
+                    }
                 default:
-                {
-                    /* When there is 3 consecutive error, temporary pause grinding */
-                    _isAllowPingGrindingServer = false;
-                    break;
-                }
+                    {
+                        /* When there is 3 consecutive error, temporary pause grinding */
+                        _isAllowPingGrindingServer = false;
+                        break;
+                    }
             }
         }
 
@@ -964,11 +1271,11 @@ namespace ThetanSDK.SDKServices.NFTItem
 
             return _listSortType[_currentSortTypeIndex].Item2;
         }
-        
+
         /// <summary>
         /// Fetch list HeroNFTItem
         /// </summary>
-        private async void FetchListNftData(List<NFTSortType> listSort, int numberPageFetch, 
+        private async void FetchListNftData(List<NFTSortType> listSort, int numberPageFetch,
             Action<FetchListNftItemResponse> onDoneCallback, Action<WolffunResponseError> onErrorCallback)
         {
             if (ThetanSDKManager.Instance.NetworkClientState == ThetanNetworkClientState.LoggedInNoNetwork)
@@ -980,7 +1287,7 @@ namespace ThetanSDK.SDKServices.NFTItem
                 });
                 return;
             }
-            
+
             if (ThetanSDKManager.Instance.NetworkClientState != ThetanNetworkClientState.LoggedIn)
             {
                 onErrorCallback?.Invoke(new WolffunResponseError()
@@ -998,7 +1305,7 @@ namespace ThetanSDK.SDKServices.NFTItem
 
             if (_listHeroNftItems == null)
                 _listHeroNftItems = new List<HeroNftItem>();
-            
+
             var nextPage = _currentPageNumber + 1;
 
             ThetanWorldAPI.FetchListNFT(listSort, NUMBER_ITEM_PER_PAGE * numberPageFetch, nextPage, listNftItems =>
@@ -1011,14 +1318,14 @@ namespace ThetanSDK.SDKServices.NFTItem
                     //    if(listNftItems.data[i] == null)
                     //        listNftItems.data.RemoveAt(i);
                     //}
-                    
+
                     _isNoMoreHeroItems = listNftItems.data.Count < NUMBER_ITEM_PER_PAGE;
                     _countTotalNFT = listNftItems.total;
 
                     for (int i = 0; i < listNftItems.data.Count; i++)
                     {
                         var nftItem = listNftItems.data[i];
-                        
+
                         if (_dicHeroNftIdToListIndex.TryGetValue(nftItem.id, out var cachedItemIndex))
                         {
                             _listHeroNftItems[cachedItemIndex] = nftItem;
@@ -1030,11 +1337,11 @@ namespace ThetanSDK.SDKServices.NFTItem
                             _listHeroNftItems.Add(nftItem);
                         }
                     }
-                    
+
                     onDoneCallback?.Invoke(new FetchListNftItemResponse()
                     {
                         listNftHeroItems = listNftItems.data,
-                        isNoMoreItem =  _isNoMoreHeroItems
+                        isNoMoreItem = _isNoMoreHeroItems
                     });
                 }
                 else
@@ -1047,7 +1354,8 @@ namespace ThetanSDK.SDKServices.NFTItem
                         isNoMoreItem = true
                     });
                 }
-				
+
+                _onListNFTFetchSuccessCallback?.Invoke();
                 _isFetching = false;
             }, error =>
             {

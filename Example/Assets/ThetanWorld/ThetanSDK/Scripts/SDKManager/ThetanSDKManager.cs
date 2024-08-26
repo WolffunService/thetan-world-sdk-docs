@@ -6,6 +6,7 @@ using Cysharp.Threading.Tasks;
 using ThetanSDK.SDKService;
 using ThetanSDK.SDKService.LuckySpin;
 using ThetanSDK.SDKService.RemoteConfig;
+using ThetanSDK.SDKService.UserStatisticService;
 using ThetanSDK.SDKServices.Analytic;
 using ThetanSDK.SDKServices.Equipment;
 using ThetanSDK.SDKServices.NFTItem;
@@ -35,9 +36,9 @@ namespace ThetanSDK
         /// </summary>
         public bool AutoShowPopupWhenLostConnection;
         /// <summary>
-        /// Make SDK use full screen or popup login UI
+        /// If set to true, you are REQUIRED to call ThetanSDKManager.Instance.UnlockButtonMain to start interact with ThetanSDK UI.
         /// </summary>
-        public bool UseFullscreenLogin;
+        public bool LockButtonMainAfterGrinding;
     }
     
     public class ThetanSDKManager : MonoSingleton<ThetanSDKManager>
@@ -63,6 +64,7 @@ namespace ThetanSDK
         [SerializeField] private EquipmentService _equipmentService;
         [SerializeField] private LuckySpinService _luckySpinService;
         [SerializeField] private RemoteConfigService _remoteConfigService;
+        [SerializeField] private UserStatisticService _userStatisticService;
 
         [Header("Network Availability")]
         [SerializeField] private NetworkReachabilityDetect _networkReachabilityDetect;
@@ -79,6 +81,8 @@ namespace ThetanSDK
         internal LuckySpinService LuckySpinService => _luckySpinService;
 
         internal RemoteConfigService RemoteConfigService => _remoteConfigService;
+
+        internal UserStatisticService UserStatisticService => _userStatisticService;
         
         internal UIHelperContainer RootUIHelperContainer => _uiHelperContainer;
         
@@ -120,7 +124,7 @@ namespace ThetanSDK
         #endregion
         
         #region Version
-        private string _version = "0.9.12";
+        private string _version = "0.9.37";
 
         public string Version
         {
@@ -194,13 +198,14 @@ namespace ThetanSDK
             _option = option;
             
 #if STAGING
-            _version += "_S";
+            if(!_version.Contains("_S"))
+                _version += "_S";
 #endif
 
             ThetanSDKManagerInitializer thetanSDKManagerInitializer = new ThetanSDKManagerInitializer(
                 _networkClient, _remoteConfigService, _analyticService, _authenProcessContainer, _profileService,
                 _nftItemService, _equipmentService,
-                _luckySpinService, _btnMainAction,
+                _luckySpinService, _userStatisticService, _btnMainAction,
                 _showAnimCurrencyFly, OnClickMainAction, _showPopopWhenLostConnection,
                 _uiHelperContainer, () =>
                 {
@@ -315,6 +320,21 @@ namespace ThetanSDK
         {
             if(_sdkManagerHandleUI != null)
                 _sdkManagerHandleUI.CloseMainUI();
+        }
+
+        /// <summary>
+        /// This will check if current thetan gate version is supported.
+        /// If not, sdk will automatic show popup version not supported and return false.
+        /// Otherwise, return true.
+        /// </summary>
+        /// <returns></returns>
+        public bool CheckShowIfThetanGateVersionSupported()
+        {
+            if (_isVersionSupported)
+                return true;
+
+            _sdkManagerHandleUI.ShowPopupVersionNotSupported();
+            return false;
         }
         #endregion
 
@@ -488,9 +508,13 @@ namespace ThetanSDK
         /// You have to call this at the end of the game to unlock NFT and stop grinding session.
         /// Otherwise, user cannot select and grind other NFT.
         /// </summary>
-        public void StopGrindingHeroItem()
+        public void StopGrindingHeroItem(EndMatchInfo endMatchInfo)
         {
-            _nftItemService.EndMatch(null, null);
+            _nftItemService.EndMatch(endMatchInfo, null, null);
+            if (!_option.LockButtonMainAfterGrinding)
+            {
+                _btnMainAction.UnlockButtonAndDoAnimReward();
+            }
         }
 
         /// <summary>
@@ -501,6 +525,12 @@ namespace ThetanSDK
         public void UnlockButtonMain()
         {
             _btnMainAction.UnlockButtonAndDoAnimReward();
+        }
+
+        // Todo: use this for test only, delete me
+        public void ClaimFreeNFT()
+        {
+            _nftItemService.ClaimFreeNFT(null, null);
         }
         #endregion
 

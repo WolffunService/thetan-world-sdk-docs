@@ -298,6 +298,17 @@ namespace Wolffun.RestAPI
             try
             {
                 _httpLog.Log(LogLevel.Error, $"Call Api {endpoint} has error {resultAPI.ToString()}");
+                WolffunResponseError err = new WolffunResponseError(0);
+
+                try
+                {
+                    err = resultAPI.Error();
+                }
+                catch (Exception e)
+                {
+                    _httpLog.Log(LogLevel.Error, $"Error when parse {endpoint} response with exception {e.Message}");
+                }
+                
                 //process when the error is from the server status, not from the code point out b4 hand
                 if (!resultAPI.IsOk())
                 {
@@ -329,14 +340,17 @@ namespace Wolffun.RestAPI
                         }
                         
                     }
+                    else if (resultAPI.Status() == 403 && (WSErrorCode)err.Code != WSErrorCode.UserBanned)
+                    {
+                        error?.Invoke(new WolffunResponseError((int)WSErrorCode.DoNotHavePermission, resultAPI.Body()));
+                        return;
+                    }
                     else if (resultAPI.Status() >= 500)
                     {
                         error?.Invoke(new WolffunResponseError((int)WSErrorCode.ServerStatus500, resultAPI.Body()));
                         return;
                     }
                 }
-
-                var err = resultAPI.Error();
 
                 switch ((WSErrorCode)err.Code)
                 {

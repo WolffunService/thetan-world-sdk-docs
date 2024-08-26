@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using ThetanSDK.SDKServices.NFTItem;
+using ThetanSDK.UI;
 using UnityEngine;
 using UnityEngine.UI;
 using Wolffun.RestAPI;
@@ -54,7 +56,7 @@ namespace ThetanSDK.Utilities
         
         public static string GetUrlPathHeroAvatar(GameWorldType gameType, int skinId)
         {
-            return $"/resources/{GetResourceGameFolderName(gameType)}/hero/sdk_avatar/{skinId}.png";
+            return $"/resources/{GetResourceGameFolderName(gameType)}/hero/avatar/{skinId}.png";
         }
 
         public static string GetUrlPathGameIcon(GameWorldType gameType)
@@ -156,11 +158,11 @@ namespace ThetanSDK.Utilities
                 }
                 else if(timeSpan.Minutes > 0)
                 {
-                    strTimer = $"{timeSpan.Minutes}m {timeSpan.Seconds}s";
+                    strTimer = $"{timeSpan.Minutes}m {Mathf.Max(timeSpan.Seconds, 0)}s";
                 }
                 else
                 {
-                    strTimer = $"{timeSpan.Seconds}s";
+                    strTimer = $"{Mathf.Max(timeSpan.Seconds, 0)}s";
                 }
             }
             catch (Exception ex)
@@ -315,12 +317,27 @@ namespace ThetanSDK.Utilities
              return ((float)roundedInput).FormatUnitFloatWithSpecificDigits(roundNumber);
          }
 
-         public static int ConvertSecondToMinute(this float second)
+         public static float ConvertSecondToMinute(this float second)
          {
-             return (int)(second / 60);
+             return (second / 60);
          }
 
-         public static void SetAlphaImg(this Image img, float alphaValue)
+         public static float ConvertSecondToHour(this float second)
+         {
+             return second / 3600;
+         }
+
+         public static float ConvertValuePerSecondToHour(this float valuePerSecond)
+         {
+             return valuePerSecond * 3600;
+         }
+
+        public static double ConvertValuePerSecondToHour(this double valuePerSecond)
+        {
+            return valuePerSecond * 3600;
+        }
+
+        public static void SetAlphaImg(this Image img, float alphaValue)
          {
              var color = img.color;
              color.a = alphaValue;
@@ -444,6 +461,100 @@ namespace ThetanSDK.Utilities
          {
              return UnityEngine.Random.Range(0, 101) >= 50;
          }
+
+         internal static FreeNFTGrindTimeInfo ConvertFreeNFTInfoToGrindTimeInfo(FreeNFTInfo freeNftInfo, HeroNftItem nftData)
+         {
+             FreeNFTGrindTimeInfo result = default;
+             float maxTimeSectionEarn = nftData.grindInfo.maxGrindTime; // Todo: get data from backend
+
+             if (freeNftInfo.startSectionRest != default)
+             {
+                 maxTimeSectionEarn = (float)(freeNftInfo.startSectionRest - freeNftInfo.startSectionEarn).TotalSeconds;
+             }
+
+             var currentTime = DateTime.UtcNow;
+
+             if (currentTime > freeNftInfo.nextResetGrindEarn) // Not in section earn
+             {
+                 result.grindTime = 0;
+                 result.maxTime = maxTimeSectionEarn; 
+
+                 return result;
+             }
+
+             if (currentTime > freeNftInfo.startSectionEarn)
+             {
+                 if (currentTime < freeNftInfo.startSectionRest)
+                 {
+                     result.grindTime = (float)((currentTime - freeNftInfo.startSectionEarn).TotalSeconds);
+                     result.maxTime = maxTimeSectionEarn; 
+
+                     return result;
+                 }
+                 else
+                 {
+                     result.grindTime = maxTimeSectionEarn;
+                     result.maxTime = maxTimeSectionEarn; 
+
+                     return result;
+                 }
+             }
+            
+             result.grindTime = 0;
+             result.maxTime = maxTimeSectionEarn; 
+
+             return result;
+         }
+
+         static internal void HandleSelectNFTError(WolffunResponseError error, UIHelperContainer uiHelperContainer)
+         {
+             if (error.Code == (int)WSErrorCode.UserBanned)
+            {
+                uiHelperContainer.ShowPopUpMsg(AuthenErrorMsg.AccountBanned,
+                    AuthenErrorMsg.AccountBannedContactSupport, AuthenErrorMsg.Confirm);
+                return;
+            }
+
+            if (error.Code == (int)WSErrorCode.ServerMaintenance)
+            {
+                ThetanSDKManager.Instance.HandleMaintenance();
+                return;
+            }
+
+            switch ((NftItemServiceErrorCode)error.Code)
+            {
+                case NftItemServiceErrorCode.NETWORK_ERROR:
+                    uiHelperContainer.ShowPopUpMsg(ThetanSDKErrorMsg.NetworkError,
+                        UINftErrorMsg.ERROR_NO_CONNECTION, ThetanSDKErrorMsg.Okay);
+                    break;
+                case NftItemServiceErrorCode.NFT_IS_GRINDING_IN_ANOTHER_GAME:
+                    uiHelperContainer.ShowPopUpMsg(ThetanSDKErrorMsg.Error,
+                        UINftErrorMsg.ERROR_SELECT_HERO_NFT_HERO_IS_GRINDING_IN_ANOTHER_GAME, ThetanSDKErrorMsg.Okay);
+                    break;
+                case NftItemServiceErrorCode.NFT_DAILY_LIMIT_REACH:
+                    uiHelperContainer.ShowPopUpMsg(ThetanSDKErrorMsg.Error,
+                        UINftErrorMsg.ERROR_SELECT_HERO_NFT_IS_REACH_DAILY_LIMIT, ThetanSDKErrorMsg.Okay);
+                    break;
+                case NftItemServiceErrorCode.ANOTHER_NFT_IS_GRINDING:
+                    uiHelperContainer.ShowPopUpMsg(ThetanSDKErrorMsg.Error,
+                        UINftErrorMsg.ERROR_SELECT_HERO_ANOTHER_IS_GRINDING, ThetanSDKErrorMsg.Okay);
+                    break;
+                default:
+                    uiHelperContainer.ShowPopUpMsg(ThetanSDKErrorMsg.Error,
+                        string.Format(UINftErrorMsg.ERROR_SELECT_HERO_UNKNOWN_ERROR, error.Code, error.Message),
+                        ThetanSDKErrorMsg.Okay);
+                    break;
+            }
+
+            ThetanSDKManager.Instance.AnalyticService.LogErrorOccured("NFT Detail", "Select NFT",
+                true, error.Message);
+         }
+    }
+    
+    internal struct FreeNFTGrindTimeInfo
+    {
+        public float grindTime;
+        public float maxTime;
     }
 }
 

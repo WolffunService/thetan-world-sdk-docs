@@ -41,13 +41,24 @@ namespace ThetanSDK.UI
 		public SimpleDataHelper<HeroNftCardViewDataModel> Data { get; private set; }
 		private Dictionary<string, int> _dicHeroNftIdToListIndex;
 
+		private Action<HeroNftItem> _onClickItem;
 		private Action<HeroNftItem> _onSelectItem;
 
+		public void RegisterOnClickItem(Action<HeroNftItem> callback)
+		{
+			_onClickItem += callback;
+		}
+		
+		public void UnregisterOnClickItem(Action<HeroNftItem> callback)
+		{
+			_onClickItem -= callback;
+		}
+		
 		public void RegisterOnSelectItem(Action<HeroNftItem> callback)
 		{
 			_onSelectItem += callback;
 		}
-		
+
 		public void UnregisterOnSelectItem(Action<HeroNftItem> callback)
 		{
 			_onSelectItem -= callback;
@@ -96,19 +107,6 @@ namespace ThetanSDK.UI
 		{
 			base.Update();
 
-			if (Input.GetKeyDown(KeyCode.M))
-			{
-				for (int i = 0; i < 20; i++)
-				{
-					Data.InsertOneAtEnd(new HeroNftCardViewDataModel()
-					{
-						IsHeader = false,
-					});
-				}
-				Data.NotifyListChangedExternally();
-				return;
-			}
-			
 			if (!IsInitialized)
 				return;
 
@@ -135,6 +133,10 @@ namespace ThetanSDK.UI
 			
 			if (numberOfItemsBelowLastVisible < _numberItemPerPage / 2)
 			{
+				if (Data[Data.Count - 1].IsEmpty)
+				{
+					Data.List.RemoveAt(Data.Count - 1);
+				}
 				_isFetching = true;
 				ThetanSDKManager.Instance.NftItemService.FetchNextPageListHeroNft((newData) =>
 				{
@@ -161,14 +163,20 @@ namespace ThetanSDK.UI
 								_dicHeroNftIdToListIndex[nftItem.id] = Data.Count;
 								Data.List.Add(new HeroNftCardViewDataModel()
 								{
-									IsHeader = false,
 									HeroNftItem = nftItem,
 									HasPendingSizeChange = true,
 								});
 							}
 						}
 					}
-					
+
+					if (Data.Count % 2 == 1)
+					{
+						Data.List.Add(new HeroNftCardViewDataModel()
+						{
+							IsEmpty = true
+						});
+					}
 					Data.NotifyListChangedExternally();
 					
 					_isFetching = false;
@@ -193,7 +201,7 @@ namespace ThetanSDK.UI
 		{
 			var data = Data[newOrRecycled.ItemIndex];
 
-			if (data.IsHeader)
+			if (data.IsEmpty)
 			{
 				newOrRecycled.UpdateHeader();
 				return;
@@ -202,10 +210,13 @@ namespace ThetanSDK.UI
 			var nftItemService = ThetanSDKManager.Instance.NftItemService;
 			newOrRecycled.UpdateData(data.HeroNftItem, data.HeroNftItem.id == nftItemService.SelectedHeroNftId,
 				_spriteCacheManager,
-				(selectedItem) =>
-			{
-				_onSelectItem?.Invoke(selectedItem);
-			});
+				(clickedItem) =>
+				{
+					_onClickItem?.Invoke(clickedItem);
+				}, selectedItem =>
+				{
+					_onSelectItem?.Invoke(selectedItem);
+				});
 		}
 
 		protected override CellGroupViewsHolder<NFTCardViewsHolder> CreateViewsHolder(int itemIndex)
@@ -264,6 +275,7 @@ namespace ThetanSDK.UI
 			// refresh selected hero nft
 			ThetanSDKManager.Instance.NftItemService.GetSelectedHeroNft(null, null);
 			ThetanSDKManager.Instance.EquipmentService.FetchListItem(null, null);
+			ThetanSDKManager.Instance.NftItemService.FetchFreeNFTInfo(null, null);
 			RefetchNewData();
 		}
 		
@@ -271,7 +283,7 @@ namespace ThetanSDK.UI
 		{
 			for (int i = 0; i < Data.Count; i++)
 			{
-				if (!Data[i].IsHeader &&
+				if (!Data[i].IsEmpty &&
 					Data[i].HeroNftItem.id == newData.id)
 				{
 					var item = Data.List[i];
@@ -299,13 +311,16 @@ namespace ThetanSDK.UI
 
 						var cellData = Data[itemIndex];
 
-						if(cellData.IsHeader)
+						if(cellData.IsEmpty)
 							continue;
 
 						groupViewsHolder.ContainingCellViewsHolders[cellIdx].UpdateData(cellData.HeroNftItem, 
 							cellData.HeroNftItem.id == nftItemService.SelectedHeroNftId,
 							_spriteCacheManager,
-							(selectedItem) =>
+							(clickedItem) =>
+							{
+								_onClickItem?.Invoke(clickedItem);
+							}, selectedItem =>
 							{
 								_onSelectItem?.Invoke(selectedItem);
 							});
@@ -347,16 +362,6 @@ namespace ThetanSDK.UI
 			
 			if(nftService.ListHeroNftItems != null)
 			{
-				// Generate empty items to preserve space for header
-				// for (int i = 0; i < _Params.CurrentUsedNumCellsPerGroup; i++)
-				// {
-				// 	Data.List.Add(new HeroNftCardViewDataModel()
-				// 	{
-				// 		IsHeader = true,
-				// 		HasPendingSizeChange = true,
-				// 	});
-				// }
-					
 				for (int i = 0; i < nftService.ListHeroNftItems.Count; i++)
 				{
 					var nftItem = nftService.ListHeroNftItems[i];
@@ -371,12 +376,19 @@ namespace ThetanSDK.UI
 						_dicHeroNftIdToListIndex[nftItem.id] = Data.Count;
 						Data.List.Add(new HeroNftCardViewDataModel()
 						{
-							IsHeader = false,
 							HeroNftItem = nftItem,
 							HasPendingSizeChange = true,
 						});
 					}
 				}
+			}
+
+			if (Data.Count % 2 == 1)
+			{
+				Data.List.Add(new HeroNftCardViewDataModel()
+				{
+					IsEmpty = true
+				});
 			}
 			
 			_txtListEmpty.enabled = Data.Count == 0;
@@ -420,16 +432,6 @@ namespace ThetanSDK.UI
 				
 				if(newData.listNftHeroItems != null)
 				{
-					// Generate empty items to preserve space for header
-					// for (int i = 0; i < _Params.CurrentUsedNumCellsPerGroup; i++)
-					// {
-					// 	Data.List.Add(new HeroNftCardViewDataModel()
-					// 	{
-					// 		IsHeader = true,
-					// 		HasPendingSizeChange = true,
-					// 	});
-					// }
-					
 					for (int i = 0; i < newData.listNftHeroItems.Count; i++)
 					{
 						var nftItem = newData.listNftHeroItems[i];
@@ -444,14 +446,20 @@ namespace ThetanSDK.UI
 							_dicHeroNftIdToListIndex[nftItem.id] = Data.Count;
 							Data.List.Add(new HeroNftCardViewDataModel()
 							{
-								IsHeader = false,
 								HeroNftItem = nftItem,
 								HasPendingSizeChange = true,
 							});
 						}
 					}
 				}
-				
+
+				if (Data.Count % 2 == 1)
+				{
+					Data.List.Add(new HeroNftCardViewDataModel()
+					{
+						IsEmpty = true,
+					});
+				}
 				Data.NotifyListChangedExternally();
 
 				_txtListEmpty.enabled = Data.Count == 0;
@@ -522,7 +530,7 @@ namespace ThetanSDK.UI
 
 	public class HeroNftCardViewDataModel
 	{
-		public bool IsHeader;
+		public bool IsEmpty;
 		public HeroNftItem HeroNftItem;
 		public bool HasPendingSizeChange;
 	}
@@ -543,25 +551,21 @@ namespace ThetanSDK.UI
 
 		public void UpdateHeader()
 		{
-			if (_layoutElement)
-				_layoutElement.ignoreLayout = true;
-			
+			_heroNftItem = default;
 			views.gameObject.SetActive(false);
 		}
 		
-		public void UpdateData(HeroNftItem data, bool isSelected, SpriteCacheManager spriteCacheManager, Action<HeroNftItem> onSelectCallback)
+		public void UpdateData(HeroNftItem data, bool isSelected, SpriteCacheManager spriteCacheManager, 
+			Action<HeroNftItem> onClickItemCallback, Action<HeroNftItem> onSelectItemCallback)
 		{
 			_heroNftItem = data;
-
-			if (_layoutElement)
-				_layoutElement.ignoreLayout = false;
-			
 			views.gameObject.SetActive(true);
 			
 			if(_uiHeroNftCard)
 			{
 				_uiHeroNftCard.SetSpriteCacheManager(spriteCacheManager);
-				_uiHeroNftCard.SetData(data, isSelected, () => onSelectCallback?.Invoke(_heroNftItem),
+				_uiHeroNftCard.SetData(data, isSelected, () => onClickItemCallback?.Invoke(_heroNftItem),
+					() => onSelectItemCallback?.Invoke(_heroNftItem),
 					() => { ThetanSDKManager.Instance.NftItemService.RefreshDataHeroNft(data, null, null); });
 			}
 		}

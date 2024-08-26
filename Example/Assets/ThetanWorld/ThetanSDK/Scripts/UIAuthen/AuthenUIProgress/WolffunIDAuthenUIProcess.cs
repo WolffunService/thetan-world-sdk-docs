@@ -119,6 +119,11 @@ namespace ThetanSDK.UI.Authen.UIProcess
             return _authenProcessInfo;
         }
 
+        public void StartPlayAsGuestProcess()
+        {
+            _authenProcess.LoginWithGuessAcount(_onAuthenSuccess, HandleLogInAsGuessError);
+        }
+
         private void HandleLogInAsGuessError(WolffunResponseError error)
         {
             var analticService = ThetanSDKManager.Instance.AnalyticService;
@@ -133,12 +138,12 @@ namespace ThetanSDK.UI.Authen.UIProcess
                         AuthenErrorMsg.Okay);
                     break;
                 case WSErrorCode.UnityHttpRequestNetworkError:
-                    analticService.LogErrorOccured("Login", "LoginAsGuess", true, "NetworkError");
+                    analticService.LogErrorOccured("Login", "LoginAsGuest", true, "NetworkError");
                     _uiHelperContainer.ShowPopUpMsg(AuthenErrorMsg.Error, AuthenErrorMsg.LostConnectionContext,
                         AuthenErrorMsg.Okay);
                     break;
                 default:
-                    analticService.LogErrorOccured("Login", "LoginAsGuess", true, error.Message);
+                    analticService.LogErrorOccured("Login", "LoginAsGuest", true, error.Message);
                     _uiHelperContainer.ShowPopUpMsg(AuthenErrorMsg.Error, AuthenErrorMsg.UnknownErrorContext,
                         AuthenErrorMsg.Okay);
                     break;

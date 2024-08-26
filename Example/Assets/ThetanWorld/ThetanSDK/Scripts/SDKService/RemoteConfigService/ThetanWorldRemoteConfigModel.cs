@@ -1,4 +1,5 @@
-﻿using Wolffun.RestAPI;
+﻿using System.Collections.Generic;
+using Wolffun.RestAPI;
 
 namespace ThetanSDK.SDKService.RemoteConfig
 {
@@ -16,6 +17,10 @@ namespace ThetanSDK.SDKService.RemoteConfig
         /// If this is true, redirect all endpoint to staging when initialize sdk
         /// </summary>
         public bool isUseTemporaryVersion;
+
+
+        public List<string> listTemporaryVersion;
+        
         public ThetanWorldRemoteConfigModel SetDefault()
         {
             return this;

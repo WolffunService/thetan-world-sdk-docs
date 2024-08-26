@@ -39,6 +39,9 @@ namespace ThetanSDK.UI
         public static string TIME_OUT_OPEN_WS = "Cannot open connect to server in allowed time";
 
         public static string TIME_OUT_WAIT_LOGIN_CODE_DATA = "Cannot receive login code from server in allowed time";
+
+        public static string DO_NOT_HAVE_PERMISSION =
+            "You do not have permission to access our services. Please make sure your IP is allowed to access our services or contact our technical support for further support.";
     }
 }
 

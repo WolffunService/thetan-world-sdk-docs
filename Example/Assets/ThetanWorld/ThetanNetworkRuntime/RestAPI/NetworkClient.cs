@@ -45,6 +45,7 @@ namespace Wolffun.RestAPI
         private IAuthenticationContainer _authenContainer;
 
         private Action<ThetanNetworkClientState> _onChangeNetworkClientState;
+        private Action _onReAuthenCallback;
 
         protected static bool _isUseTemporaryVersion = false;
         
@@ -109,7 +110,7 @@ namespace Wolffun.RestAPI
             }
         }
 
-        public async void InitializeNetworkClient(string version, Action<ThetanNetworkClientState> doneInitializeNetworkCallback)
+        public async void InitializeNetworkClient(string version, Action<ThetanNetworkClientState, bool> doneInitializeNetworkCallback)
         {
             if (!_isAwaked)
             {
@@ -121,15 +122,33 @@ namespace Wolffun.RestAPI
 
             await _authenContainer.LoadCachedAccessToken();
 
+            bool isHasTokenFromPrevSession = !string.IsNullOrEmpty(_authenContainer.GetAccessToken());
+
             if(!WolffunUnityHttp.IsAlive)
                 await UniTask.WaitUntil(() => WolffunUnityHttp.IsAlive);
 
             WolffunUnityHttp.Instance.Initialize(version, _authenContainer, EndpointSetting, GetInitLogLevel(),
                 GetDefaultHandleSpecialError(), tokenErrorAPIHandle: this);
-
-            CreateAllClientStateAndStartStateProcess(doneInitializeNetworkCallback);
+            
+            CreateAllClientStateAndStartStateProcess((networkClientState) =>
+            {
+                doneInitializeNetworkCallback?.Invoke(networkClientState, isHasTokenFromPrevSession);
+            });
 
             //CheckTokenExpired_Internal(doneInitializeNetworkCallback);
+        }
+
+        /// <summary>
+        /// ReAuthen is when user is already logged in account, and use login login method to logged in another account
+        /// </summary>
+        public void SubcribeOnReAuthenCallback(Action onReAuthenCallback)
+        {
+            _onReAuthenCallback += onReAuthenCallback;
+        }
+        
+        public void UnSubcribeOnReAuthenCallback(Action onReAuthenCallback)
+        {
+            _onReAuthenCallback -= onReAuthenCallback;
         }
         
         private void CreateAllClientStateAndStartStateProcess(Action<ThetanNetworkClientState> doneCallback)
@@ -187,7 +206,7 @@ namespace Wolffun.RestAPI
 
         private void HandleRequestChangeState(BaseNetworkClientState prevState, BaseNetworkClientState nextState)
         {
-            CommonLog.Log($"HandleRequestChangeState from {prevState.ClientState} to {nextState.ClientState}");
+            Debug.Log($"HandleRequestChangeState from {prevState.ClientState} to {nextState.ClientState}");
             _countTimeUpdateNetworkState = 0;
             _currentNetworkClientState = nextState;
             prevState.OnExitState(nextState);
@@ -347,10 +366,19 @@ namespace Wolffun.RestAPI
         public void HandleAuthenSuccess(string accessToken, string refreshToken)
         {
             _authenContainer.SaveAccessTokenToCache(accessToken, refreshToken);
+
+            bool isReAuthen = _currentNetworkClientState is NetworkClientStateLoggedIn ||
+                              _currentNetworkClientState is NetworkClientStateLoggedInNoNetwork;
+
             if (_currentNetworkClientState != null &&
                 _currentNetworkClientState is IAuthenSuccessListener authenSuccessListener)
             {
                 authenSuccessListener.HandleAuthenSuccess(accessToken, refreshToken);
+            }
+
+            if (isReAuthen)
+            {
+                _onReAuthenCallback?.Invoke();
             }
         }
 

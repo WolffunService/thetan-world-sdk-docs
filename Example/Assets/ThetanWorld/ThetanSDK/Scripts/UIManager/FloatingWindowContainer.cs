@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
-using DG.Tweening;
+using Wolffun.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
 using Wolffun.Pooling;

@@ -69,7 +69,14 @@ namespace ThetanSDK.SDKService.RemoteConfig
                 data =>
                 {
                     _remoteConfig = data;
-                    if (data.isUseTemporaryVersion)
+
+                    string version = ThetanSDKManager.Instance.Version;
+                    
+#if STAGING
+                    version = version.Replace("_S", string.Empty);
+#endif
+                    
+                    if(data.listTemporaryVersion != null && data.listTemporaryVersion.Contains(version))
                     {
                         NetworkClient.SetTemporaryVersionV2(true);
                         callback?.Invoke(false);

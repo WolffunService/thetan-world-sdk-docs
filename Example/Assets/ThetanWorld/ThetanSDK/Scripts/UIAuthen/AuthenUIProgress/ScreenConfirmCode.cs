@@ -75,6 +75,10 @@ namespace ThetanSDK.UI.Authen.UIProcess
                 SetActiveLoading(false);
                 switch ((WSErrorCode)error.Code)
                 {
+                    case WSErrorCode.DoNotHavePermission: 
+                        _uiHelperContainer.ShowPopUpMsg(AuthenErrorMsg.Error, AuthenErrorMsg.DO_NOT_HAVE_PERMISSION,
+                            AuthenErrorMsg.Okay);
+                        break;
                     case WSErrorCode.UserBanned:
                         _uiHelperContainer.ShowPopUpMsg(AuthenErrorMsg.AccountBanned, AuthenErrorMsg.AccountBannedContactSupport,
                             AuthenErrorMsg.Confirm);

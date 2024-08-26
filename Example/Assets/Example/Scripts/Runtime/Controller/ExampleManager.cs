@@ -20,7 +20,6 @@ public class ExampleManager : MonoBehaviour
     {
         ThetanSDKManager.Instance.Initialize(new SDKOption()
         {
-            UseFullscreenLogin = true,
             AutoShowPopupWhenLostConnection = true,
         }, state =>
         {

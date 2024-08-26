@@ -6,6 +6,8 @@
     /// </summary>
     public enum NftItemServiceErrorCode
     {
+        FAIL_TO_VERIFY_APP = -8,
+        
         /// <summary>
         /// This SDK version is not supported by server anymore, please update your SDK
         /// </summary>
@@ -28,6 +30,11 @@
         /// There is network error when making API request
         /// </summary>
         NETWORK_ERROR = -1,
+
+        /// <summary>
+        /// Free NFT is in rest section, wait for rest section end
+        /// </summary>
+        FREE_HERO_IN_REST_SESSION = -10,
         
         /// <summary>
         /// Unknown Error
@@ -68,5 +75,10 @@
         /// Selected hero is at maximum grind stage and cannot be grinded anymore
         /// </summary>
         HERO_MAX_GRIND_STAGE = 8219,
+        
+        /// <summary>
+        /// Free NFT has been claimed before
+        /// </summary>
+        FREE_NFT_CLAIMED = 8226,
     }
 }

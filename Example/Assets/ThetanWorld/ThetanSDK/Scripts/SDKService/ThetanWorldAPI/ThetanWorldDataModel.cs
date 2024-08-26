@@ -14,18 +14,18 @@ namespace Wolffun.RestAPI.ThetanWorld
         /// Number items in page
         /// </summary>
         public int limit;
-        
+
         /// <summary>
         /// Page index to fetch data (start at 0)
         /// </summary>
         public int page;
-        
+
         /// <summary>
         /// Defying sort, see NFTSortType for all sort criteria.
         /// Format Example: 1,-3,-5,-12
         /// </summary>
         public string sorts;
-        
+
         /// <summary>
         /// True to only fetch NFT that has been mounted.
         /// False to ignore mounted status of NFT
@@ -63,7 +63,16 @@ namespace Wolffun.RestAPI.ThetanWorld
         Epic = 3,
         Legend = 4
     }
-    
+
+    /// <summary>
+    /// Define Free NFT or normal NFT
+    /// </summary>
+    public enum NFTType
+    {
+        FreeNFT = -1,
+        NormalNFT = 2,
+    }
+
     [Serializable]
     public struct SelectedNftResponseModel
     {
@@ -71,18 +80,18 @@ namespace Wolffun.RestAPI.ThetanWorld
         /// Current grinding session id. Will be null or empty when not grinding
         /// </summary>
         public string grindId;
-        
+
         /// <summary>
         /// HeroNFTId of grinding hero NFT. Will be null or empty when not grinding
         /// </summary>
         public string nftGrind;
-        
+
         /// <summary>
         /// HeroNFTId of selected hero NFT. Will be null or empty when not selecting any hero nft
         /// </summary>
         public string selected;
     }
-    
+
     /// <summary>
     /// Response from fetch list hero nft api
     /// </summary>
@@ -92,7 +101,7 @@ namespace Wolffun.RestAPI.ThetanWorld
         /// List hero nft item data in page
         /// </summary>
         public List<HeroNftItem> data;
-        
+
         /// <summary>
         /// Total nft item user have.
         /// This is NOT data.count. This is actual how many NFT user have
@@ -108,27 +117,32 @@ namespace Wolffun.RestAPI.ThetanWorld
     {
         /// <summary>NFT id</summary>
         public string id;
-        
+
         public int gen;
-        
+
         /// <summary>Info use by ingame for nft</summary>
         public NftIngameInfo ingameInfo;
-        
+
         /// <summary>Metadata of this NFT</summary>
         public HeroNftMetaData metaData;
-        
+
         /// <summary>A dictionary that contain info for all equipment slot inside hero NFT item. Key is EquipmentItemType. Value is NFTEquipmentInfo</summary>
         public Dictionary<EquipmentItemType, NFTEquipmentInfo> equipmentSet;
-        
+
         /// <summary>Contain info about this NFT grind ability, rewards, speed, stage, ...</summary>
         public CommonGrindInfo grindInfo;
-        
+
         /// <summary>A MarketInfo of this NFT</summary>
         public MarketInfo marketInfo;
 
         /// <summary>An OnChainInfo of this NFT</summary>
         public OnChainInfo onchainInfo;
-        
+
+        /// <summary>
+        /// Is it free NFT or normal NFT
+        /// </summary>
+        public NFTType nftType;
+
         public HeroNftItem SetDefault()
         {
             id = string.Empty;
@@ -172,7 +186,7 @@ namespace Wolffun.RestAPI.ThetanWorld
         /// Contain grind session info of this NFT. If this NFT is not being grinded, this value is null
         /// </summary>
         public GrindStatus status;
-        
+
         /// <summary>
         /// Total reward this NFT has earned through grinding
         /// </summary>
@@ -187,44 +201,71 @@ namespace Wolffun.RestAPI.ThetanWorld
         /// Maximum grind speed this NFT can reach (THG/s)
         /// </summary>
         public float maxGrindSpeed;
-        
+
         /// <summary>
         /// The grind ability of this NFT (value range [0, 1])
         /// </summary>
         public float grindAbility; // Range [0,1]
-        
+
         /// <summary>
         /// Current stage of this NFT
         /// </summary>
         public int stage;
-        
+
         /// <summary>
         /// Maximum stage of this NFT
         /// </summary>
         public int maxStage;
-        
+
         /// <summary>
         /// Is this NFT reached its maximum stage and cannot be grinded anymore
         /// </summary>
         public bool reachMaxStage;
-        
+
         /// <summary>
         /// How many second nft have been grinded today
         /// </summary>
         public float grindTime;
-        
+
         /// <summary>
         /// Maximum second nft can be grinded today
         /// </summary>
         public float maxGrindTime;
+
+        /// <summary>
+        /// Next reset daily limit grind time, use for normal NFT
+        /// </summary>
         public DateTime nextReset;
+
         public float equipmentEffect; // Range [0, 1]
 
-        public bool IsGrinding() => status != null && !string.IsNullOrEmpty(status.grindId);
+        public float grindRewardEffect; // Range [0, 1]
+
+        /// <summary>
+        /// Total grind time in entire NFT lifetime
+        /// </summary>
+        public float allGrindTime;
+
+        /// <summary>
+        /// Maximum grind time in entire NFT lifetime
+        /// </summary>
+        public float maxAllGrindTime;
+
+        /// <summary>
+        /// Estimated victory reward speed win (THG/s)
+        /// </summary>
+        public double estVESpeedWin;
         
-        public bool IsMaxLifeTime() => reachMaxStage; // implement later
+        /// <summary>
+        /// Estimated victory reward speed lose (THG/s)
+        /// </summary>
+        public double estVESpeedLoose;
+
+        public bool IsGrinding() => status != null && !string.IsNullOrEmpty(status.grindId);
+
+        public bool IsMaxLifeTime() => reachMaxStage;
     }
-    
+
     [Serializable]
     public struct DetailHeroGrindInfo
     {
@@ -255,17 +296,17 @@ namespace Wolffun.RestAPI.ThetanWorld
         /// App name this NFT is grinding
         /// </summary>
         public string appName;
-        
+
         /// <summary>
         /// Grind session ID
         /// </summary>
         public string grindId;
-        
+
         /// <summary>
         /// DateTime of when this NFT is started grind.
         /// </summary>
         public DateTime startGrindAt;
-        
+
         /// <summary>
         /// DateTime of when this NFT is timeout grind when server cannot receive grind signal.
         /// </summary>
@@ -285,12 +326,14 @@ namespace Wolffun.RestAPI.ThetanWorld
 
         /// <summary>Rarity of this NFT</summary>
         public NFTRarity rarity;
-        
+
         /// <summary>Item kind of this item</summary>
         public ItemKind kind;
-        
+
         /// <summary>typeId of this item</summary>
         public int type;
+
+        public string name;
     }
 
     /// <summary>
@@ -311,7 +354,7 @@ namespace Wolffun.RestAPI.ThetanWorld
     {
         Hero = 5,
     }
-    
+
     /// <summary>
     /// Meta data for descript Hero NFT
     /// </summary>
@@ -339,7 +382,7 @@ namespace Wolffun.RestAPI.ThetanWorld
     {
         public List<NFTItemDailySummaryData> data;
     }
-    
+
     [Serializable]
     public struct NFTItemDailySummaryData
     {
@@ -352,7 +395,7 @@ namespace Wolffun.RestAPI.ThetanWorld
     {
         public List<GameDailySummaryData> data;
     }
-    
+
     [Serializable]
     public struct GameDailySummaryData
     {
@@ -378,10 +421,54 @@ namespace Wolffun.RestAPI.ThetanWorld
         /// Require Equipment Type Id
         /// </summary>
         public string equippedId;
-        
+
         /// <summary>
         /// ItemId of equipment item that been equipped in this slot. If this slot is not equipped yet, this field is null or empty
         /// </summary>
         public int requiredTypeId;
+    }
+
+    /// <summary>
+    /// Contain information about have we claimed the free NFT, free NFT section earn
+    /// </summary>
+    public struct FreeNFTInfo
+    {
+        /// <summary>
+        /// Id of free NFT, will be null or empty when free NFT is not claimed yet
+        /// </summary>
+        public string nftId;
+
+        /// <summary>
+        /// Timestamp UTC for next reset grind section for free NFT
+        /// </summary>
+        public DateTime nextResetGrindEarn;
+
+        /// <summary>
+        /// Timestamp UTC for previous or current start section earn
+        /// </summary>
+        public DateTime startSectionEarn;
+
+        /// <summary>
+        /// Timestamp UTC for previous or current start section rest
+        /// </summary>
+        public DateTime startSectionRest;
+
+        /// <summary>
+        /// How much value earned by free NFT in previous or current section earn
+        /// </summary>
+        public long sectionEarned;
+    }
+
+    [Serializable]
+    public struct FreeNFTConfig
+    {
+        public float avgFreeEarnHourlyMax;
+        public float avgFreeEarnHourlyMin;
+        public float avgFreeGrindHourlyMax;
+        public float avgFreeGrindHourlyMin;
+        public float avgFreeVEHourlyMax;
+        public float avgFreeVEHourlyMin;
+        public NftIngameInfo freeHero;
+        public float thgRate;
     }
 }

@@ -123,7 +123,7 @@ namespace ThetanSDK
                     switch ((NftItemServiceErrorCode)error.Code)
                     {
                         case NftItemServiceErrorCode.NFT_IS_GRINDING_IN_ANOTHER_GAME:
-                            _uiHelperContainer.ShowPopUpMsg("Error", NFTServiceErrorMsg.ERROR_PREPARE_MATCH_NFT_GRINDING_IN_ANOTHER_GAME,
+                            _uiHelperContainer.ShowPopUpMsg("Notice", NFTServiceErrorMsg.ERROR_PREPARE_MATCH_NFT_GRINDING_IN_ANOTHER_GAME,
                                 "Continue", "Select another nft",
                                 () => onSuccessCallback?.Invoke((NftItemServiceErrorCode)error.Code),
                                 () =>
@@ -133,7 +133,7 @@ namespace ThetanSDK
                                 });
                             break;
                         case NftItemServiceErrorCode.ANOTHER_NFT_IS_GRINDING:
-                            _uiHelperContainer.ShowPopUpMsg("Error", NFTServiceErrorMsg.ERROR_PREPARE_MATCH_OTHER_NFT_IS_GRINDING,
+                            _uiHelperContainer.ShowPopUpMsg("Notice", NFTServiceErrorMsg.ERROR_PREPARE_MATCH_OTHER_NFT_IS_GRINDING,
                                 "Continue","Select another nft",
                                 () => onSuccessCallback?.Invoke((NftItemServiceErrorCode)error.Code),
                                 () =>
@@ -143,7 +143,7 @@ namespace ThetanSDK
                                 });
                             break;
                         case NftItemServiceErrorCode.HERO_MAX_GRIND_STAGE:
-                            _uiHelperContainer.ShowPopUpMsg("Error", NFTServiceErrorMsg.ERROR_PREPARE_MATCH_NFT_MAX_GRIND_STAGE,
+                            _uiHelperContainer.ShowPopUpMsg("Notice", NFTServiceErrorMsg.ERROR_PREPARE_MATCH_NFT_MAX_GRIND_STAGE,
                                 "Continue","Select another nft",
                                 () => onSuccessCallback?.Invoke((NftItemServiceErrorCode)error.Code),
                                 () =>
@@ -153,7 +153,7 @@ namespace ThetanSDK
                                 });
                             break;
                         case NftItemServiceErrorCode.NFT_DAILY_LIMIT_REACH:
-                            _uiHelperContainer.ShowPopUpMsg("Error", NFTServiceErrorMsg.ERROR_PREPARE_MATCH_NFT_DAILY_LIMIT,
+                            _uiHelperContainer.ShowPopUpMsg("Notice", NFTServiceErrorMsg.ERROR_PREPARE_MATCH_NFT_DAILY_LIMIT,
                                 "Continue","Select another nft",
                                 () => onSuccessCallback?.Invoke((NftItemServiceErrorCode)error.Code),
                                 () =>
@@ -163,7 +163,7 @@ namespace ThetanSDK
                                 });
                             break;
                         case NftItemServiceErrorCode.NOT_SELECTED_NFT_HERO:
-                            _uiHelperContainer.ShowPopUpMsg("Error", NFTServiceErrorMsg.ERROR_PREPARE_MATCH_NOT_SELECT_NFT,
+                            _uiHelperContainer.ShowPopUpMsg("Notice", NFTServiceErrorMsg.ERROR_PREPARE_MATCH_NOT_SELECT_NFT,
                                 "Continue", "Select NFT",
                                 () => onSuccessCallback?.Invoke((NftItemServiceErrorCode)error.Code),
                                 () =>
@@ -184,6 +184,16 @@ namespace ThetanSDK
                             break;
                         case NftItemServiceErrorCode.USER_NOT_OWN_NFT:
                             _uiHelperContainer.ShowPopUpMsg("Error", NFTServiceErrorMsg.ERROR_PREPARE_MATCH_NFT_NOT_OWNED,
+                                "Continue", "Select other NFT",
+                                () => onSuccessCallback?.Invoke((NftItemServiceErrorCode)error.Code),
+                                () =>
+                                {
+                                    ThetanSDKManager.Instance.OpenScreenSelectNFT();
+                                    onErrorCallback?.Invoke(error);
+                                });
+                            break;
+                        case NftItemServiceErrorCode.FREE_HERO_IN_REST_SESSION:
+                            _uiHelperContainer.ShowPopUpMsg("Notice", NFTServiceErrorMsg.ERROR_PREPARE_MATCH_FREE_NFT_IN_REST_SESSION,
                                 "Continue", "Select other NFT",
                                 () => onSuccessCallback?.Invoke((NftItemServiceErrorCode)error.Code),
                                 () =>

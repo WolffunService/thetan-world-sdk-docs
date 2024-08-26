@@ -1,10 +1,12 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using DG.Tweening;
+//using DG.Tweening;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Wolffun.Tweening;
+
 
 namespace ThetanSDK.UI
 {
@@ -25,7 +27,7 @@ namespace ThetanSDK.UI
         [Tooltip("Total second text fade out")]
         [SerializeField] private float _fadeOutDuration;
 
-        private Sequence _curTweenAnimation;
+        private TweenSequence _curTweenAnimation;
         
         private void Awake()
         {
@@ -59,7 +61,7 @@ namespace ThetanSDK.UI
 
             rt.position = _startPosition.position;
 
-            _curTweenAnimation = DOTween.Sequence();
+            _curTweenAnimation = WolfTween.GetSequence();
             
             _curTweenAnimation.Append(rt.DOMove(_endPosision.position, _moveTextDuration)
                 .SetUpdate(true));

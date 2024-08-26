@@ -14,7 +14,7 @@ namespace Wolffun.RestAPI.NetworkClientState
         /// Total second remain on token to start refresh token
         /// </summary>
         private const int REFRESH_TOKEN_WHEN_REMAINING = 1 * 24 * 3600;
-        
+
         private NetworkClientStateLoggedIn _stateLoggedIn;
         private NetworkClientStateLoggedInNoNetwork _stateLoggedInNoNetwork;
         private NetworkClientStateNotLoggedIn _stateNotLoggedIn;
@@ -60,7 +60,6 @@ namespace Wolffun.RestAPI.NetworkClientState
                 return;
             }
 
-            
             if (JWT.JsonWebToken.IsTokenExpire(cachedAccessToken, 30))
             {
                 bool isRefreshTokenExpired =
