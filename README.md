@@ -28,7 +28,7 @@ Grind process with be splitted into phases that depend on your game to decide wh
 >Add these package into your manifest.json
 ```json
 [
-    "com.wolffun.download-from-storage": "https://github.com/WolffunService/DownloadFromStorage.git#1.0.17",
+    "com.wolffun.download-from-storage": "https://github.com/WolffunService/DownloadFromStorage.git#1.0.20",
     "com.unity.nuget.newtonsoft-json": "3.2.1",
     "com.wolffun.log": "https://github.com/WolffunService/Wolffun-Log.git#1.0.1",
     "com.cysharp.unitask": "https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask",
@@ -70,7 +70,7 @@ If your project does not depend on these packages, please delete them from your 
 And also upgrade package "com.wolffun.download-from-storage" to version 1.0.17
 ```json
 [
-    "com.wolffun.download-from-storage": "https://github.com/WolffunService/DownloadFromStorage.git#1.0.17"
+    "com.wolffun.download-from-storage": "https://github.com/WolffunService/DownloadFromStorage.git#1.0.20"
 ]
 ```
 
