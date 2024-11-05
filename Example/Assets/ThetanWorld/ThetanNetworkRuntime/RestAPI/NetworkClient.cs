@@ -401,6 +401,8 @@ namespace Wolffun.RestAPI
         {
             _isUseTemporaryVersion = isTemporary;
         }
+        
+        public void SetAppCheckToken(string token) => _authenContainer?.SetAppCheckToken(token);
 
         public static bool IsUseTemporaryVersion => _isUseTemporaryVersion;
     }

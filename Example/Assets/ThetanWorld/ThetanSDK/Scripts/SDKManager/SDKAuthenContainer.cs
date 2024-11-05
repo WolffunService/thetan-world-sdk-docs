@@ -15,7 +15,8 @@ namespace ThetanSDK
         [NonSerialized] private LocalDataLoadSaver<TokenResponseModel> _localDataLoadSaver;
         [NonSerialized] private string _applicationId;
         [NonSerialized] private string _applicationSecret;
-
+        [NonSerialized] private string _appCheckToken;
+        
         public async UniTask LoadCachedAccessToken()
         {
             var cachedData = _localDataLoadSaver.LoadDataLocal(filename);
@@ -52,5 +53,8 @@ namespace ThetanSDK
             _applicationId = appClientID;
             _applicationSecret = appClientSecret;
         }
+
+        public string GetAppCheckToken() => _appCheckToken;
+        public void SetAppCheckToken(string appCheckToken) => _appCheckToken = appCheckToken;
     }
 }

@@ -105,6 +105,8 @@ namespace ThetanSDK.Utilities
                     return ThetanSDKConstantString.HERO_RARITY_EPIC;
                 case NFTRarity.Legend:
                     return ThetanSDKConstantString.HERO_RARITY_LEGEND;
+                case NFTRarity.Lite:
+                    return ThetanSDKConstantString.HERO_RARITY_LITE;
                 default:
                     return ThetanSDKConstantString.HERO_RARITY_UNKNOWN;
             }

@@ -993,8 +993,8 @@ namespace ThetanSDK.SDKServices.NFTItem
                     FetchFreeNFTInfo(null, null);
                 }
 
-                successCallback?.Invoke(grindSessionId);
                 _onChangeGrindingStatus?.Invoke(true);
+                successCallback?.Invoke(grindSessionId);
             }, onErrorCallback);
         }
 

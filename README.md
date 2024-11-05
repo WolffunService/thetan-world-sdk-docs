@@ -67,7 +67,7 @@ If your project does not depend on these packages, please delete them from your 
 ]
 ```
 
-And also upgrade package "com.wolffun.download-from-storage" to version 1.0.17
+And also upgrade package "com.wolffun.download-from-storage" to version 1.0.20
 ```json
 [
     "com.wolffun.download-from-storage": "https://github.com/WolffunService/DownloadFromStorage.git#1.0.20"
@@ -76,6 +76,17 @@ And also upgrade package "com.wolffun.download-from-storage" to version 1.0.17
 
 ### Step 4
 Inport new ThetanWorld SDK package, and restore your ThetanSDKNetworkConfig from backup at step 1
+
+# Integrate with Firebase AppCheck
+
+> [!IMPORTANT]
+> Firebase AppCheck is REQUIRED to verify authorized game client to access our services
+
+### Step 1: Import Firebase AppCheck into your project
+Follow https://firebase.google.com/docs/app-check/unity/default-providers to setup Firebase Appcheck in your project
+
+### Step 2: Create Service account with role AppCheck Verifier
+
 
 
 # Using Guide
@@ -87,17 +98,23 @@ Instantiate prefab "ThetanSDK - Partner" in the package folder. After you instan
 ### **Step 2**: Show Main Button 
 To show button Thetan World, you can call [``ThetanSDKManager.Instance.ShowButtonMainAction``](#showbuttonmainaction). you can call [``ThetanSDKManager.Instance.HideButtonMainAction``](#hidebuttonmainaction) to hide button Thetan World.
 
-### **Step 3:** Prepare to start match
-Before you start the match, you should check if user is selecting any nft hero for grinding by calling ``ThetanSDKManager.Instance.IsSelectedAnyHeroNftItem``. If user select any nft hero for grinding, you can call [``ThetanSDKManager.Instance.PrepareMatchForSelectedNFT``](#preparematchforselectednft) to lock nft and prepare that nft for grinding. After [``PrepareMatchForSelectedNFT``](#preparematchforselectednft) return success, main button will become non-interactable, user can only drag them around. If you want to turn off completely the button when user play game, you can call [``ThetanSDKManager.Instance.HideButtonMainAction``](#hidebuttonmainaction).
+### **Step 3**: Set AppCheck token
+Follow https://firebase.google.com/docs/app-check/unity/custom-resource to get an AppCheck token and call the function [``ThetanSDKManager.Instance.SetAppCheckToken``](#setappchecktoken) with the token you receive from Firebase.
+> [!NOTE]
+> Your AppCheck token may become expired or invalid, so we recommend you get and set the AppCheck token every time before performing step 4.
 
-### **Step 4:** Start Grinding
+### **Step 4:** Prepare to start match
+Before you start the match, you should check if user is selecting any nft hero for grinding by calling ``ThetanSDKManager.Instance.IsSelectedAnyHeroNftItem``. 
+If user select any nft hero for grinding, you can call [``ThetanSDKManager.Instance.PrepareMatchForSelectedNFT``](#preparematchforselectednft) to lock nft and prepare that nft for grinding. After [``PrepareMatchForSelectedNFT``](#preparematchforselectednft) return success, main button will become non-interactable, user can only drag them around. If you want to turn off completely the button when user play game, you can call [``ThetanSDKManager.Instance.HideButtonMainAction``](#hidebuttonmainaction).
+
+### **Step 5:** Start Grinding
 After you load into the game success after [``PrepareMatchForSelectedNFT``](#preparematchforselectednft), you should call [``ThetanSDKManager.Instance.StartGrindingHeroItem``](#startgrindingheroitem) to start grinding user's selected nft
 
 >Note: `StartGrindingHeroItem` only affect on the current game session, if user somehow open game on another machine, you should check ``ThetanSDKManager.Instance.IsGrindingAnyHeroNftItem``, by then if you wish to end the grinding session, you can skip go to Step 5, or if you wish to continue grinding with previous grinding session, you have to call ``ThetanSDKManager.Instance.StartGrindingHeroItem``
 
->**Step 4.1 (Optional):** If your game have pause match behaviour, you can call [``ThetanSDKManager.Instance.PauseGrindingHeroItem``](#pausegrindingheroitem) to pause grinding user's nft. After that, you can call [``ThetanSDKManager.Instance.StartGrindingHeroItem``](#startgrindingheroitem) to resume grinding again.
+>**Step 5.1 (Optional):** If your game have pause match behaviour, you can call [``ThetanSDKManager.Instance.PauseGrindingHeroItem``](#pausegrindingheroitem) to pause grinding user's nft. After that, you can call [``ThetanSDKManager.Instance.StartGrindingHeroItem``](#startgrindingheroitem) to resume grinding again.
 
-### **Step 5:** Stop Grinding
+### **Step 6:** Stop Grinding
 After the match end, you should call [``ThetanSDKManager.Instance.StopGrindingHeroItem``](#stopgrindingheroitem) to end grinding session and unlock selected NFT. This function required you to pass [``EndMatchInfo``](#endmatchinfo) as parameter, our system use this info to calculate user's rewards.
 - [``EndMatchInfo``](#endmatchinfo) **REQUIRE** field ``matchResult``, this field indicate the result of grinding match is win, lose or draw.
 - The optional field ``gameLevel`` indicate the level of grinding match, it only used when your game is level-based mechanism (example: Candy Crush, Puzzle games, ...)
@@ -154,7 +171,18 @@ Initialize SDK before client can start using any SDK function
 **Declaration:**
 ``public void HideButtonMainAction()``
 
-**Description**: Completely hide button Thetan World and close all current openned thetan world UI.
+**Description**: Completely hide button Thetan World when user is not grinding and close all current openned thetan world UI. When grinding, this function will not completely hide button Thetan World, it will become 50% smaller so user can still see grinding process.
+
+
+---
+
+
+### SetAppCheckToken
+
+**Declaration:**
+``public void SetAppCheckToken(string token)``
+
+**Description**: Set AppCheck token to verify authorized game client to access SDK services
 
 
 ---

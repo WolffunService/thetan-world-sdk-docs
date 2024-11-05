@@ -585,6 +585,7 @@ GameObject:
   - component: {fileID: 174083228312154209}
   - component: {fileID: 3417686043155921525}
   - component: {fileID: 593455094468553328}
+  - component: {fileID: 4161477184514434840}
   m_Layer: 5
   m_Name: ThetanSDK - Partner
   m_TagString: Untagged
@@ -708,6 +709,7 @@ MonoBehaviour:
   _luckySpinService: {fileID: 6664988462189204438}
   _remoteConfigService: {fileID: 4781458779058981403}
   _userStatisticService: {fileID: 3488394529466914524}
+  _sdkVersionHandle: {fileID: 4161477184514434840}
   _networkReachabilityDetect: {fileID: 8596071990257745887}
   _showPopopWhenLostConnection: {fileID: 8555308725465781424}
 --- !u!114 &174083228312154209
@@ -762,6 +764,18 @@ MonoBehaviour:
   _moveToTargetDelay: 0.2
   _moveToTargetDurationRandomRange: {x: 0.35, y: 0.5}
   _moveToTargetEase: 6
+--- !u!114 &4161477184514434840
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4360037882322800910}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 31bb7e32b36c42209f046417b4b6c8b1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &5087087580891884108
 GameObject:
   m_ObjectHideFlags: 0

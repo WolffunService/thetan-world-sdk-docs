@@ -96,8 +96,12 @@ namespace Wolffun.RestAPI
         /// <param name="pageData"></param>
         /// <param name="jsonSerializerSettings"></param>
         /// <typeparam name="T"></typeparam>
-        public async void MakeAPI<T>(WolffunRequestCommon request, Action<T> result, Action<WolffunResponseError> error,
-            AuthType authType = AuthType.NONE, Action<Page> pageData = null, JsonSerializerSettings jsonSerializerSettings = null)
+        public async void MakeAPI<T>(WolffunRequestCommon request, 
+            Action<T> result, 
+            Action<WolffunResponseError> error,
+            AuthType authType = AuthType.NONE, 
+            Action<Page> pageData = null, 
+            JsonSerializerSettings jsonSerializerSettings = null)
         {
             try
             {
@@ -115,6 +119,12 @@ namespace Wolffun.RestAPI
         
                 request.AddHeader("Content-Type", "application/json");
                 request.AddHeader("Accept-Encoding", "gzip, identity");
+
+                var appCheckToken = _authenticationContainer.GetAppCheckToken();
+                if (request.IsRequireAppCheck() && !string.IsNullOrEmpty(appCheckToken))
+                {
+                    request.AddHeader("X-Firebase-AppCheck", appCheckToken);
+                }
                 
                 _httpLog.Log(LogLevel.Info, $"MakeAPI {request.Url()}");
                 _httpLog.Log(LogLevel.Info, $"MakeAPI {JsonConvert.SerializeObject(request.Headers())}");

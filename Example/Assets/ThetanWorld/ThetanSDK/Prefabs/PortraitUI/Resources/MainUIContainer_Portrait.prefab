@@ -6468,6 +6468,10 @@ PrefabInstance:
       propertyPath: m_Maskable
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 284497418827836847, guid: c62335d309705ab40ba866b55c35339d, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 755824410617103148, guid: c62335d309705ab40ba866b55c35339d, type: 3}
       propertyPath: m_Maskable
       value: 0
@@ -6514,7 +6518,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4731293657474848922, guid: c62335d309705ab40ba866b55c35339d, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 295.21674
+      value: -140.43
+      objectReference: {fileID: 0}
+    - target: {fileID: 4731293657474848922, guid: c62335d309705ab40ba866b55c35339d, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 5.2
       objectReference: {fileID: 0}
     - target: {fileID: 5101402365349260554, guid: c62335d309705ab40ba866b55c35339d, type: 3}
       propertyPath: m_Maskable

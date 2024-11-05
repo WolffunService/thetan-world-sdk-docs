@@ -689,7 +689,8 @@ MonoBehaviour:
   _contentScale: {fileID: 8148015301082589930}
   _animVictoryIcon: {fileID: 3756446267572429527}
   grindingAnimInterval: 2.5
-  _scaleDownValue: 0.85
+  _scaleDownValue: 0.75
+  _scaleDownHideValue: 0.55
   _scaleDuration: 0.3
   _listAnimImgGrinding:
   - {fileID: 1768316587342917088}

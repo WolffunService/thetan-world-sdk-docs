@@ -14,6 +14,7 @@ namespace Wolffun.RestAPI
         private readonly Dictionary<string, string> _headers;
         private WolffunRequestBody _body;
         private TimeSpan _timeout;
+        private bool _isRequireAppCheck = false;
 
         public string Url() => _url;
         public string URL => _url;
@@ -25,6 +26,8 @@ namespace Wolffun.RestAPI
         public Dictionary<string, string> Headers() => _headers;
 
         public TimeSpan Timeout() => _timeout;
+        
+        public bool IsRequireAppCheck() => _isRequireAppCheck;
 
         public static WolffunRequestCommon Create(string url)
         {
@@ -151,6 +154,11 @@ namespace Wolffun.RestAPI
 
         public WolffunRequestCommon Delete(WolffunRequestBody requestBody = null) => Method(HTTPMethods.Delete, requestBody);
 
+        public WolffunRequestCommon WithRequireAppCheck(bool isRequireAppCheck = true)
+        {
+            _isRequireAppCheck = isRequireAppCheck;
+            return this;
+        }
         public void Dispose()
         {
             _url = string.Empty;
