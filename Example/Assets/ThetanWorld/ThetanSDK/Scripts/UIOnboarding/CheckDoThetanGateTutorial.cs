@@ -104,7 +104,7 @@ public class CheckDoThetanGateTutorial : MonoBehaviour
         PlayerPrefs.SetInt(TUTORIAL_KEY, 1);
         FocusOnGameObject(_introNFTHeroFocusGameObject);
         var popup = await _uiHelperContainer.PushPopup(_popupTutorialStep, new PopupOption() { IsAllowBackdrop = false }) as PopupTutorialStep;
-        popup.Initialize("Select NFT is ready to earn", () =>
+        popup.Initialize("Selected NFT is ready to earn", () =>
         {
             FinishFocus();
             IntroTaskFocus();

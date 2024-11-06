@@ -27,7 +27,7 @@ namespace ThetanSDK.UI
         private UIHelperContainer _uiHelperContainer;
         private string _msgTooltip;
 
-        private const string END_IN_FORMAT = "End in: <color=#D4700D>{0}";
+        private const string END_IN_FORMAT = "Ends in: <color=#D4700D>{0}";
         private const string UP_RANK_FORMAT = "{0}<color=#8C90A8>/{1}</color> <sprite=1> <color=#009C60>{2}</color>";
         private const string DOWN_RANK_FORMAT = "{0}<color=#8C90A8>/{1}</color> <sprite=0> <color=#EC466E>{2}</color>";
         private const string STAY_RANK_FORMAT = "{0}<color=#8C90A8>/{1}</color>";

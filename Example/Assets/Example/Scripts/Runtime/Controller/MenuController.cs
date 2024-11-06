@@ -11,6 +11,7 @@ public class MenuController : MonoBehaviour
     {
         SetupEvent();
         SetupUI();
+        FirebaseManager.Instance.GetAppCheck();
     }
 
     private void SetupUI() => ThetanSDKManager.Instance.ShowButtonMainAction();

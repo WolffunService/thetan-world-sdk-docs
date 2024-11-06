@@ -21,3 +21,5 @@ MonoBehaviour:
     sprite: {fileID: 21300000, guid: 5b048b97cef56a946b471985a42d5a04, type: 3}
   - rarity: 4
     sprite: {fileID: 21300000, guid: 8a5fbca08bd9a244fb9c72dba6210eff, type: 3}
+  - rarity: 5
+    sprite: {fileID: 21300000, guid: 536fe7742b5a1714dbbc625e745c573e, type: 3}

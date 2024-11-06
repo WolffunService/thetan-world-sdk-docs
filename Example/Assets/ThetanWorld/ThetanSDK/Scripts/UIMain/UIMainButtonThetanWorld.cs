@@ -14,6 +14,15 @@ namespace ThetanSDK.UI
 {
     internal class UIMainButtonThetanWorld : MonoBehaviour
     {
+        private enum ButtonUIState
+        {
+            None = -1, // Not Initialized
+            Normal = 0,
+            Hide = 1, // When UIMainButton is hiding while not grinding
+            Grinding = 2, // When UIMainButton is grinding
+            GrindingHide = 3, // When UIMainButton is grinding while still need to hide
+        }
+        
         private const float UPDATE_UI_FREE_NFT_SECOND_INTERVAL = 5;
         [SerializeField] private Canvas _canvasButton;
         [SerializeField] private Image _imgIconThetanWorld;
@@ -42,7 +51,8 @@ namespace ThetanSDK.UI
 
         [SerializeField] private float grindingAnimInterval = 2.5f;
         
-        [SerializeField] private float _scaleDownValue = 0.85f;
+        [SerializeField] private float _scaleDownValue = 0.85f; // Use for ButtonUIState.Grinding
+        [SerializeField] private float _scaleDownHideValue = 0.6f; // Use for ButtonUIState.GringindHide
         [SerializeField] private float _scaleDuration = 0.15f;
         [SerializeField] private List<MoveImageToDestination> _listAnimImgGrinding;
         
@@ -52,6 +62,8 @@ namespace ThetanSDK.UI
 
         [SerializeField] private float forceOpenThetanWorldConsecutiveClick = 3;
         [SerializeField] private float forceOpenThetanWorldClicMaxInterval = 0.4f;
+
+        private ButtonUIState _curBtnUIState = ButtonUIState.None;
         
         private TweenSequence _curCurrencyFlySequence;
 
@@ -74,9 +86,6 @@ namespace ThetanSDK.UI
 
         private void Awake()
         {
-            SetContentNoInternet(false);
-            SetUpUINotLoggedIn();
-
             _btnOpenThetanWorld.onClick.AddListener(OnClickBtnThetanWorld);
 
             ThetanSDKManager.Instance.OnOpenMainUI += OnOpenMainUI;
@@ -85,6 +94,11 @@ namespace ThetanSDK.UI
         
         public void Initialize(ShowAnimCurrencyFly animCurrencyFly, NftItemService nftItemService, Action onClickOpenThetanWorld)
         {
+            _curBtnUIState = ButtonUIState.None;
+            
+            SetContentNoInternet(false);
+            SetUpUINotLoggedIn();
+            
             _onClickOpenThetanWorld = onClickOpenThetanWorld;
             _showAnimCurrencyFly = animCurrencyFly;
             _isGrinding = false;
@@ -102,37 +116,6 @@ namespace ThetanSDK.UI
             OnChangeNetworkClientState(ThetanSDKManager.Instance.NetworkClientState);
         }
 
-        private void OnDestroy()
-        {
-            if (ThetanSDKManager.IsAlive)
-            {
-                ThetanSDKManager.Instance.OnChangeNetworkClientState -= OnChangeNetworkClientState;
-
-                var nftItemService = ThetanSDKManager.Instance.NftItemService;
-
-                if (nftItemService != null)
-                {
-                    nftItemService.UnRegisterOnChangeNftItemData(OnChangeNFTItemData);
-                    nftItemService.UnRegisterOnChangeSelectedNftHeroCallback(OnChangeSelectedNFT);
-                    
-                    nftItemService._onChangeGrindingStatus -= OnChangeGrindingStatus;
-                    nftItemService._onRefreshFreeNFTInfo -= OnFreeNFTChangedData;
-                    nftItemService._onReceiveVictoryMatch -= OnVictoryMatch;
-                    nftItemService._onListNFTFetchSuccessCallback -= OnRefetchListNFT;
-                }
-            }
-
-            if (_nftItemService != null)
-            {
-                _nftItemService._onChangeGrindingStatus -= OnChangeGrindingStatus;
-            }
-            
-            if(ThetanSDKManager.IsAlive)
-            {
-                ThetanSDKManager.Instance.OnOpenMainUI -= OnOpenMainUI;
-                ThetanSDKManager.Instance.OnCloseMainUI -= OnCloseMainUI;
-            }
-        }
         private void Update()
         {
             if (ThetanSDKManager.Instance.NetworkClientState != ThetanNetworkClientState.LoggedIn)
@@ -176,6 +159,58 @@ namespace ThetanSDK.UI
                     SetUISlider(_selectedHeroNFTInfo);
                 }
             }
+        }
+        
+        private void OnDestroy()
+        {
+            if (ThetanSDKManager.IsAlive)
+            {
+                ThetanSDKManager.Instance.OnChangeNetworkClientState -= OnChangeNetworkClientState;
+
+                var nftItemService = ThetanSDKManager.Instance.NftItemService;
+
+                if (nftItemService != null)
+                {
+                    nftItemService.UnRegisterOnChangeNftItemData(OnChangeNFTItemData);
+                    nftItemService.UnRegisterOnChangeSelectedNftHeroCallback(OnChangeSelectedNFT);
+                    
+                    nftItemService._onChangeGrindingStatus -= OnChangeGrindingStatus;
+                    nftItemService._onRefreshFreeNFTInfo -= OnFreeNFTChangedData;
+                    nftItemService._onReceiveVictoryMatch -= OnVictoryMatch;
+                    nftItemService._onListNFTFetchSuccessCallback -= OnRefetchListNFT;
+                }
+            }
+
+            if (_nftItemService != null)
+            {
+                _nftItemService._onChangeGrindingStatus -= OnChangeGrindingStatus;
+            }
+            
+            if(ThetanSDKManager.IsAlive)
+            {
+                ThetanSDKManager.Instance.OnOpenMainUI -= OnOpenMainUI;
+                ThetanSDKManager.Instance.OnCloseMainUI -= OnCloseMainUI;
+            }
+        }
+
+        public void Show()
+        {
+            if(_curBtnUIState == ButtonUIState.Hide)
+                ChangeUIState(ButtonUIState.Normal);
+            else if (_curBtnUIState == ButtonUIState.GrindingHide)
+                ChangeUIState(ButtonUIState.Grinding);
+            else
+                ChangeUIState(ButtonUIState.Normal);
+        }
+
+        public void Hide()
+        {
+            if(_curBtnUIState == ButtonUIState.Normal)
+                ChangeUIState(ButtonUIState.Hide);
+            else if (_curBtnUIState == ButtonUIState.Grinding)
+                ChangeUIState(ButtonUIState.GrindingHide);
+            else
+                ChangeUIState(ButtonUIState.Hide);
         }
 
         private void OnCloseMainUI()
@@ -231,10 +266,12 @@ namespace ThetanSDK.UI
 
         private void OnPingGrindSuccess()
         {
-            if (!_isGrinding)
-                return;
+            _isGrinding = true;
 
             _hasPendingRewardToShowUI = true;
+
+            if (_curBtnUIState == ButtonUIState.Hide)
+                ChangeUIState(ButtonUIState.GrindingHide);
         }
 
         public void UnlockButtonAndDoAnimReward()
@@ -248,7 +285,12 @@ namespace ThetanSDK.UI
             if (_isGrinding)
             {
                 _isGrinding = false;
-                ChangeUIToNormal();
+                if(_curBtnUIState == ButtonUIState.Grinding)
+                    ChangeUIState(ButtonUIState.Normal);
+                else if(_curBtnUIState == ButtonUIState.GrindingHide)
+                    ChangeUIState(ButtonUIState.Hide);
+                else
+                    ChangeUIState(ButtonUIState.Normal);
             }
 
             _isLockButton = false;
@@ -261,7 +303,7 @@ namespace ThetanSDK.UI
         {
             _hasPendingRewardToShowUI = false;
 
-            var defaullContentSize = _contentScale.localScale;
+            var defaullContentSize = Vector3.one;
             _showAnimCurrencyFly.DoAnimCurrencyFly(this.transform as RectTransform);
             if(_curCurrencyFlySequence != null && !_curCurrencyFlySequence.IsComplete)
                 _curCurrencyFlySequence.Kill();
@@ -291,7 +333,7 @@ namespace ThetanSDK.UI
                 _hasPendingRewardToShowUI = false;
                 _isGrinding = false;
                 _isLockButton = false;
-                gameObject.SetActive(true);
+                // gameObject.SetActive(true); Do not need to control the state of button, it will be automatic handled by ChangeUIState Flow
                 SetUpUINotLoggedIn();
                 SetContentNoInternet(false);
                 return;
@@ -301,7 +343,7 @@ namespace ThetanSDK.UI
                 _hasPendingRewardToShowUI = false;
                 _isGrinding = false;
                 _isLockButton = false;
-                gameObject.SetActive(true);
+                // gameObject.SetActive(true);
                 SetUpUINotLoggedIn();
                 SetContentNoInternet(true);
                 return;
@@ -310,13 +352,13 @@ namespace ThetanSDK.UI
 
             if (newState == ThetanNetworkClientState.LoggedIn)
             {
-                gameObject.SetActive(true);
+                //gameObject.SetActive(true);
                 SetUpUISDKLoggedIn();
                 SetContentNoInternet(false);
             }
             else if (newState == ThetanNetworkClientState.LoggedInNoNetwork)
             {
-                gameObject.SetActive(true);
+                //gameObject.SetActive(true);
                 SetUpUISDKLoggedIn();
                 SetContentNoInternet(true);
             }
@@ -491,12 +533,48 @@ namespace ThetanSDK.UI
             _isGrinding = isGrinding;
             if (isGrinding)
             {
-                ChangeUIToGrinding();
+                if(_curBtnUIState == ButtonUIState.Normal)
+                    ChangeUIState(ButtonUIState.Grinding);
+                else if (_curBtnUIState == ButtonUIState.Hide)
+                    ChangeUIState(ButtonUIState.GrindingHide);
+                else
+                    ChangeUIState(ButtonUIState.Grinding);
             }
             else
             {
-                ChangeUIToNormal();
+                if(_curBtnUIState == ButtonUIState.Grinding)
+                    ChangeUIState(ButtonUIState.Normal);
+                else if (_curBtnUIState == ButtonUIState.GrindingHide)
+                    ChangeUIState(ButtonUIState.Hide);
+                else
+                    ChangeUIState(ButtonUIState.Normal);
             }
+        }
+
+        private void ChangeUIState(ButtonUIState newState)
+        {
+            if (_curBtnUIState == newState)
+                return;
+
+            _curBtnUIState = newState;
+
+            switch (newState)
+            {
+                case ButtonUIState.Normal:
+                    ChangeUIToNormal();
+                    break;
+                case ButtonUIState.Hide:
+                    ChangeUIToHide();
+                    break;
+                case ButtonUIState.Grinding:
+                    ChangeUIToGrinding();
+                    break;
+                case ButtonUIState.GrindingHide:
+                    ChangeUIToGrindingHide();
+                    break;
+                
+            }
+
         }
 
         private void ChangeUIToGrinding()
@@ -532,6 +610,9 @@ namespace ThetanSDK.UI
         private void ChangeUIToNormal()
         {
             CommonLog.Log("ChangeUIToNormal");
+            
+            if(!gameObject.activeSelf)
+                gameObject.SetActive(true);
             
             if(_curAnimSequence != null && !_curAnimSequence.IsComplete)
                 _curAnimSequence.Complete();
@@ -569,6 +650,49 @@ namespace ThetanSDK.UI
                     DoAnimReward();
             }
         }
+
+        private void ChangeUIToGrindingHide()
+        {
+            _isPendingUnlockButton = false;
+            _isLockButton = true;
+            
+            if(_curAnimSequence != null && !_curAnimSequence.IsComplete)
+                _curAnimSequence.Complete();
+            
+            if(!gameObject.activeSelf)
+            {
+                gameObject.SetActive(true);
+                _contentScale.localScale = new Vector3(_scaleDownHideValue, _scaleDownHideValue, _scaleDownHideValue);
+                _canvasGroupBackground.alpha = 0;
+                return;
+            }
+            
+            _curAnimSequence = WolfTween.GetSequence();
+
+            _curAnimSequence.Append(
+                _contentScale.DOScale(new Vector3(_scaleDownHideValue, _scaleDownHideValue, _scaleDownHideValue), _scaleDuration)
+                    .SetUpdate(true)
+                    .SetEase(Ease.OutBack));
+
+            _curAnimSequence.Join(
+                _canvasGroupBackground.DOFade(0, _scaleDuration * 0.8f)
+                    .SetUpdate(true)
+                    .SetEase(Ease.OutQuad));
+
+            /*
+            _curAnimSequence.Join(
+                _canvasGroupGrindTime.DOFade(0, _scaleDuration * 0.8f)
+                    .SetUpdate(true)
+                    .SetEase(Ease.OutQuad));
+            */
+
+            _curAnimSequence.SetUpdate(true);
+        }
+
+        private void ChangeUIToHide()
+        {
+            gameObject.SetActive(false);
+        }
         
         private void PlayAnimGrinding()
         {
@@ -576,13 +700,23 @@ namespace ThetanSDK.UI
 
             if (!_isLockButton)
             {
-                ChangeUIToGrinding();
+                if(_curBtnUIState == ButtonUIState.Normal)
+                    ChangeUIState(ButtonUIState.Grinding);
+                else if (_curBtnUIState == ButtonUIState.Hide)
+                    ChangeUIState(ButtonUIState.GrindingHide);
+                else
+                    ChangeUIState(ButtonUIState.Grinding);
             }
             
             if(_curAnimSequence != null && !_curAnimSequence.IsComplete)
                 _curAnimSequence.Complete();
 
-            var curContentScaleValue = new Vector3(_scaleDownValue, _scaleDownValue, _scaleDownValue);
+            Vector3 curContentScaleValue = Vector3.one;
+            
+            if(_curBtnUIState == ButtonUIState.Grinding)
+                curContentScaleValue = new Vector3(_scaleDownValue, _scaleDownValue, _scaleDownValue);
+            else if(_curBtnUIState == ButtonUIState.GrindingHide)
+                curContentScaleValue = new Vector3(_scaleDownHideValue, _scaleDownHideValue, _scaleDownHideValue); 
 
             var targetScaleValue = curContentScaleValue * 0.8f;
 

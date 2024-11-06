@@ -40,7 +40,7 @@ namespace Wolffun.RestAPI.ThetanWorld
                     page = page,
                     sorts = queryStr,
                     mountStatus = true,
-                }));
+                })).WithRequireAppCheck();
 
             WolffunUnityHttp.Instance.MakeAPI(reqCommon, result, error, AuthType.TOKEN_AND_CLIENT_SECRET);
         }
@@ -50,7 +50,7 @@ namespace Wolffun.RestAPI.ThetanWorld
         {
             WolffunRequestCommon reqCommon = WolffunRequestCommon
                 .Create(WolffunUnityHttp.Settings.ThetanWorldURL + "/user/selected-nft")
-                .Get();
+                .Get().WithRequireAppCheck();
             
             WolffunUnityHttp.Instance.MakeAPI(reqCommon, onSuccessCallback, onErrorCallback, AuthType.TOKEN_AND_CLIENT_SECRET);
         }
@@ -62,7 +62,7 @@ namespace Wolffun.RestAPI.ThetanWorld
                 .Create(WolffunUnityHttp.Settings.ThetanWorldURL + $"/nfts/{nftId}/select")
                 .Post(WolffunRequestBody.From(new
                 {
-                }));
+                })).WithRequireAppCheck();
             
             WolffunUnityHttp.Instance.MakeAPI(reqCommon, successCallback, errorCallback, AuthType.TOKEN_AND_CLIENT_SECRET);
         }
@@ -84,7 +84,7 @@ namespace Wolffun.RestAPI.ThetanWorld
         {
             WolffunRequestCommon reqCommon = WolffunRequestCommon
                 .Create(WolffunUnityHttp.Settings.ThetanWorldURL + $"/nfts/{nftId}")
-                .Get();
+                .Get().WithRequireAppCheck();
             
             WolffunUnityHttp.Instance.MakeAPI(reqCommon, successCallback, errorCallback, AuthType.TOKEN_AND_CLIENT_SECRET);
         }
@@ -94,7 +94,7 @@ namespace Wolffun.RestAPI.ThetanWorld
         {
             WolffunRequestCommon reqCommon = WolffunRequestCommon
                 .Create(WolffunUnityHttp.Settings.ThetanWorldURL + $"/nfts/{nftId}/grind")
-                .Get();
+                .Get().WithRequireAppCheck();
             
             WolffunUnityHttp.Instance.MakeAPI(reqCommon, successCallback, errorCallback, AuthType.TOKEN_AND_CLIENT_SECRET);
         }
@@ -110,16 +110,8 @@ namespace Wolffun.RestAPI.ThetanWorld
                 .Post(WolffunRequestBody.From(new
                 {
                     timeOutGrind = timeOutGrind,
-                }));
-            GetFirebaseAppCheckToken(token =>
-            {
-                if(!string.IsNullOrEmpty(token))
-                    reqCommon.AddHeader("X-Firebase-AppCheck", token);
-                WolffunUnityHttp.Instance.MakeAPI(reqCommon, successCallback, errorCallback, AuthType.TOKEN_AND_CLIENT_SECRET);
-            }, () =>
-            {
-                WolffunUnityHttp.Instance.MakeAPI(reqCommon, successCallback, errorCallback, AuthType.TOKEN_AND_CLIENT_SECRET);
-            });
+                })).WithRequireAppCheck();
+            WolffunUnityHttp.Instance.MakeAPI(reqCommon, successCallback, errorCallback, AuthType.TOKEN_AND_CLIENT_SECRET);
         }
 
         public static void PingGrindingServer(string nftId, int grindTimeIncrease, Action<object> successCallback,
@@ -130,16 +122,8 @@ namespace Wolffun.RestAPI.ThetanWorld
                 .Post(WolffunRequestBody.From(new
                 {
                     grindTimeInc = grindTimeIncrease
-                }));
-            GetFirebaseAppCheckToken(token =>
-            {
-                if(!string.IsNullOrEmpty(token))
-                    reqCommon.AddHeader("X-Firebase-AppCheck", token);
-                WolffunUnityHttp.Instance.MakeAPI(reqCommon, successCallback, errorCallback, AuthType.TOKEN_AND_CLIENT_SECRET);
-            }, () =>
-            {
-                WolffunUnityHttp.Instance.MakeAPI(reqCommon, successCallback, errorCallback, AuthType.TOKEN_AND_CLIENT_SECRET);
-            });
+                })).WithRequireAppCheck();
+            WolffunUnityHttp.Instance.MakeAPI(reqCommon, successCallback, errorCallback, AuthType.TOKEN_AND_CLIENT_SECRET);
         }
 
         public static void StopGrindingHeroNftItem(string nftId, EndMatchInfo endMatchInfo, Action<object> successCallback,
@@ -147,17 +131,9 @@ namespace Wolffun.RestAPI.ThetanWorld
         {
             WolffunRequestCommon reqCommon = WolffunRequestCommon
                 .Create(WolffunUnityHttp.Settings.ThetanWorldURL + $"/nfts/{nftId}/grind/end")
-                .Post(WolffunRequestBody.From(endMatchInfo));
+                .Post(WolffunRequestBody.From(endMatchInfo)).WithRequireAppCheck();
 
-            GetFirebaseAppCheckToken(token =>
-            {
-                if(!string.IsNullOrEmpty(token))
-                    reqCommon.AddHeader("X-Firebase-AppCheck", token);
-                WolffunUnityHttp.Instance.MakeAPI(reqCommon, successCallback, errorCallback, AuthType.TOKEN_AND_CLIENT_SECRET);
-            }, () =>
-            {
-                WolffunUnityHttp.Instance.MakeAPI(reqCommon, successCallback, errorCallback, AuthType.TOKEN_AND_CLIENT_SECRET);
-            });
+            WolffunUnityHttp.Instance.MakeAPI(reqCommon, successCallback, errorCallback, AuthType.TOKEN_AND_CLIENT_SECRET);
         }
 
         private static void GetFirebaseAppCheckToken(Action<string> successCallback, Action failCallback)
@@ -182,7 +158,7 @@ namespace Wolffun.RestAPI.ThetanWorld
         {
             WolffunRequestCommon reqCommon = WolffunRequestCommon
                 .Create(WolffunUnityHttp.Settings.ThetanWorldURL + $"/user/statistic")
-                .Get();
+                .Get().WithRequireAppCheck();
             
             WolffunUnityHttp.Instance.MakeAPI(reqCommon, resultCallback, errorCallback, AuthType.TOKEN);
         }
@@ -192,7 +168,7 @@ namespace Wolffun.RestAPI.ThetanWorld
         {
             WolffunRequestCommon reqCommon = WolffunRequestCommon
                 .Create(WolffunUnityHttp.Settings.ThetanWorldURL + $"/user/free-nft")
-                .Get();
+                .Get().WithRequireAppCheck();
             
             WolffunUnityHttp.Instance.MakeAPI(reqCommon, resultCallback, errorCallback, AuthType.TOKEN);
         }
@@ -201,7 +177,7 @@ namespace Wolffun.RestAPI.ThetanWorld
         {
             WolffunRequestCommon reqCommon = WolffunRequestCommon
                 .Create(WolffunUnityHttp.Settings.ThetanWorldURL + $"/user/free-nft/claim")
-                .Post(WolffunRequestBody.From(new {}));
+                .Post(WolffunRequestBody.From(new {})).WithRequireAppCheck();
             
             WolffunUnityHttp.Instance.MakeAPI(reqCommon, resultCallback, errorCallback, AuthType.TOKEN);
         }
@@ -210,7 +186,7 @@ namespace Wolffun.RestAPI.ThetanWorld
         {
             WolffunRequestCommon reqCommon = WolffunRequestCommon
                 .Create(WolffunUnityHttp.Settings.ThetanWorldURL + $"/user/free-nft/config")
-                .Get();
+                .Get().WithRequireAppCheck();
 
             WolffunUnityHttp.Instance.MakeAPI(reqCommon, resultCallback, errorCallback, AuthType.TOKEN);
         }

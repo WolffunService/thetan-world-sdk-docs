@@ -7,6 +7,7 @@
         public static string HERO_RARITY_RARE = "Rare";
         public static string HERO_RARITY_EPIC = "Epic";
         public static string HERO_RARITY_LEGEND = "Legend";
+        public static string HERO_RARITY_LITE = "Lite";
         
         public static string SKIN_RARITY_UNKNOWN = "Unknown";
         public static string SKIN_RARITY_DEFAULT = "Default";

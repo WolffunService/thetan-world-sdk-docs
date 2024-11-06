@@ -160,6 +160,12 @@ namespace ThetanSDK.UI
                         }
                         break;
                     }
+                    case (int)WSErrorCode.UnityHttpRequestNetworkError:
+                    {
+                        _uiHelperContainer.ShowPopUpMsg(AuthenErrorMsg.Error, AuthenErrorMsg.LostConnectionContext,
+                            AuthenErrorMsg.Okay);
+                        break;
+                    }
                     default:
                         ThetanSDKManager.Instance.AnalyticService.LogErrorOccured("Login", "SendCode", true,
                             error.Message);

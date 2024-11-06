@@ -10,6 +10,7 @@ using ThetanSDK.SDKServices.NFTItem;
 using ThetanSDK.SDKServices.Profile;
 using ThetanSDK.UI;
 using ThetanSDK.UI.Connection;
+using ThetanSDK.VersionCheckService;
 using UnityEngine;
 using Wolffun.Log;
 using Wolffun.RestAPI;
@@ -40,6 +41,7 @@ namespace ThetanSDK
         private Action _onClickMainAction;
         private ShowPopupWhenLostConnection _showPopopWhenLostConnection;
         private UIHelperContainer _uiHelperContainer;
+        private ThetanSDKVersionHandle _sdkVersionHandle;
         private Action _onConfirmLostConnectionCallback;
 
         internal ThetanSDKManagerInitializer(
@@ -57,6 +59,7 @@ namespace ThetanSDK
             Action onClickMainAction,
             ShowPopupWhenLostConnection showPopopWhenLostConnection,
             UIHelperContainer uiHelperContainer,
+            ThetanSDKVersionHandle sdkVersionHandle,
             Action onConfirmLostConnectionCallback)
         {
             _networkClient = networkClient;
@@ -73,6 +76,7 @@ namespace ThetanSDK
             _onClickMainAction = onClickMainAction;
             _showPopopWhenLostConnection = showPopopWhenLostConnection;
             _uiHelperContainer = uiHelperContainer;
+            _sdkVersionHandle = sdkVersionHandle;
             _onConfirmLostConnectionCallback = onConfirmLostConnectionCallback;
         }
         
@@ -82,7 +86,7 @@ namespace ThetanSDK
         /// <param name="onDoneCallback">Callback when done initialize.
         /// First param is NetworkClientState.
         /// Second param is this SDK version supported</param>
-        public void Initialize(SDKOption option, Action<ThetanNetworkClientState, bool> onDoneCallback)
+        public void Initialize(SDKOption option, Action<ThetanNetworkClientState, VersionSupportedStatus> onDoneCallback)
         {
             _networkClient.InitializeNetworkClient(ThetanSDKManager.Instance.Version, 
                 (networkClientState, hasTokenFromPrevSession) =>
@@ -106,7 +110,7 @@ namespace ThetanSDK
         /// <summary>
         /// ReInitialize when First initialize fail 
         /// </summary>
-        private void ReInitialize(SDKOption option, Action<ThetanNetworkClientState, bool> onDoneCallback, int retryCount)
+        private void ReInitialize(SDKOption option, Action<ThetanNetworkClientState, VersionSupportedStatus> onDoneCallback, int retryCount)
         {
             if(retryCount > 3) // Prevent infinite loop initialize
             {
@@ -136,16 +140,16 @@ namespace ThetanSDK
         
         private async void PostProcessInitialize(SDKOption option, ThetanNetworkClientState networkClientState,
             bool hasTokenFromPrevSession,
-            Action<ThetanNetworkClientState, bool> onDoneCallback)
+            Action<ThetanNetworkClientState, VersionSupportedStatus> onDoneCallback)
         {
             StorageResource.Initialize(_networkClient.StorageResourceUrl);
-            var isVersionSupported = await CheckVersion();
+            var versionSupportedStatus = await _sdkVersionHandle.InitializeVersionHandle(_networkClient);
 
-            if (!isVersionSupported)
+            if (versionSupportedStatus == VersionSupportedStatus.Unsupported)
             {
                 _analyticService.InitialzeService(_authenProcessContainer, _networkClient.NetworkConfig);
                 _btnMainAction.Initialize(_showAnimCurrencyFly, _nftItemService, _onClickMainAction);
-                onDoneCallback?.Invoke(networkClientState, isVersionSupported);
+                onDoneCallback?.Invoke(networkClientState, versionSupportedStatus);
                 return;
             }
             
@@ -189,53 +193,10 @@ namespace ThetanSDK
                 _showPopopWhenLostConnection.Initialize(_networkClient, _uiHelperContainer, _onConfirmLostConnectionCallback);
             }
             _btnMainAction.Initialize(_showAnimCurrencyFly, _nftItemService, _onClickMainAction);
-            onDoneCallback?.Invoke(networkClientState, isVersionSupported);
+            onDoneCallback?.Invoke(networkClientState, versionSupportedStatus);
         }
 
-        private UniTask<bool> CheckVersion()
-        {
-            UniTaskCompletionSource<bool> checkVersionCompletionSource = new UniTaskCompletionSource<bool>();
-            
-            WolffunRequestCommon req = WolffunRequestCommon
-                .Create(WolffunUnityHttp.Settings.ThetanWorldURL + "/partner/app/config")
-                .Get();
-            
-            WolffunUnityHttp.Instance.MakeAPI<VersionDataModel>(req, versionDataModel =>
-            {
-                if (versionDataModel.supportedVersions == null ||
-                    versionDataModel.supportedVersions.Length == 0)
-                {
-                    checkVersionCompletionSource.TrySetResult(false);
-                    return;
-                }
-
-                var version = ThetanSDKManager.Instance.Version;
-                
-#if STAGING
-                version = version.Replace("_S", string.Empty);
-#endif
-
-                foreach (var supportedVersion in versionDataModel.supportedVersions)
-                {
-                    if (version == supportedVersion)
-                    {
-                        checkVersionCompletionSource?.TrySetResult(true);
-                        return;
-                    }
-                }
-                
-                checkVersionCompletionSource?.TrySetResult(false);
-
-            }, error =>
-            {
-                if ((WSErrorCode)error.Code == WSErrorCode.DoNotHavePermission)
-                    checkVersionCompletionSource.TrySetResult(true);
-                else 
-                    checkVersionCompletionSource.TrySetResult(false);
-            }, AuthType.TOKEN);
-
-            return checkVersionCompletionSource.Task;
-        }
+        
         
         private void RegisterAuthenProcessToNetworkClient()
         {

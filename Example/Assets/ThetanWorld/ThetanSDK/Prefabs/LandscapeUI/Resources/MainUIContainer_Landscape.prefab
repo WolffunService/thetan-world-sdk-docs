@@ -5241,7 +5241,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6309761054508599761, guid: 4022440b326405345b5a62caec7a6355, type: 3}
       propertyPath: m_text
-      value: Victory Bonus
+      value: Victory Reward
       objectReference: {fileID: 0}
     - target: {fileID: 6309761054508599761, guid: 4022440b326405345b5a62caec7a6355, type: 3}
       propertyPath: m_Maskable
@@ -5544,7 +5544,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6309761054508599761, guid: 4022440b326405345b5a62caec7a6355, type: 3}
       propertyPath: m_text
-      value: Grind
+      value: Grind Reward
       objectReference: {fileID: 0}
     - target: {fileID: 6309761054508599761, guid: 4022440b326405345b5a62caec7a6355, type: 3}
       propertyPath: m_Maskable
@@ -6304,7 +6304,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3920283195416601944, guid: 4022440b326405345b5a62caec7a6355, type: 3}
       propertyPath: m_text
-      value: Earn more daily rewars to unlock more rewards
+      value: Earn more daily rewards to unlock more rewards
       objectReference: {fileID: 0}
     - target: {fileID: 3920283195416601944, guid: 4022440b326405345b5a62caec7a6355, type: 3}
       propertyPath: m_Maskable
@@ -6312,7 +6312,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6309761054508599761, guid: 4022440b326405345b5a62caec7a6355, type: 3}
       propertyPath: m_text
-      value: Airdrop
+      value: Daily Airdrop
       objectReference: {fileID: 0}
     - target: {fileID: 6309761054508599761, guid: 4022440b326405345b5a62caec7a6355, type: 3}
       propertyPath: m_Maskable

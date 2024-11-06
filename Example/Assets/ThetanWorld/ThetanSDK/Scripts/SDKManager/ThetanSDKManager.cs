@@ -13,6 +13,7 @@ using ThetanSDK.SDKServices.NFTItem;
 using ThetanSDK.SDKServices.Profile;
 using ThetanSDK.UI;
 using ThetanSDK.UI.Connection;
+using ThetanSDK.VersionCheckService;
 using UnityEngine;
 using UnityEngine.UI;
 using Wolffun.Log;
@@ -65,6 +66,7 @@ namespace ThetanSDK
         [SerializeField] private LuckySpinService _luckySpinService;
         [SerializeField] private RemoteConfigService _remoteConfigService;
         [SerializeField] private UserStatisticService _userStatisticService;
+        [SerializeField] private ThetanSDKVersionHandle _sdkVersionHandle;
 
         [Header("Network Availability")]
         [SerializeField] private NetworkReachabilityDetect _networkReachabilityDetect;
@@ -124,7 +126,7 @@ namespace ThetanSDK
         #endregion
         
         #region Version
-        private string _version = "0.9.37";
+        private string _version = "0.9.38";
 
         public string Version
         {
@@ -134,9 +136,7 @@ namespace ThetanSDK
             }
         }
 
-        private bool _isVersionSupported;
-
-        public bool IsVersionSupported => _isVersionSupported;
+        public bool IsVersionSupported => _sdkVersionHandle.VersionSupportedStatus != VersionSupportedStatus.Unsupported;
         #endregion
         
         #region private Properties
@@ -207,7 +207,8 @@ namespace ThetanSDK
                 _nftItemService, _equipmentService,
                 _luckySpinService, _userStatisticService, _btnMainAction,
                 _showAnimCurrencyFly, OnClickMainAction, _showPopopWhenLostConnection,
-                _uiHelperContainer, () =>
+                _uiHelperContainer, _sdkVersionHandle,
+                () =>
                 {
                     _screenContainer.PopAllScreen();
                 });
@@ -222,14 +223,18 @@ namespace ThetanSDK
         /// <summary>
         /// Called when thetanSDKManagerInitializer done initialize
         /// </summary>
-        private async void OnDoneInitialize(ThetanNetworkClientState networkClientState, bool isVersionSupported)
+        private async void OnDoneInitialize(ThetanNetworkClientState networkClientState, VersionSupportedStatus versionSupportedStatus)
         {
-            _isVersionSupported = isVersionSupported;
-
             _nftItemServiceHelper = new NftItemServiceHelper(_uiHelperContainer, _nftItemService, _analyticService);
             
             _isInitialized = true;
         }
+
+        /// <summary>
+        /// Set when Firebase AppCheck Init success
+        /// </summary>
+        /// <param name="token"></param>
+        public void SetAppCheckToken(string token) => _networkClient.SetAppCheckToken(token);
         #endregion
         
         /// <summary>
@@ -269,15 +274,16 @@ namespace ThetanSDK
         /// </summary>
         public void ShowButtonMainAction()
         {
-            _btnMainAction.gameObject.SetActive(true);
+            _btnMainAction.Show();
         }
 
         /// <summary>
-        /// Completely hide button Thetan World and close all current openned thetan world UI.
+        /// Completely hide button Thetan World while not grinding and close all current openned thetan world UI.
+        /// When grinding, this function will not completely hide button Thetan World, it will become 50% smaller so user can still see grinding process.
         /// </summary>
         public void HideButtonMainAction()
         {
-            _btnMainAction.gameObject.SetActive(false);
+            _btnMainAction.Hide();
             
             if(_sdkManagerHandleUI != null)
                 _sdkManagerHandleUI.CloseMainUI();
@@ -330,7 +336,7 @@ namespace ThetanSDK
         /// <returns></returns>
         public bool CheckShowIfThetanGateVersionSupported()
         {
-            if (_isVersionSupported)
+            if (IsVersionSupported)
                 return true;
 
             _sdkManagerHandleUI.ShowPopupVersionNotSupported();
@@ -374,7 +380,7 @@ namespace ThetanSDK
         /// </summary>
         public async UniTask<HeroNftItem> GetHeroNftItemInfo(string nftId)
         {
-            if (!_isVersionSupported)
+            if (!IsVersionSupported)
             {
                 return new HeroNftItem().SetDefault();
             }
@@ -391,7 +397,7 @@ namespace ThetanSDK
         /// </summary>
         public HeroNftItem TryGetCachedHeroNftItemByIngameId(string ingameHeroId)
         {
-            if (!_isVersionSupported)
+            if (!IsVersionSupported)
             {
                 return new HeroNftItem().SetDefault();
             }
@@ -404,7 +410,7 @@ namespace ThetanSDK
         /// </summary>
         public void RefreshListNFTHero()
         {
-            if (!_isVersionSupported)
+            if (!IsVersionSupported)
             {
                 return;
             }
@@ -421,7 +427,7 @@ namespace ThetanSDK
         public void RefreshHeroNftData(string nftId, Action<HeroNftItem> onSuccessCallback,
             Action<WolffunResponseError> onErrorCallback)
         {
-            if (!_isVersionSupported)
+            if (!IsVersionSupported)
             {
                 return;
             }
