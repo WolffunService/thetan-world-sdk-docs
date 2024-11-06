@@ -13,6 +13,7 @@ Grind process with be splitted into phases that depend on your game to decide wh
 
 - [Installation](#installation)
     - [Upgrade Guide](#upgrade-guide)
+- [Integrate AppCheck](#integrate-appcheck)
 - [Using Guide](#using-guide)
     - [Testing](#testing)
 - [API](#api)
@@ -77,16 +78,11 @@ And also upgrade package "com.wolffun.download-from-storage" to version 1.0.20
 ### Step 4
 Inport new ThetanWorld SDK package, and restore your ThetanSDKNetworkConfig from backup at step 1
 
-# Integrate with Firebase AppCheck
+# Integrate AppCheck
 
 > [!IMPORTANT]
 > Firebase AppCheck is REQUIRED to verify authorized game client to access our services
-
-### Step 1: Import Firebase AppCheck into your project
-Follow https://firebase.google.com/docs/app-check/unity/default-providers to setup Firebase Appcheck in your project
-
-### Step 2: Create Service account with role AppCheck Verifier
-
+[Integrate AppCheck](IntegrateAppCheck.md)
 
 
 # Using Guide
