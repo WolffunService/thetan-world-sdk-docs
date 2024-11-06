@@ -10,16 +10,14 @@ public partial class FirebaseManager
 {
     public async void GetAppCheck()
     {
-#if (UNITY_ANDROID || UNITY_IOS)
+#if (UNITY_ANDROID || UNITY_IOS) && !UNITY_EDITOR
         CommonLog.Log("Start GetAppCheckTokenAsync");
         try
         {
-            var appCheck = FirebaseAppCheck.DefaultInstance;
-            if (appCheck != null)
-            {
-                var appCheckToken = await appCheck.GetAppCheckTokenAsync(false);
-                ThetanSDKManager.Instance.SetAppCheckToken(appCheckToken.Token);
-            }
+            var firebaseApp = FirebaseAppCheck.DefaultInstance;
+            if (firebaseApp == null) return;
+            var appCheckToken = await firebaseApp.GetAppCheckTokenAsync(false);
+            ThetanSDKManager.Instance.SetAppCheckToken(appCheckToken.Token);
         }
         catch (AggregateException e)
         {
