@@ -2,12 +2,10 @@ fileFormatVersion: 2
 guid: 5f7e0d6d612a4e18be5161653a63d2f0
 labels:
 - gvh
-- gvh_version-1.2.182
 - gvh_version-12.2.1
 - gvhp_exportpath-ExternalDependencyManager/Editor/1.2.182/Google.VersionHandlerImpl.pdb
-timeCreated: 1538009133
-licenseType: Pro
 DefaultImporter:
-  userData:
-  assetBundleName:
-  assetBundleVariant:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
