@@ -13,10 +13,10 @@ Follow my example
 
 ## Step 3: Active AppCheck in Firebase
 Go to Firebase -> AppCheck: https://console.firebase.google.com/project/your-project-id/appcheck 
-#### Android
+#### Setting Android with Play Intergrity
 ![Setting with Play Integrity](docs/images/firebase-appcheck-android.png)
 
-#### iOS
+#### Setting iOS with App Attest
 ![Setting with App Attest](docs/images/firebase-appcheck-ios.png)
 
 ## Step 4: Create Service Account and Send to us
