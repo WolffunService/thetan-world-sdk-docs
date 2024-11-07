@@ -37,7 +37,7 @@ Grind process with be splitted into phases that depend on your game to decide wh
 ```
 
 ### **Step 2**: Import SDK
-Download [ThetanWorldSDK.unitypackage](https://github.com/WolffunService/thetan-world-sdk-docs/blob/main/ThetanWorldSDK.unitypackage) and import it into your project
+Download [ThetanWorldSDK.unitypackage](ThetanWorldSDK_0.9.48.unitypackage) and import it into your project
 
 ### **Step 3:** CreateNetworkConfig
 On menu bar, select Tools -> Wolffun -> CreateNetworkConfig
