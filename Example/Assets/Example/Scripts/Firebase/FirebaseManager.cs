@@ -13,10 +13,10 @@ public partial class FirebaseManager : MonoSingleton<FirebaseManager>
     {
         CommonLog.Log("Init database");
         isFirebaseInit = false;
-#if UNITY_ANDROID
+#if UNITY_ANDROID && !UNITY_EDITOR
         FirebaseAppCheck.SetAppCheckProviderFactory(PlayIntegrityProviderFactory.Instance);
 #endif
-#if UNITY_IOS 
+#if UNITY_IOS && !UNITY_EDITOR
         FirebaseAppCheck.SetAppCheckProviderFactory(AppAttestProviderFactory.Instance);
 #endif
 #if UNITY_ANDROID || UNITY_IOS

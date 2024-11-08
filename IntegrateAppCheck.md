@@ -11,12 +11,38 @@ Follow https://firebase.google.com/docs/app-check/unity/default-providers to set
 
 Set appCheck proviver when init
 
-![Init Provider](docs/images/appcheck-provider-init.png)
-
+```csharp
+    protected void InitFirebase()
+    {
+#if UNITY_ANDROID && !UNITY_EDITOR
+        FirebaseAppCheck.SetAppCheckProviderFactory(PlayIntegrityProviderFactory.Instance);
+#endif
+#if UNITY_IOS && !UNITY_EDITOR
+        FirebaseAppCheck.SetAppCheckProviderFactory(AppAttestProviderFactory.Instance);
+#endif
+    }
+```
 
 Get appCheck token and set to ThetanSDKManager
-![Get AppCheck Token](docs/images/get-app-check.png)
-
+```csharp
+    public async void GetAppCheck()
+    {
+#if (UNITY_ANDROID || UNITY_IOS) && !UNITY_EDITOR
+        Debug.Log("Start GetAppCheckTokenAsync");
+        try
+        {
+            var firebaseApp = FirebaseAppCheck.DefaultInstance;
+            if (firebaseApp == null) return;
+            var appCheckToken = await firebaseApp.GetAppCheckTokenAsync(false);
+            ThetanSDKManager.Instance.SetAppCheckToken(appCheckToken.Token);
+        }
+        catch (AggregateException e)
+        {
+            Debug.LogError($"GetAppCheckTokenAsync default instance failed with exception: {e.Message}");
+        }
+#endif
+    }
+```
 ## Step 3: Active AppCheck in Firebase
 Go to Firebase -> AppCheck: https://console.firebase.google.com/project/your-project-id/appcheck 
 #### Setting Android with Play Intergrity

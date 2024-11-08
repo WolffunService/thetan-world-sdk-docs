@@ -10,8 +10,8 @@ public partial class FirebaseManager
 {
     public async void GetAppCheck()
     {
-#if (UNITY_ANDROID || UNITY_IOS) && !UNITY_EDITOR
-        CommonLog.Log("Start GetAppCheckTokenAsync");
+#if (UNITY_ANDROID || UNITY_IOS)
+        Debug.Log("Start GetAppCheckTokenAsync");
         try
         {
             var firebaseApp = FirebaseAppCheck.DefaultInstance;
@@ -21,9 +21,8 @@ public partial class FirebaseManager
         }
         catch (AggregateException e)
         {
-            CommonLog.LogError($"GetAppCheckTokenAsync default instance failed with exception: {e.Message}");
+            Debug.LogError($"GetAppCheckTokenAsync default instance failed with exception: {e.Message}");
         }
 #endif
-        
     }
 }
