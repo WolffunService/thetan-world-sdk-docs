@@ -8,8 +8,12 @@
 Follow https://firebase.google.com/docs/app-check/unity/default-providers to setup Firebase Appcheck in your project
 
 ## Step 2: Get AppCheckToken then Set to SDK
-Follow my example
-![Follow my example](docs/images/get-app-check.png)
+
+Set appCheck proviver when init
+![Init Provider](docs/images/appcheck-provider-init.png)
+
+Get appCheck token and set to ThetanSDKManager
+![Get AppCheck Token](docs/images/get-app-check.png)
 
 ## Step 3: Active AppCheck in Firebase
 Go to Firebase -> AppCheck: https://console.firebase.google.com/project/your-project-id/appcheck 
